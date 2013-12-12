@@ -104,6 +104,7 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
               next 
             else
               i=i+1
+	      puts "item #{item}"
               res["Zone_Config_#{i}"]=item
             end 
         end
@@ -112,6 +113,26 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
       cmd "zoneshow"
    end
 
+   base.register_param ['Zones'] do
+      zonesList = ""
+      match do |txt|
+        txt.split("\n").each do |line|
+          item=line.scan(/zone:\s+(.*)\b\s/)
+            item = item.flatten.first
+            if item.nil? || item.empty? || item =~ /^\s+$/ then
+              next
+            else
+              if zonesList.nil? || zonesList.empty? then 
+                zonesList = zonesList + "#{item}"
+              else 
+               zonesList = zonesList + ",#{item}"
+             end  
+          end
+        end
+        zonesList
+      end
+      cmd "zoneshow"
+   end
 
 
   end
