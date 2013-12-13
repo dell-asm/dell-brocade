@@ -103,8 +103,7 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
             if item.nil? || item.empty? || item =~ /^\s+$/ || res.has_value?(item) then
               next 
             else
-              i=i+1
-	      puts "item #{item}"
+              i=i+1	     
               res["Zone_Config_#{i}"]=item
             end 
         end

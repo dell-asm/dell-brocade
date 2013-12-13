@@ -16,8 +16,7 @@ class Puppet::Util::NetworkDevice::Brocade_fos::Fact
 
   define_value_method [:cmd, :match, :add, :remove, :before, :after, :match_param, :required]
 
-  def parse(txt)
-	puts self.match
+  def parse(txt)	
     if self.match.is_a?(Proc)
       self.value = self.match.call(txt)
     else

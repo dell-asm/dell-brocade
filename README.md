@@ -23,7 +23,7 @@ device.conf
 
     [$switch_fqdn]
     type brocade_fos    
-	url sshi://dell:Passw0rd@172.17.10.16:22
+	url ssh://dell:Passw0rd@172.17.10.16:22
 
 
 
