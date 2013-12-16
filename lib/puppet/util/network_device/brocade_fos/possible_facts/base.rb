@@ -93,21 +93,42 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
       cmd "version"
    end
 
-   base.register_param 'Zone_Config' do
+   #base.register_param 'Zone_Config' do
+      #match do |txt|
+        #res = Hash.new
+        #i=0
+        #txt.split("\n").map do |line|
+          #item=line.scan(/cfg:\s+(.*)\b\s/)
+            #item = item.flatten.first
+            #if item.nil? || item.empty? || item =~ /^\s+$/ || res.has_value?(item) then
+            #  next 
+            #else
+            #  i=i+1	     
+            #  res["Zone_Config_#{i}"]=item
+            #end 
+        #end
+        #res
+      #end
+      #cmd "zoneshow"
+   #end
+
+   base.register_param ['Configs'] do
+      configList = ""
       match do |txt|
-        res = Hash.new
-        i=0
-        txt.split("\n").map do |line|
-          item=line.scan(/cfg:\s+(.*)?/)
+        txt.split("\n").each do |line|
+          item=line.scan(/cfg:\s+(.*)\b\s/)
             item = item.flatten.first
-            if item.nil? || item.empty? || item =~ /^\s+$/ || res.has_value?(item) then
-              next 
+            if item.nil? || item.empty? || item =~ /^\s+$/ || ( configList.include? item ) then
+              next
             else
-              i=i+1	     
-              res["Zone_Config_#{i}"]=item
-            end 
+              if configList.nil? || configList.empty? then
+                configList = configList + "#{item}"
+              else
+               configList = configList + ", #{item}"
+             end
+          end
         end
-        res
+        configList
       end
       cmd "zoneshow"
    end
@@ -133,26 +154,26 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
       cmd "zoneshow"
    end
 
-   base.register_param ['Configs'] do
-      configList = ""
+      base.register_param ['Alias'] do
+      aliList = ""
       match do |txt|
         txt.split("\n").each do |line|
-          item=line.scan(/cfg:\s+(.*)?/)
+          item=line.scan(/alias:\s+(.*)\b\s/)
             item = item.flatten.first
-            if item.nil? || item.empty? || item =~ /^\s+$/ || ( configList.include? item ) then
+            if item.nil? || item.empty? || item =~ /^\s+$/ then
               next
             else
-              if configList.nil? || configList.empty? then
-                configList = configList + "#{item}"
+              if aliList.nil? || aliList.empty? then
+                aliList = aliList + "#{item}"
               else
-               configList = configList + ",#{item}"
+               aliList = aliList + ", #{item}"
              end
           end
         end
-        configList
+        aliList
       end
       cmd "zoneshow"
    end
-   
+
   end
 end
