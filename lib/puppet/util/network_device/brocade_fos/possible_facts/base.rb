@@ -133,6 +133,26 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
       cmd "zoneshow"
    end
 
-
+   base.register_param ['Configs'] do
+      configList = ""
+      match do |txt|
+        txt.split("\n").each do |line|
+          item=line.scan(/cfg:\s+(.*)?/)
+            item = item.flatten.first
+            if item.nil? || item.empty? || item =~ /^\s+$/ || ( configList.include? item ) then
+              next
+            else
+              if configList.nil? || configList.empty? then
+                configList = configList + "#{item}"
+              else
+               configList = configList + ",#{item}"
+             end
+          end
+        end
+        configList
+      end
+      cmd "zoneshow"
+   end
+   
   end
 end
