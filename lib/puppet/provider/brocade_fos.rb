@@ -10,7 +10,7 @@ def transport
  Puppet.debug "Puppet::Util::NetworkDevice::Brocade_fos: connecting via url."
 Puppet.debug "Puppet::Util::NetworkDevice::Brocade_fos:#{Puppet::Util::NetworkDevice.current}"      
 @device ||=Puppet::Util::NetworkDevice.current
-#@device ||= Puppet::Util::NetworkDevice::Brocade_fos::Device.new(Facter.value(:url))
-#	@transport= @device.transport
+
+
 end
 end
