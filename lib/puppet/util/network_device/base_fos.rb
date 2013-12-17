@@ -15,7 +15,13 @@ class Puppet::Util::NetworkDevice::Base_fos
     unless @transport
       @transport = Puppet::Util::NetworkDevice::Transport_fos.const_get(@url.scheme.capitalize).new
       @transport.host = @url.host
-      @transport.port = @url.port || case @url.scheme ; when "ssh" ; 22 ; when "telnet" ; 23 ; end
+      @transport.port = @url.port || case @url.scheme 
+										when "ssh" 
+										  then 22 
+										when "telnet" 
+										  then 23 
+										else 22										  22
+									    end
       
         if checkquery?
         Puppet.debug("crypt=true")
