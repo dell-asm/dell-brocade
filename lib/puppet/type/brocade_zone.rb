@@ -11,7 +11,7 @@ Puppet::Type.newtype(:brocade_zone) do
     newvalues(/^\S+$/)
   end
 
-  newproperty(:member) do
+  newparam(:member) do
     desc "memeber added in the zone"
     newvalues(/^\S+$/)
   end
