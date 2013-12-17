@@ -20,7 +20,7 @@ class Puppet::Util::NetworkDevice::Base_fos
 										  then 22 
 										when "telnet" 
 										  then 23 
-										else 22										  22
+										else 22										 
 									    end
       
         if checkquery?
