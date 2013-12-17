@@ -81,8 +81,6 @@ module Puppet::Util::NetworkDevice::Dsl
       if param.cmd != false
         # Let the Transport Cache the Command for us since we are only dealing here with 'show' type commands
         out = @transport.command(param.cmd, :cache => true, :noop => false)
-        # This is here for the Specs
-        # FIXME
         if out.nil?
           param.evaluated = true
           next
@@ -92,15 +90,19 @@ module Puppet::Util::NetworkDevice::Dsl
         param.parse([param.match_param].flatten.collect{|p|@params[p].value})
       else
         param.parse(@params[param.match_param].value)
-      end
-      @after_hooks ||= {}
-      if @after_hooks[param.name]
-        @after_hooks[param.name].each do |mod|
-          register_new_module(mod[:mod], mod[:path_addition]) if mod[:block].call
-        end
-      end
+      end      
+      checkparamhook(param)
     end
     evaluate_new_params unless @params.each_value.select {|param| param.evaluated == false}.empty?
+  end
+  
+  def checkparamhook(param)
+    @after_hooks ||= {}
+    if @after_hooks[param.name]
+       @after_hooks[param.name].each do |mod|
+          register_new_module(mod[:mod], mod[:path_addition]) if mod[:block].call
+    end
+  end
   end
 
   def retrieve
