@@ -22,12 +22,12 @@ Puppet::Type.newtype(:brocade_config) do
   newproperty(:member_zone) do
     desc "zone added in the config"
     newvalues(/^\S+$/)
+    validate do |value|
+      if value.strip.length == 0
+        raise ArgumentError, "Member Zone name can not be blank."
+      end
+    end
   end
-
-  #newproperty(:ensure) do
-  #  desc "config state"
-  #  newvalues(:present, :absent)
-  #end
 
   newproperty(:configstate) do
     desc "config state"
