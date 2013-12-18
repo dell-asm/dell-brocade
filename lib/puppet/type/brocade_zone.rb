@@ -9,13 +9,16 @@ Puppet::Type.newtype(:brocade_zone) do
     desc "Zone name"
     isnamevar
     newvalues(/^\S+$/)
+    validate do |value|
+      if value.strip.length == 0
+        raise ArgumentError, "Invalid zone name."
+      end
+    end
   end
 
   newparam(:member) do
     desc "memeber added in the zone"
     newvalues(/^\S+$/)
   end
-
-
 end
 
