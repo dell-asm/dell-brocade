@@ -5,11 +5,8 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
   mk_resource_methods
 
   def create
-    Puppet.debug("---------------------------------In Create!!")
-    self.transport
     response = String.new("")
     response = @device.transport.command("cfgshow #{@resource[:configname]}", :noop => false)
-    Puppet.debug("#{@resource[:configstate]} -------------------------------------------------")
     if ( response.include? "does not exist" ) && ( "#{@resource[:configstate]}" == "enable" )
       @resource.provider.configcreate
       @resource.provider.configenable
@@ -30,7 +27,6 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
   end
 
   def destroy
-    self.transport
     response = String.new("")
     Puppet.debug("Deleting Config #{@resource[:configname]}")
     response = @device.transport.command("cfgdelete  #{@resource[:configname]}", :noop => false)
@@ -46,7 +42,6 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
   end
 
   def configcreate 
-    self.transport
     response = String.new("")
     Puppet.debug("Creating Config #{@resource[:configname]} with members #{@resource[:member_zone]}")
     response =  @device.transport.command("cfgcreate  #{@resource[:configname]},  \"#{@resource[:member_zone]}\"", :noop => false)
@@ -58,7 +53,6 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
   end
 
   def configenable
-    self.transport
     response = String.new("")
     @device.transport.command("cfgenable #{@resource[:configname]}", :prompt => /Do you want to enable/)
     response = @device.transport.command("yes", :noop => false)
@@ -68,15 +62,12 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
   end
   
   def configdisable
-    Puppet.debug("i am here")
-    self.transport
     response = String.new("")
     @device.transport.command("cfgDisable", :prompt => /Do you want to disable /)
     @device.transport.command("yes", :noop => false)
   end
 
   def exists?
-    Puppet.debug("exists method configuration state-----#{@resource[:configstate]}, #{@resource[:ensure]}")
     self.transport
     response = String.new("")
     response = @device.transport.command("cfgshow #{@resource[:configname]}", :noop => false)
@@ -84,10 +75,8 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
     if "#{@resource[:ensure]}" == "present" 
       puts "here" 
       false
-      #@resource.provider.create
     else
       true
-      #@resource.provider.destroy
     end
   end
 
