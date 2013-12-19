@@ -13,17 +13,6 @@ module Puppet::Util::NetworkDevice::Dsl
     end
   end
 
-  def register_param_all(params, klass = nil, &block)
-    # Make it so that we can register multiple Params at the same time
-    # and assign every Param an index number that must match the Regex
-    klass ||= param_class
-    @params ||= {}
-    [params].flatten.each_with_index do |param, idx|
-	puts "idx--#{idx}  param--#{param} "
-      @params[param] = klass.new(param, transport, facts, idx, &block)
-    end
-  end
-
   def register_scoped(params, scope_match, klass = nil, &block)
     int_name = name
     register_param(params, klass) do
