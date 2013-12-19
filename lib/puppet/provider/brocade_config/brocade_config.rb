@@ -54,6 +54,7 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
 
   def configenable
     response = String.new("")
+    Puppet.debug("Enabling Config #{@resource[:configname]}.")    
     @transport.command("cfgenable #{@resource[:configname]}", :prompt => /Do you want to enable/)
     response = @transport.command("yes", :noop => false)
     if !response.include? "not found"
@@ -63,6 +64,7 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
   
   def configdisable
     response = String.new("")
+    Puppet.debug("Disabling Config #{@resource[:configname]}.")    
     @transport.command("cfgDisable", :prompt => /Do you want to disable /)
     @transport.command("yes", :noop => false)
   end
