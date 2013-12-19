@@ -6,26 +6,26 @@ Puppet::Type.newtype(:brocade_member_alias) do
   ensurable
 
   newparam(:alias_name) do
-    desc "Alias name for the MemberWWPN"
+    desc "This parameter describes the Brocade alias name for the MemberWWPN."
     isnamevar
     newvalues(/^\S+$/)
     validate do |value|
       if value.strip.length == 0
-        raise ArgumentError, "Invalid alias name."
+        raise ArgumentError, "Unable to perform the operation because the Brocade alias name is invalid."
       end
     end
   end
 
   newparam(:member) do
-    desc "MemberWWPN, whose alias is to be added"
+    desc "This parameter describes the MemberWWPN value whose alias is to be added."
     newvalues(/^\S+$/)
     validate do |value|
       if value.strip.length == 0
-        raise ArgumentError , "MemberWWPN value cannot be empty." 
+        raise ArgumentError , "Enter a correct MemberWWPN value. A valid MemberWWPN value must be in XX:XX:XX:XX:XX:XX:XX:XX format." 
        end 
        
        unless value  =~ /([0-9a-f]{2}:){7}[0-9a-f]{2}/
-         raise ArgumentError, " Invalid memberWWPN value, supported format is XX:XX:XX:XX:XX:XX:XX:XX." 
+         raise ArgumentError, "The MemberWWPN value is invalid. A valid MemberWWPN value must be in XX:XX:XX:XX:XX:XX:XX:XX format." 
         end    
       end
   end

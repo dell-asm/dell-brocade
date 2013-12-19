@@ -11,10 +11,10 @@ Puppet::Type.type(:brocade_zone).provide(:brocade_zone, :parent => Puppet::Provi
  end
 
  def create
-    Puppet.debug("Puppet::Provider::brocade_zone: Creating Brocade zone with zonename: #{@resource[:zonename]}, zonemember:  #{@resource[:member]}.")
+    Puppet.debug("Puppet::Provider::brocade_zone: A Brocade zone with zonename: #{@resource[:zonename]}, zonemember:  #{@resource[:member]} is being added.")
     response =  @transport.command("zonecreate  #{@resource[:zonename]},  #{@resource[:member]}", :noop => false)
     if !response.include? "duplicate name"
-      Puppet.debug("Puppet::Provider::brocade_zone: Adding Brocade zone with zonename: #{@resource[:zonename]}, to zoneconfig:  #{@resource[:zoneconfig]}.")
+      Puppet.debug("Puppet::Provider::brocade_zone: A Brocade zone with zonename: #{@resource[:zonename]}, to zoneconfig:  #{@resource[:zoneconfig]} is being added.")
       if @resource[:zoneconfig] && @resource[:zoneconfig].length != 0
         response =  @transport.command("cfgadd #{@resource[:zoneconfig]}, #{@resource[:zonename]}", :noop => false) 
         if !response.include? "not found"
@@ -29,10 +29,10 @@ Puppet::Type.type(:brocade_zone).provide(:brocade_zone, :parent => Puppet::Provi
 
 
   def destroy
-    Puppet.debug("Puppet::Provider::brocade_zone: Deleting Brocade zone with zonename: #{@resource[:zonename]}.")
+    Puppet.debug("Puppet::Provider::brocade_zone: A Brocade zone with zonename: #{@resource[:zonename]} is being deleted.")
     response = ""
     if @resource[:zoneconfig] && (@resource[:zoneconfig].length != 0)
-      Puppet.debug("Puppet::Provider::brocade_zone: Deleting Brocade zone with zonename: #{@resource[:zonename]}, from zoneconfig:  #{@resource[:zoneconfig]}.")
+      Puppet.debug("Puppet::Provider::brocade_zone: A Brocade zone with zonename: #{@resource[:zonename]}, from zoneconfig:  #{@resource[:zoneconfig]} is being deleted.")
       response = @transport.command("cfgremove #{@resource[:zoneconfig]}, #{@resource[:zonename]}", :noop => false)
     end
     deletezone(response)
@@ -48,7 +48,7 @@ Puppet::Type.type(:brocade_zone).provide(:brocade_zone, :parent => Puppet::Provi
   end
 
   def exists?
-    Puppet.debug("Puppet::Provider::brocade_zone: Checking existence of Brocade zone with zonename: #{@resource[:zonename]}.")
+    Puppet.debug("Puppet::Provider::brocade_zone: Verifying whether or not a Brocade zone with zonename: #{@resource[:zonename]} exists.")
     self.device_transport
     response =  @transport.command("zoneshow #{@resource[:zonename]}", :noop => false)
     if !response.include? "does not exist."

@@ -7,7 +7,7 @@ Puppet::Type.type(:brocade_member_alias).provide(:brocade_member_alias, :parent 
 
 
  def create
-    Puppet.debug("Puppet::Provider::brocade_member_alias: Creating Brocade alias: #{@resource[:alias_name]}, for member:  #{@resource[:member]}.")
+    Puppet.debug("Puppet::Provider::brocade_member_alias: A Brocade alias: #{@resource[:alias_name]}, for member: #{@resource[:member]} is being created.")
     response = @transport.command("alicreate #{@resource[:alias_name]}, #{@resource[:member]}", :noop => false)
     if !response.include? "duplicate name"
       @transport.command("cfgsave", :prompt => /Do/)
@@ -16,7 +16,7 @@ Puppet::Type.type(:brocade_member_alias).provide(:brocade_member_alias, :parent 
   end
 
   def destroy
-    Puppet.debug("Puppet::Provider::brocade_member_alias: Destroying Brocade alias: #{@resource[:alias_name]}.")
+    Puppet.debug("Puppet::Provider::brocade_member_alias: A Brocade alias: #{@resource[:alias_name]} is being destroyed.")
     response = @transport.command("alidelete  #{@resource[:alias_name]}", :noop => false)
     if !response.include? "not found"
        @transport.command("cfgsave", :prompt => /Do/)
@@ -25,7 +25,7 @@ Puppet::Type.type(:brocade_member_alias).provide(:brocade_member_alias, :parent 
   end
 
   def exists?
-    Puppet.debug("Puppet::Provider::brocade_member_alias: Checking existence of alias: #{@resource[:alias_name]}.")
+    Puppet.debug("Puppet::Provider::brocade_member_alias: Verifying whether or not the Brocade alias: #{@resource[:alias_name]} exists.")
     self.device_transport
     response = @transport.command("alishow #{@resource[:alias_name]}", :noop => false)
     if !response.include? "does not exist."
