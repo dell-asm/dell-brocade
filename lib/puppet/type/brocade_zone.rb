@@ -6,7 +6,7 @@ Puppet::Type.newtype(:brocade_zone) do
   ensurable
 
   newparam(:zonename) do
-    desc "Zone name"
+    desc "Zone name to be created on the Brocade Switch"
     isnamevar
     newvalues(/^\S+$/)
 
@@ -18,18 +18,18 @@ Puppet::Type.newtype(:brocade_zone) do
   end
 
   newparam(:member) do
-    desc "memeber added in the zone"
+    desc "Member to be added in the zone on the Brocade Switch"
     newvalues(/^\S+$/)
 
     validate do |value|
       if value.strip.length == 0
-        raise ArgumentError, "Invalid zone name."
+        raise ArgumentError, "Invalid member name."
       end
     end
   end
 
   newparam(:zoneconfig) do
-    desc "zonecofig in which zone has to be added"
+    desc "Zoneconfig in which zone is to be added"
     newvalues(/^\S+$/)
   end
 
