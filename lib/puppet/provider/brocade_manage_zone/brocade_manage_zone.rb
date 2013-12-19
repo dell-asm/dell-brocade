@@ -6,14 +6,14 @@ Puppet::Type.type(:brocade_manage_zone).provide(:brocade_manage_zone, :parent =>
 
   mk_resource_methods
   def create
-    Puppet.debug("Puppet::Provider::brocade_manage_zone: Adding Member to Zone with zonename: #{@resource[:zonename]}, zonemember: #{@resource[:member]}, ConfigName: #{@resource[:configname]}.")
+    Puppet.debug("Puppet::Provider::brocade_manage_zone: A zone member with the zonename: #{@resource[:zonename]}, zonemember: #{@resource[:member]} and ConfigName: #{@resource[:configname]} is being added to the zone.")
     response = String.new("")
     response = @transport.command("zoneadd #{@resource[:zonename]},#{@resource[:member]}", :noop => false)
     if response.include? "duplicate name"
       saveconfiguration
     end
     add_zone_to_configuration
-    Puppet.debug("Puppet::Provider::brocade_manage_zone: Successfully added Member #{@resource[:member]} to Zone #{@resource[:zonename]}.")
+    Puppet.debug("Puppet::Provider::brocade_manage_zone: Successfully added a member #{@resource[:member]} to the zone #{@resource[:zonename]}.")
   end
 
   def saveconfiguration
@@ -21,9 +21,9 @@ Puppet::Type.type(:brocade_manage_zone).provide(:brocade_manage_zone, :parent =>
     response = String.new("")
     response =  @transport.command("yes", :noop => false)
     if response.match(/fail|err|not found|not an alias/)
-      raise Puppet::Error, "Failed to save config #{@resource[:configname]}. Error: #{response}"
+      raise Puppet::Error, "Unable to save the config #{@resource[:configname]} because of the following issue: #{response}"
     else
-      Puppet.debug("Successfully saved config #{@resource[:configname]}")
+      Puppet.debug("Successfully saved the config #{@resource[:configname]}")
     end
   end
 
@@ -41,18 +41,18 @@ Puppet::Type.type(:brocade_manage_zone).provide(:brocade_manage_zone, :parent =>
     response = String.new("")
     response =  @transport.command("cfgremove #{@resource[:configname]},#{@resource[:zonename]}", :noop => false)
     saveconfiguration
-    getEffectiveConfiguration
+    get_effective_configuration
 
   end
 
   def add_zone_to_configuration 
-    Puppet.debug("Puppet::Provider::brocade_manage_zone: Adding Zone to Config : #{@resource[:zonename]}, zonemember: #{@resource[:member]}, ConfigName: #{@resource[:configname]}.")
+    Puppet.debug("Puppet::Provider::brocade_manage_zone: A zone is being added to the Config : #{@resource[:zonename]}, zonemember: #{@resource[:member]}, ConfigName: #{@resource[:configname]}.")
     response = String.new("")
     response =  @transport.command("cfgadd #{@resource[:configname]},#{@resource[:zonename]}", :noop => false)
     #Puppet.debug("response #{response}")
 
     if response.match("not found")
-      raise Puppet::Error, "Failed to Add Zone #{@resource[:zonename]} to the existing config #{@resource[:configname]}. Error: #{response}"
+      raise Puppet::Error, "Unable to add Zone #{@resource[:zonename]} to the existing config #{@resource[:configname]} because of the following issue: #{response}"
     else
       saveconfiguration
       get_effective_configuration
@@ -81,18 +81,18 @@ Puppet::Type.type(:brocade_manage_zone).provide(:brocade_manage_zone, :parent =>
     if response.match(/not found|not an alias|Invalid/)
       raise Puppet::Error, "Failed to enable config #{@resource[:configname]}. Error: #{response}"
     else
-      Puppet.debug("Successfully enabled config #{@resource[:configname]}")
+      Puppet.debug("Successfully enabled the config #{@resource[:configname]}")
     end
 
   end
 
   def exists?
-    Puppet.debug("Puppet::Provider::brocade_manage_zone: Checking existence of Brocade zone with zonename: #{@resource[:zonename]} #{@resource[:member]} .")
+    Puppet.debug("Puppet::Provider::brocade_manage_zone: Verifying whether or not the Brocade zone with zonename: #{@resource[:zonename]} #{@resource[:member]} exists.")
     self.device_transport
     response = String.new("")
     response = @transport.command("zoneshow #{@resource[:zonename]}", :noop => false)
     if (response.match("does not exist."))
-      raise Puppet::Error, "Failed to Add Member #{@resource[:member]} to the zone  #{@resource[:zonename]}. Error: #{response}"
+      raise Puppet::Error, "Unable to add a member #{@resource[:member]} to the zone  #{@resource[:zonename]} because of the following issue: #{response}"
     end
     if response.include? @resource[:member]
       Puppet.debug("Puppet::Provider::brocade_manage_zone: member is already added")
