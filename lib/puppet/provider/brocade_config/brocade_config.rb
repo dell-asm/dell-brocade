@@ -5,29 +5,34 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
   mk_resource_methods
 
   def create
-    response = String.new("")
     self.transport
     response = @transport.command("cfgshow #{@resource[:configname]}", :noop => false)
-    if ( response.include? "does not exist" ) && ( "#{@resource[:configstate]}" == "enable" )
-      @resource.provider.configcreate
-      @resource.provider.configenable
+    if ( response.include? "does not exist" )
+      cfg_doesnt_exist
     end
-
-    if ( response.include? "does not exist" ) && ("#{@resource[:configstate]}" == "disable")
-      @resource.provider.configcreate
+    if (!response.include? "does not exist" )
+      cfg_exists
     end
+  end
 
-    if (!response.include? "does not exist" ) && ( "#{@resource[:configstate]}" == "enable" )  
-      @resource.provider.configenable
-    end
+  def cfg_doesnt_exist
+    if "#{@resource[:configstate]}" == "enable"
+      config_create
+      config_enable  
+    else
+      config_create
+    end  
+  end
 
-    if (!response.include? "does not exist" ) && ( "#{@resource[:configstate]}" == "disable")
-      @resource.provider.configdisable
+  def cfg_exists
+    if "#{@resource[:configstate]}" == "enable"
+      config_enable
+    else
+      config_disable
     end
   end
 
   def destroy
-    response = String.new("")
     Puppet.debug("Deleting Config #{@resource[:configname]}")
     response = @transport.command("cfgdelete  #{@resource[:configname]}", :noop => false)
     if !response.include? "should not be deleted."
@@ -41,29 +46,27 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
     end 
   end
 
-  def configcreate 
-    response = String.new("")
+  def config_create 
     Puppet.debug("Creating Config #{@resource[:configname]} with members #{@resource[:member_zone]}")
     response =  @transport.command("cfgcreate  #{@resource[:configname]},  \"#{@resource[:member_zone]}\"", :noop => false)
-    #Puppet.debug("Puppet::Provider::zone_config: response #{response}. \n")
     if !response.include? "duplicate name" 
       @transport.command("cfgsave", :prompt => /Do/)
       @transport.command("yes", :noop => false)
+    else 
+      Puppet.debug("Create Config : #{response}")
     end
   end
 
-  def configenable
-    response = String.new("")
+  def config_enable
     Puppet.debug("Enabling Config #{@resource[:configname]}.")    
     @transport.command("cfgenable #{@resource[:configname]}", :prompt => /Do you want to enable/)
     response = @transport.command("yes", :noop => false)
     if !response.include? "not found"
-      puts "Config: #{@resource[:configname]} does not exist."
+      Puppet.debug("Config: #{@resource[:configname]} does not exist.")
     end
   end
   
-  def configdisable
-    response = String.new("")
+  def config_disable
     Puppet.debug("Disabling Config #{@resource[:configname]}.")    
     @transport.command("cfgDisable", :prompt => /Do you want to disable /)
     @transport.command("yes", :noop => false)
@@ -71,13 +74,10 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
 
   def exists?
     self.device_transport
-    response = String.new("")
-    response = @transport.command("cfgshow #{@resource[:configname]}", :noop => false)
     if "#{@resource[:ensure]}" == "present" 
       false
     else
       true
     end
   end
-
 end
