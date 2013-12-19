@@ -6,26 +6,26 @@ Puppet::Type.newtype(:brocade_member_alias) do
   ensurable
 
   newparam(:alias_name) do
-    desc "memeber added in the zone"
+    desc "Alias name for the MemberWWPN"
     isnamevar
     newvalues(/^\S+$/)
     validate do |value|
       if value.strip.length == 0
-        raise ArgumentError, "Invalid zone name."
+        raise ArgumentError, "Invalid alias name."
       end
     end
   end
 
   newparam(:member) do
-    desc "Zone name"
+    desc "MemberWWPN, whose alias is to be added"
     newvalues(/^\S+$/)
     validate do |value|
       if value.strip.length == 0
-        raise ArgumentError , "member name cannot be empty." 
+        raise ArgumentError , "MemberWWPN value cannot be empty." 
        end 
        
        unless value  =~ /([0-9a-f]{2}:){7}[0-9a-f]{2}/
-         raise ArgumentError, " member WWPN supported format XX:XX:XX:XX:XX:XX:XX:XX." 
+         raise ArgumentError, " Invalid memberWWPN value, supported format is XX:XX:XX:XX:XX:XX:XX:XX." 
         end    
       end
   end
