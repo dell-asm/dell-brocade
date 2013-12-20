@@ -28,20 +28,21 @@ Puppet::Type.type(:brocade_manage_zone).provide(:brocade_manage_zone, :parent =>
   end
 
   def destroy
-    Puppet.debug("Puppet::Provider::brocade_manage_zone: Removing Member from zone with zonename: #{@resource[:zonename]}, zonemember: #{@resource[:member]}, ConfigName: #{@resource[:configname]}.
-")
+    Puppet.debug("Puppet::Provider::brocade_manage_zone: A zone member with the zonename: #{@resource[:zonename]}, zonemember: #{@resource[:member]} and ConfigName: #{@resource[:configname]} is being removed from the zone.")
     response = String.new("")
     response =  @transport.command("zoneremove #{@resource[:zonename]},#{@resource[:member]}", :noop => false)
     saveconfiguration
+	Puppet.debug("Puppet::Provider::brocade_manage_zone: Successfully removed a member #{@resource[:member]} from the zone #{@resource[:zonename]}.")
 	remove_zone_from_configuration
   end
 
   def remove_zone_from_configuration
-    Puppet.debug("Puppet::Provider::brocade_manage_zone: Removing Zone from Config : #{@resource[:zonename]}, zonemember: #{@resource[:member]}, ConfigName: #{@resource[:configname]}.")
+    Puppet.debug("Puppet::Provider::brocade_manage_zone: A zone is being removed from the Config : #{@resource[:zonename]}, ConfigName: #{@resource[:configname]}.")
     response = String.new("")
     response =  @transport.command("cfgremove #{@resource[:configname]},#{@resource[:zonename]}", :noop => false)
     saveconfiguration
-    get_effective_configuration
+    Puppet.debug("Puppet::Provider::brocade_manage_zone: Successfully removed a zone from the Config : #{@resource[:zonename]}, ConfigName: #{@resource[:configname]}.")
+	get_effective_configuration
 
   end
 
