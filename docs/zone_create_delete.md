@@ -50,9 +50,9 @@ The Brocade switch module uses the ssh protocol to interact with the brocade swi
 #Provide brocade_zone type properties in *.pp manifest file
 
   brocade_zone { 'Demotitle:
-	zonename   => 'Demoname'
-    ensure	   => 'present'
-    member 	   => 'DemoAlias'
+	zonename   => 'Demoname',
+    ensure	   => 'present',
+    member 	   => 'DemoAlias',
 	zoneconfig => 'Democonfig'
   }
 
