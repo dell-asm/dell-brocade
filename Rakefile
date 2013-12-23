@@ -16,7 +16,11 @@ namespace :rspec do
     end
   end
 end
-task :default => :rspec
+
+task :default => :test
+task :spec => :test
+
+RSpec::Core::RakeTask.new(:test)
 
 begin
   if Gem::Specification::find_by_name('puppet-lint')
