@@ -9,4 +9,10 @@ class Puppet::Provider::Brocade_fos < Puppet::Provider
     @device ||=Puppet::Util::NetworkDevice.current
     @transport = @device.transport
   end
+
+  def cfg_save
+    Puppet.debug("Saving changes by \"cfgsave\".")
+    @transport.command("cfgsave", :prompt => /Do/)
+    @transport.command("yes", :noop => false)
+  end
 end
