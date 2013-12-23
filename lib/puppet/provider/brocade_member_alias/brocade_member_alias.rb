@@ -10,8 +10,7 @@ Puppet::Type.type(:brocade_member_alias).provide(:brocade_member_alias, :parent 
     Puppet.debug("Puppet::Provider::brocade_member_alias: A Brocade alias: #{@resource[:alias_name]}, for member: #{@resource[:member]} is being created.")
     response = @transport.command("alicreate #{@resource[:alias_name]}, #{@resource[:member]}", :noop => false)
     if !response.include? "duplicate name"
-      @transport.command("cfgsave", :prompt => /Do/)
-      @transport.command("yes", :noop => false)
+      cfg_save
     end
   end
 
@@ -19,8 +18,7 @@ Puppet::Type.type(:brocade_member_alias).provide(:brocade_member_alias, :parent 
     Puppet.debug("Puppet::Provider::brocade_member_alias: A Brocade alias: #{@resource[:alias_name]} is being destroyed.")
     response = @transport.command("alidelete  #{@resource[:alias_name]}", :noop => false)
     if !response.include? "not found"
-       @transport.command("cfgsave", :prompt => /Do/)
-       @transport.command("yes", :noop => false)
+       cfg_save
     end
   end
 
