@@ -28,9 +28,4 @@ Puppet::Type.newtype(:brocade_zone) do
     end
   end
 
-  newparam(:zoneconfig) do
-    desc "This parameter describes the zone configuration where the zone is to be added."
-    newvalues(/^\S+$/)
-  end
-
 end
