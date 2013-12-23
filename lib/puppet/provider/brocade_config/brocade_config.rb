@@ -17,11 +17,9 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
   end
 
   def cfg_doesnt_exist
+    config_create
     if "#{@resource[:configstate]}" == "enable"
-      config_create
       config_enable  
-    else
-      config_create
     end  
   end
 
