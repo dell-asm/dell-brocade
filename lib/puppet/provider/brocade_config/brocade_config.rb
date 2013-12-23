@@ -9,8 +9,9 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
     response = @transport.command("cfgshow #{@resource[:configname]}", :noop => false)
     if ( response.include? "does not exist" )
       cfg_doesnt_exist
-    end
-    if (!response.include? "does not exist" )
+    #end
+    #if (!response.include? "does not exist" )
+    else
       cfg_exists
     end
   end
