@@ -23,7 +23,7 @@ Puppet::Type.newtype(:brocade_config_membership) do
         raise ArgumentError, "Enter a valid Config name value."
       end
       if ( value =~ /[\W]+/ )
-        raise ArgumentError, "Brocade does not support speacial characters in Config name."
+        raise ArgumentError, "Brocade does not support special characters in Config name."
       end
     end
   end
@@ -34,7 +34,7 @@ Puppet::Type.newtype(:brocade_config_membership) do
     value.split(";").each do |line|
       item = line.strip
       if ( item =~ /[\W]+/ )
-        raise ArgumentError, "Brocade does not support speacial characters in Zone name."
+        raise ArgumentError, "Brocade does not support special characters in Zone name."
       end
     end
   end
