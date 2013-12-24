@@ -1,14 +1,15 @@
+[root@puppet-centos type]# vi brocade_config_membership.rb
 Puppet::Type.newtype(:brocade_config_membership) do
   @doc = "This represents a zone config membership on a brocade switch."
 
   apply_to_device
 
-  ensurable do 
+  ensurable do
     desc "config zone addition, removal ensure property."
     newvalue(:present) do
       provider.create
     end
-    newvalue(:absent) do 
+    newvalue(:absent) do
       provider.destroy
     end
   end
@@ -30,10 +31,12 @@ Puppet::Type.newtype(:brocade_config_membership) do
   newproperty(:member_zone) do
     desc "zone added in the config"
     newvalues(/^\S+$/)
-    validate do |value|
-      if value.strip.length == 0
-        raise ArgumentError, "Member Zone name can not be blank."
+    value.split(";").each do |line|
+      item = line.strip
+      if ( item =~ /[\W]+/ )
+        raise ArgumentError, "Brocade does not support speacial characters in Zone name."
       end
     end
   end
+
 end
