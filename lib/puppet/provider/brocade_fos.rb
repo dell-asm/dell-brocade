@@ -13,6 +13,11 @@ class Puppet::Provider::Brocade_fos < Puppet::Provider
   def cfg_save
     Puppet.debug("Saving changes by \"cfgsave\".")
     @transport.command("cfgsave", :prompt => /Do/)
-    @transport.command("yes", :noop => false)
+    response =  @transport.command("yes", :noop => false)
+    if response.match(/fail|err|not found|not an alias/)
+      raise Puppet::Error, "Unable to save the Config #{@resource[:configname]} because of the following issue: #{response}"
+    else
+      Puppet.debug("Successfully saved the config #{@resource[:configname]}")
+    end
   end
 end
