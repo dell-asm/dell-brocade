@@ -7,7 +7,7 @@ Puppet::Type.type(:brocade_zone).provide(:brocade_zone, :parent => Puppet::Provi
 
  def create
     Puppet.debug("Puppet::Provider::brocade_zone: A Brocade zone with zonename: #{@resource[:zonename]}, zonemember:  #{@resource[:member]} is being added.")
-    response =  @transport.command("zonecreate  #{@resource[:zonename]},  #{@resource[:member]}", :noop => false)
+    response =  @transport.command("zonecreate  #{@resource[:zonename]}, \"#{@resource[:member]}\"", :noop => false)
     if !response.include? "duplicate name"
       cfg_save
     end
