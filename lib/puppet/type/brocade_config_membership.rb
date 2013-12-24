@@ -4,7 +4,7 @@ Puppet::Type.newtype(:brocade_config_membership) do
   apply_to_device
 
   ensurable do 
-	  desc "config zone addition. removal ensure property."
+    desc "config zone addition, removal ensure property."
     newvalue(:present) do
       provider.create
     end
@@ -16,7 +16,15 @@ Puppet::Type.newtype(:brocade_config_membership) do
   newparam(:configname) do
     desc "Config name"
     isnamevar
-    newvalues(/^\S+$/)
+    newvalues(/[\w]+/)
+    validate do |value|
+      if value.strip.length == 0
+        raise ArgumentError, "Enter a valid Config name value."
+      end
+      if ( value =~ /[\W]+/ )
+        raise ArgumentError, "Brocade does not support speacial characters in Config name."
+      end
+    end
   end
 
   newproperty(:member_zone) do
@@ -29,4 +37,3 @@ Puppet::Type.newtype(:brocade_config_membership) do
     end
   end
 end
-
