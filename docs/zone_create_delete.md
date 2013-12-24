@@ -40,8 +40,7 @@ The Brocade switch module uses the ssh protocol to interact with the brocade swi
 
     member: If present, this parameter specifies the memberWWPN/alias name of the nodes to be added to the zone. MemberWWPN or aliasname of the member can be used to specify the parameter . To specify
          a MemberWWPN, use XX:XX:XX:XX:XX:XX:XX:XX, and alias name can be any string value.
-
-    zoneconfig: If present, this parameter holds the value, to/from which, zone created/deleted needs to be added/removed.
+    
 
 # -------------------------------------------------------------------------
 # Parameter signature 
@@ -52,8 +51,7 @@ The Brocade switch module uses the ssh protocol to interact with the brocade swi
   brocade_zone { 'Demotitle:
 	zonename   => 'Demoname',
     ensure	   => 'present',
-    member 	   => 'DemoAlias',
-	zoneconfig => 'Democonfig'
+    member 	   => 'DemoAlias'
   }
 
 # --------------------------------------------------------------------------
