@@ -1,4 +1,4 @@
-Puppet::Type.newtype(:brocade_member_alias) do
+Puppet::Type.newtype(:brocade_alias) do
   @doc = "This represents an alias name for a member on a brocade switch."
 
   apply_to_device
