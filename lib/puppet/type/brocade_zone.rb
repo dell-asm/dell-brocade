@@ -14,6 +14,9 @@ Puppet::Type.newtype(:brocade_zone) do
       if value.strip.length == 0
         raise ArgumentError, "Unable to perform the operation because the zone name is invalid."
       end
+	  if ( value =~ /[\W]+/ )
+        raise ArgumentError, "Brocade does not support special characters in zone name."
+      end
     end
   end
 
@@ -24,6 +27,13 @@ Puppet::Type.newtype(:brocade_zone) do
     validate do |value|
       if value.strip.length == 0
         raise ArgumentError, "Unable to perform the operation because the member name is invalid."
+      end
+	  
+	  value.split(";").each do |line|
+      item = line.strip
+      if ( item =~ /[\W]+/ )
+          raise ArgumentError, "Brocade does not support special characters in member name."
+        end
       end
     end
   end

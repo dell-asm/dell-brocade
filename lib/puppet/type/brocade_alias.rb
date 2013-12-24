@@ -13,6 +13,9 @@ Puppet::Type.newtype(:brocade_alias) do
       if value.strip.length == 0
         raise ArgumentError, "Unable to perform the operation because the Brocade alias name is invalid."
       end
+	  if ( value =~ /[\W]+/ )
+        raise ArgumentError, "Brocade does not support special characters in alias name."
+      end
     end
   end
 
