@@ -12,10 +12,8 @@
 #
 # [Remember: No empty lines between comments and class definition]
 class brocade {
-  brocade_zone { 'Demotitle:
-  zonename   => 'Demoname',
+  brocade_zone_membership { 'DemoZone' :
   ensure	 => 'present',
-  member 	 => 'DemoAlias',
-  zoneconfig => 'Democonfig'
+  member 	 => 'DemoMember'
   }
 }
