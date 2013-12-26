@@ -54,13 +54,15 @@ The Brocade switch module uses the ssh protocol to interact with the brocade swi
 # --------------------------------------------------------------------------
 # Usage
 # --------------------------------------------------------------------------
-   Refer to the examples in the manifest directory.
-   The following files capture the details for the sample init.pp and supported files:
+    Refer to the examples in the manifest directory.
+    The following file is the sample pp file for adding/removing Members from/to Zone.
 
     - zonemembership.pp
     
-   A user can create an init.pp file based on the above sample files and call the "puppet device" command , for example: 
-   # puppet device
+	A user can add the below lines in site.pp to call below pp file by executing "puppet device" command
+	node asmbrocade {
+	include brocade::zonemembership
+	}
 
 #-------------------------------------------------------------------------------------------------------------------------
 # End
