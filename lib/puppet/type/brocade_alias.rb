@@ -26,11 +26,13 @@ Puppet::Type.newtype(:brocade_alias) do
       if value.strip.length == 0
         raise ArgumentError , "Enter a correct MemberWWPN value. A valid MemberWWPN value must be in XX:XX:XX:XX:XX:XX:XX:XX format." 
        end 
-       
-       unless value  =~ /([0-9a-f]{2}:){7}[0-9a-f]{2}/
-         raise ArgumentError, "The MemberWWPN value is invalid. A valid MemberWWPN value must be in XX:XX:XX:XX:XX:XX:XX:XX format." 
+       value.split(";").each do |line|
+        item = line.strip
+        unless item  =~ /^([0-9a-f]{2}:){7}[0-9a-f]{2}$/
+          raise ArgumentError, "The MemberWWPN value is invalid. A valid MemberWWPN value must be in XX:XX:XX:XX:XX:XX:XX:XX format." 
         end    
       end
+	 end
   end
 
 end
