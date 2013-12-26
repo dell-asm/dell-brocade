@@ -77,5 +77,10 @@ This creates a An Alias for members, Add this Alias to a zone and add the zone t
 You can also use any of the above operations individually, or create new defined types, as required. The details of each operation and parameters 
 are mentioned in the following readme files, that are shipped with the module:
 
-  - zone_create_delete.md
+  -alias_create_delete.md 
+  -zone_create_delete.md
+  -zone_membership_update.md
+  -config_membership_update.md
+  -config_create_delete_activate_deactivate.md
+  
   
