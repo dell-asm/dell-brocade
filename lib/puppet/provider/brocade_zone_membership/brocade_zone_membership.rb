@@ -1,5 +1,5 @@
 require 'puppet/provider/brocade_fos'
-require 'puppet/provider'
+require 'puppet/provider/brocade_responses'
 
 
 Puppet::Type.type(:brocade_zone_membership).provide(:brocade_zone_membership, :parent => Puppet::Provider::Brocade_fos) do

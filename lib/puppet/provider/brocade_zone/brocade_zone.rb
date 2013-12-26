@@ -1,5 +1,6 @@
 require 'puppet/provider/brocade_fos'
-require 'puppet/provider'
+require 'puppet/provider/brocade_responses'
+require 'puppet/provider/brocade_messages'
 
 Puppet::Type.type(:brocade_zone).provide(:brocade_zone, :parent => Puppet::Provider::Brocade_fos) do
   @doc = "Manage brocade zone creation, modification and deletion."

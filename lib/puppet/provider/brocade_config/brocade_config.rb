@@ -1,6 +1,5 @@
 require 'puppet/provider/brocade_fos'
-require 'puppet/provider'
-
+require 'puppet/provider/brocade_responses'
 
 Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::Provider::Brocade_fos) do
   @doc = "Manage zone config creation, deletion and modification."
