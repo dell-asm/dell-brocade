@@ -11,9 +11,10 @@
 # Sample Usage:
 #
 # [Remember: No empty lines between comments and class definition]
-class brocade::zonemembership {
-  brocade_zone_membership { 'DemoZone':
+class brocade {
+  brocade_zone { 'Demotitle:
+  zonename   => 'Demoname',
   ensure	 => 'present',
-  member 	 => 'DemoMember',
+  member 	 => 'DemoAlias'  
   }
 }
