@@ -25,7 +25,7 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
   def cfg_exists
     if "#{@resource[:configstate]}" == "enable"
       config_enable
-    else
+    elsif "#{@resource[:configstate]}" == "disable"
       config_disable
     end
   end
@@ -62,9 +62,14 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
   end
   
   def config_disable
-    Puppet.debug("The Config #{@resource[:configname]} is being disabled.")    
-    @transport.command("cfgDisable", :prompt => /Do you want to disable /)
-    @transport.command("yes", :noop => false)
+    response = @transport.command("cfgActvShow", :noop => false)
+    if ( !response.include? "no configuration in effect" )	
+      Puppet.debug("The current Config is being disabled.")    
+      @transport.command("cfgDisable", :prompt => /Do you want to disable /)
+      @transport.command("yes", :noop => false)
+	else
+	  Puppet.debug("Cannot disable config as no effective configuration found.")   
+    end	  
   end
 
   def exists?
