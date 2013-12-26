@@ -1,5 +1,5 @@
 require 'puppet/provider/brocade_fos'
-require 'puppet/provider/brocade_responses'
+require 'puppet/provider'
 
 
 Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::Provider::Brocade_fos) do
@@ -10,7 +10,7 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
     self.transport
     response = @transport.command("cfgshow #{@resource[:configname]}", :noop => false)
 
-    if ( response.include? Puppet::Provider::brocade_responses::RESPONSE_DOES_NOT_EXIST )
+    if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST )
       cfg_doesnt_exist
     else
       cfg_exists
@@ -35,7 +35,7 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
   def destroy
     Puppet.debug("The Config #{@resource[:configname]} is being deleted.")
     response = @transport.command("cfgdelete  #{@resource[:configname]}", :noop => false)
-    if (!response.include? Puppet::Provider::brocade_responses::RESPONSE_SHOULD_NOT_BE_DELETED ) && (!response.include? Puppet::Provider::brocade_responses::RESPONSE_NOT_FOUND )
+    if (!response.include? Puppet::Provider::Brocade_responses::RESPONSE_SHOULD_NOT_BE_DELETED ) && (!response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND )
       cfg_save
     else
       raise Puppet::Error, "#{response}" 
@@ -45,7 +45,7 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
   def config_create 
     Puppet.debug("A Config #{@resource[:configname]} with members #{@resource[:member_zone]} is being created.")
     response =  @transport.command("cfgcreate  #{@resource[:configname]},  \"#{@resource[:member_zone]}\"", :noop => false)
-    if (!response.include? Puppet::Provider::brocade_responses::RESPONSE_DUPLICATE_NAME ) && (!response.include? Puppet::Provider::brocade_responses::RESPONSE_INVALID) 
+    if (!response.include? Puppet::Provider::Brocade_responses::RESPONSE_DUPLICATE_NAME ) && (!response.include? Puppet::Provider::Brocade_responses::RESPONSE_INVALID) 
       cfg_save
        Puppet.debug("Create Config : #{response}")
     else
@@ -57,7 +57,7 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
     Puppet.debug("The Config #{@resource[:configname]} is being enabled.")    
     @transport.command("cfgenable #{@resource[:configname]}", :prompt => /Do you want to enable/)
     response = @transport.command("yes", :noop => false)
-    if response.include? Puppet::Provider::brocade_responses::RESPONSE_NOT_FOUND
+    if response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND
        raise Puppet::Error, "#{response}"
     end
     Puppet.debug("#{response}")
