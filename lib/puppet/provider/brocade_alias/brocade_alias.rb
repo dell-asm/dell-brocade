@@ -15,7 +15,7 @@ Puppet::Type.type(:brocade_alias).provide(:brocade_alias, :parent => Puppet::Pro
   end
 
   def destroy
-    Puppet.debug("Puppet::Provider::brocade_alias: A Brocade alias: #{@resource[:alias_name]} is being destroyed.")
+    Puppet.debug("Puppet::Provider::brocade_alias: A Brocade alias: #{@resource[:alias_name]} is being deleted.")
     response = @transport.command("alidelete  #{@resource[:alias_name]}", :noop => false)
     if !response.include? "not found"
        cfg_save
