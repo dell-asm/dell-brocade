@@ -1,5 +1,5 @@
 require 'puppet/provider/brocade_fos'
-require 'puppet/provider'
+require 'puppet/provider/brocade_responses'
 
 
 Puppet::Type.type(:brocade_config_membership).provide(:brocade_config_membership, :parent => Puppet::Provider::Brocade_fos) do
@@ -9,8 +9,10 @@ Puppet::Type.type(:brocade_config_membership).provide(:brocade_config_membership
   def create
     Puppet.debug("Adding Zone(s) #{@resource[:member_zone]} to Config #{@resource[:configname]}")
     response = @transport.command("cfgadd #{@resource[:configname]}, \"#{@resource[:member_zone]}\"", :noop => false)
-    if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_ALREADY_CONTAINS ) || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND ) || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_INVALID_PARAMETERS)
+    if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND ) || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_INVALID_PARAMETERS)
       raise Puppet::Error, "Unable to add the Zone(s) #{@resource[:member_zone]} to Config #{@resource[:configname]}.Error: #{response}"
+    elsif response.include? Puppet::Provider::Brocade_responses::RESPONSE_ALREADY_CONTAINS
+      Puppet.info("Zone(s) #{@resource[:member_zone]} already added to Config #{@resource[:configname]}")
     else
       cfg_save
     end
@@ -37,3 +39,4 @@ Puppet::Type.type(:brocade_config_membership).provide(:brocade_config_membership
     end
   end
 
+end
