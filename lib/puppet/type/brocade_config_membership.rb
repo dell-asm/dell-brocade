@@ -6,7 +6,7 @@ Puppet::Type.newtype(:brocade_config_membership) do
   apply_to_device
 
   ensurable do
-    desc "config zone addition, removal ensure property."
+    desc "Config zone addition, removal ensure property."
     newvalue(:present) do
       provider.create
     end
@@ -16,7 +16,7 @@ Puppet::Type.newtype(:brocade_config_membership) do
   end
 
   newparam(:configname) do
-    desc "Config name"
+    desc "This parameter describes the config name on Brocade"
     isnamevar
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::CONFIG_NAME_BLANK_ERROR)
@@ -25,7 +25,7 @@ Puppet::Type.newtype(:brocade_config_membership) do
   end
 
   newparam(:member_zone) do
-    desc "zone added in the config"
+    desc "This parameter describes the zone to be added in the config"
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_BLANK_ERROR)
       Puppet::Type::Brocade_messages.list_special_char_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_SPECIAL_CHAR_ERROR)

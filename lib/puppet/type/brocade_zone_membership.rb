@@ -8,7 +8,7 @@ Puppet::Type.newtype(:brocade_zone_membership) do
   ensurable
 
   newparam(:zonename) do
-    desc "Zone name"
+    desc "This parameter describes the zone name to be created on the Brocade switch."
     isnamevar
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_BLANK_ERROR)
@@ -17,7 +17,7 @@ Puppet::Type.newtype(:brocade_zone_membership) do
   end
 
   newparam(:member) do
-    desc "Member Name"
+    desc "This parameter describes the member node to be added in the zone"
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ALIAS_NAME_BLANK_ERROR)
 	  Puppet::Type::Brocade_messages.tokenize_list(value).each do |line|
