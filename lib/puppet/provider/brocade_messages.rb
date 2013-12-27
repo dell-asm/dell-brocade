@@ -23,5 +23,10 @@ module Puppet::Provider::Brocade_messages
 	CONFIG_MEMBERSHIP_DESTORY_DEBUG="Puppet::Provider::brocade_config_membership: Removing Zone(s) %s from Config %s"
     CONFIG_MEMBERSHIP_ALREADY_REMOVED_INFO="Zone(s) %s already removed from Config %s"
 	CONFIG_MEMBERSHIP_DESTROY_ERROR="Unable to remove the Zone(s) %s from Config %s. Error: %s"
-
+        ZONE_MEMBERSHIP_CREATE_DEBUG="Puppet::Provider::brocade_zone_membership: A zone member with the zonename: %s and zonemember: %s is being added to the zone"
+        ZONE_MEMBERSHIP_CREATE_ERROR="Unable to add member %s to zone %s because of the following issue: %s"
+        ZONE_MEMBERSHIP_ALREADY_EXIST_INFO="Member(s) %s already added to Zone %s"
+        ZONE_MEMBERSHIP_DESTROY_DEBUG="Puppet::Provider::brocade_config_membership: A zone member with the zonename: %s and  zonemember: %s is being removed from the zone"
+    ZONE_MEMBERSHIP_ALREADY_REMOVED_INFO="Member(s) %s already removed from Zone %s"
+        ZONE_MEMBERSHIP_DESTROY_ERROR="Unable to remove the Member(s) %s from Zone %s Error: %s"
 end

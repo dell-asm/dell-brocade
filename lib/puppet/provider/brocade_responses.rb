@@ -7,7 +7,7 @@ module Puppet::Provider::Brocade_responses
 	RESPONSE_INVALID_PARAMETERS="Invalid Parameters"
 	RESPONSE_IS_NOT_IN="is not in"
 	RESPONSE_SHOULD_NOT_BE_DELETED="should not be deleted"
-	RESPONSE_INVALID="invalid"
+	RESPONSE_INVALID="Invalid"
 	RESPONSE_NO_EFFECTIVE_CONFIG="no configuration in effect"
 
 end
