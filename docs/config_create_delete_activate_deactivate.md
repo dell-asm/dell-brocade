@@ -47,7 +47,8 @@ The Brocade switch module uses the ssh protocol to interact with the brocade swi
 
     member_zone: If present, this parameter specifies the semicolon(;) separated list of zone(s) es to be added to the config. 
 	
-	configstate: If present, this parameter specifies activate or deactivate the specified zone config. Valid values are enable/disable.
+	configstate: If present, this parameter specifies activate or deactivate the specified zone config. Valid values are enable/disable. 
+	Config state can be updated only when 'ensure' property is 'present'.
     
 
 # -------------------------------------------------------------------------
