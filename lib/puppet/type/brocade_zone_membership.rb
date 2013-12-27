@@ -1,3 +1,5 @@
+require 'puppet/type/brocade_messages'
+
 Puppet::Type.newtype(:brocade_zone_membership) do
   @doc = "This represents a Addition and removal of Member to/from existing zone on brocade switch."
 
@@ -11,9 +13,9 @@ Puppet::Type.newtype(:brocade_zone_membership) do
     newvalues(/^\S+$/)
     validate do |value|
       if value.strip.length == 0
-        raise ArgumentError, "Zone name can not be blank."
+        raise ArgumentError, Puppet::Type::Brocade_messages::ZONE_NAME_BLANK_ERROR
       end
-end
+    end
   end
 
   newparam(:member) do
@@ -21,9 +23,9 @@ end
     newvalues(/^\S+$/)
     validate do |value|
       if value.strip.length == 0
-        raise ArgumentError, "Member Zone name can not be blank."
+        raise ArgumentError, Puppet::Type::Brocade_messages::CONFIG_NAME_BLANK_ERROR
       end
-end
+    end
   end
 
 end

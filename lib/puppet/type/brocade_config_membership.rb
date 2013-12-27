@@ -1,3 +1,5 @@
+require 'puppet/type/brocade_messages'
+
 Puppet::Type.newtype(:brocade_config_membership) do
   @doc = "This represents a zone config membership on a brocade switch."
 
@@ -19,25 +21,25 @@ Puppet::Type.newtype(:brocade_config_membership) do
     newvalues(/[\w]+/)
     validate do |value|
       if value.strip.length == 0
-        raise ArgumentError, "Enter a valid Config name value."
+        raise ArgumentError, Puppet::Type::Brocade_messages::CONFIG_NAME_BLANK_ERROR
       end
       if ( value =~ /[\W]+/ )
-        raise ArgumentError, "Brocade does not support speacial characters in Config name."
+        raise ArgumentError, Puppet::Type::Brocade_messages::CONFIG_NAME_SPECIAL_CHAR_ERROR
       end
     end
   end
 
-  newproperty(:member_zone) do
+  newparam(:member_zone) do
     desc "zone added in the config"
     newvalues(/^\S+$/)
     validate do |value|
       if value.strip.length == 0
-        raise ArgumentError, "Zone name value can not be blank."
+        raise ArgumentError, Puppet::Type::Brocade_messages::ZONE_NAME_BLANK_ERROR
       end
       value.split(";").each do |line|
         item = line.strip
         if ( item =~ /[\W]+/ )
-          raise ArgumentError, "Brocade does not support special characters in Zone name."
+          raise ArgumentError, Puppet::Type::Brocade_messages::ZONE_NAME_SPECIAL_CHAR_ERROR
         end
       end
     end
