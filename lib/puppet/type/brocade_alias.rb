@@ -20,12 +20,9 @@ Puppet::Type.newtype(:brocade_alias) do
     desc "This parameter describes the MemberWWPN value whose alias is to be added."
     validate do |value|
        Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::MEMBER_WWPN_BLANK_ERROR)
-       value.split(";").each do |line|
-        item = line.strip
-        unless item  =~ /^([0-9a-f]{2}:){7}[0-9a-f]{2}$/
-          raise ArgumentError, Puppet::Type::Brocade_messages::MEMBER_WWPN_INVALID_FORMAT_ERROR
-        end    
-      end
+       Puppet::Type::Brocade_messages.tokenize_list(value).each do |line|
+        Puppet::Type::Brocade_messages.member_wwpn_format_check(line.strip, Puppet::Type::Brocade_messages::MEMBER_WWPN_INVALID_FORMAT_ERROR)  
+       end
 	 end
   end
 

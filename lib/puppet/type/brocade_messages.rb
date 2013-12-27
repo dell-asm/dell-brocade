@@ -30,22 +30,19 @@ module Puppet::Type::Brocade_messages
   end
 
   def member_value_format_check(value)
-    tokenize_list(value)
-    @token.each do |line|
-      item = line.strip
-      if ( item =~ /[:]+/ )
-        member_wwpn_format_check(item, MEMBER_WWPN_INVALID_FORMAT_ERROR)
+    tokenize_list(value).each do |line|
+      if ( line.strip =~ /[:]+/ )
+        member_wwpn_format_check(line.strip, MEMBER_WWPN_INVALID_FORMAT_ERROR)
       else
-        special_char_check(item, ALIAS_NAME_SPECIAL_CHAR_ERROR)
+        special_char_check(line.strip, ALIAS_NAME_SPECIAL_CHAR_ERROR)
       end
     end
   end
 
+  
   def list_special_char_check(value, error)
-    tokenize_list(value)
-    @token.each do |line|
-        item = line.strip
-        special_char_check(item, error)
+    tokenize_list(value).each do |line|
+        special_char_check(line.strip, error)
 	end
   end
 		
