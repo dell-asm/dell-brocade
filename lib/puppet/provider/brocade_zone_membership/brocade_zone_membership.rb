@@ -35,7 +35,6 @@ end
 end
 
   def exists?
-    Puppet.debug("Puppet::Provider::brocade_zone_membership: Verifying whether or not the Brocade zone with zonename: #{@resource[:zonename]} #{@resource[:member]} exists.")
     self.device_transport
     if "#{@resource[:ensure]}" == "present" 
       false
