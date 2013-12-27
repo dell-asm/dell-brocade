@@ -3,16 +3,16 @@ require 'puppet/provider/brocade_responses'
 
 
 Puppet::Type.type(:brocade_config_membership).provide(:brocade_config_membership, :parent => Puppet::Provider::Brocade_fos) do
-  @doc = "Manage addition and removal of zones to config."
+  @doc = Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_DOC
   mk_resource_methods
 
   def create
-    Puppet.debug("Puppet::Provider::brocade_config_membership: Adding Zone(s) #{@resource[:member_zone]} to Config #{@resource[:configname]}")
+    Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_CREATE_DEBUG%[@resource[:member_zone],@resource[:configname]])
     response = @transport.command("cfgadd #{@resource[:configname]}, \"#{@resource[:member_zone]}\"", :noop => false)
     if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND ) || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_INVALID_PARAMETERS)
-      raise Puppet::Error, "Unable to add the Zone(s) #{@resource[:member_zone]} to Config #{@resource[:configname]}.Error: #{response}"
+      raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_CREATE_ERROR%[@resource[:member_zone],@resource[:configname],response]
     elsif response.include? Puppet::Provider::Brocade_responses::RESPONSE_ALREADY_CONTAINS
-      Puppet.info("Zone(s) #{@resource[:member_zone]} already added to Config #{@resource[:configname]}")
+      Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_EXIST_INFO%[@resource[:member_zone],@resource[:configname]])
     else
       cfg_save
     end
@@ -20,10 +20,12 @@ Puppet::Type.type(:brocade_config_membership).provide(:brocade_config_membership
 
 
   def destroy
-    Puppet.debug("Puppet::Provider::brocade_config_membership: Removing Zone(s) #{@resource[:member_zone]} from Config #{@resource[:configname]}")
+    Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_DESTORY_DEBUG%[@resource[:member_zone],@resource[:configname]])
     response = @transport.command("cfgremove #{@resource[:configname]}, \"#{@resource[:member_zone]}\"", :noop => false)
-    if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_IS_NOT_IN ) || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND )
-      raise Puppet::Error, "Unable to remove the Zone(s) #{@resource[:member_zone]} from Config #{@resource[:configname]}. Error: #{response}"
+    if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND )
+      raise Puppet::Error, Puppet::Provider::Brocade_responses::CONFIG_MEMBERSHIP_DESTROY_ERROR%[@resource[:member_zone],@resource[:configname],response]
+	elsif (response.include? Puppet::Provider::Brocade_responses::RESPONSE_IS_NOT_IN )
+	  Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_REMOVED_INFO%[@resource[:member_zone],@resource[:configname]])
     else 
       cfg_save
     end
