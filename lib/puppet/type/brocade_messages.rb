@@ -10,4 +10,51 @@ module Puppet::Type::Brocade_messages
 	 
 	 ZONE_NAME_BLANK_ERROR="Unable to perform the operation because the zone name is blank."
 	 ZONE_NAME_SPECIAL_CHAR_ERROR="Unable to perform the operation because the zone name contains special characters."
+	 
+  def empty_value_check(value, error)
+    if value.strip.length == 0
+      raise ArgumentError, error
+    end
+  end
+
+  def special_char_check(value, error)
+    if ( value =~ /[\W]+/ )
+       raise ArgumentError, error
+    end
+  end
+
+  def tokenize_list(value)
+  @token = []
+  @token = value.split(";")
+  @token
+  end
+
+  def member_value_format_check(value)
+    tokenize_list(value)
+    @token.each do |line|
+      item = line.strip
+      if ( item =~ /[:]+/ )
+        member_wwpn_format_check(item, MEMBER_WWPN_INVALID_FORMAT_ERROR)
+      else
+        special_char_check(item, ALIAS_NAME_SPECIAL_CHAR_ERROR)
+      end
+    end
+  end
+
+  def list_special_char_check(value, error)
+    tokenize_list(value)
+    @token.each do |line|
+        item = line.strip
+        special_char_check(item, error)
+	end
+  end
+		
+  def member_wwpn_format_check(item, error)
+    unless item  =~ /^([0-9a-f]{2}:){7}[0-9a-f]{2}$/
+      raise ArgumentError, error
+    end
+  end
+	 
+  module_function :empty_value_check, :special_char_check, :member_value_format_check, :member_wwpn_format_check, :tokenize_list, :list_special_char_check
+
 end

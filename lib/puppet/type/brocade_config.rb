@@ -18,14 +18,9 @@ Puppet::Type.newtype(:brocade_config) do
   newparam(:configname) do
     desc "Config name"
     isnamevar
-    newvalues(/[\w]+/)
     validate do |value|
-      if value.strip.length == 0
-        raise ArgumentError, Puppet::Type::Brocade_messages::CONFIG_NAME_BLANK_ERROR
-      end
-      if ( value =~ /[\W]+/ )      
-        raise ArgumentError, Puppet::Type::Brocade_messages::CONFIG_NAME_SPECIAL_CHAR_ERROR
-      end
+      Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::CONFIG_NAME_BLANK_ERROR)
+      Puppet::Type::Brocade_messages.special_char_check(value, Puppet::Type::Brocade_messages::CONFIG_NAME_SPECIAL_CHAR_ERROR)
     end
   end
 

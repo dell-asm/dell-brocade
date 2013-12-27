@@ -10,24 +10,16 @@ Puppet::Type.newtype(:brocade_alias) do
   newparam(:alias_name) do
     desc "This parameter describes the Brocade alias name for the MemberWWPN."
     isnamevar
-    newvalues(/^\S+$/)
     validate do |value|
-      if value.strip.length == 0
-        raise ArgumentError, Puppet::Type::Brocade_messages::ALIAS_NAME_BLANK_ERROR
-      end
-	  if ( value =~ /[\W]+/ )
-        raise ArgumentError, Puppet::Type::Brocade_messages::ALIAS_NAME_SPECIAL_CHAR_ERROR
-      end
+      Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ALIAS_NAME_BLANK_ERROR)
+	  Puppet::Type::Brocade_messages.special_char_check(value, Puppet::Type::Brocade_messages::ALIAS_NAME_SPECIAL_CHAR_ERROR)
     end
   end
 
   newparam(:member) do
     desc "This parameter describes the MemberWWPN value whose alias is to be added."
-    newvalues(/^\S+$/)
     validate do |value|
-      if value.strip.length == 0
-        raise ArgumentError , Puppet::Type::Brocade_messages::MEMBER_WWPN_BLANK_ERROR
-       end 
+       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::MEMBER_WWPN_BLANK_ERROR)
        value.split(";").each do |line|
         item = line.strip
         unless item  =~ /^([0-9a-f]{2}:){7}[0-9a-f]{2}$/

@@ -18,30 +18,17 @@ Puppet::Type.newtype(:brocade_config_membership) do
   newparam(:configname) do
     desc "Config name"
     isnamevar
-    newvalues(/[\w]+/)
     validate do |value|
-      if value.strip.length == 0
-        raise ArgumentError, Puppet::Type::Brocade_messages::CONFIG_NAME_BLANK_ERROR
-      end
-      if ( value =~ /[\W]+/ )
-        raise ArgumentError, Puppet::Type::Brocade_messages::CONFIG_NAME_SPECIAL_CHAR_ERROR
-      end
+      Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::CONFIG_NAME_BLANK_ERROR)
+      Puppet::Type::Brocade_messages.special_char_check(value, Puppet::Type::Brocade_messages::CONFIG_NAME_SPECIAL_CHAR_ERROR)
     end
   end
 
   newparam(:member_zone) do
     desc "zone added in the config"
-    newvalues(/^\S+$/)
     validate do |value|
-      if value.strip.length == 0
-        raise ArgumentError, Puppet::Type::Brocade_messages::ZONE_NAME_BLANK_ERROR
-      end
-      value.split(";").each do |line|
-        item = line.strip
-        if ( item =~ /[\W]+/ )
-          raise ArgumentError, Puppet::Type::Brocade_messages::ZONE_NAME_SPECIAL_CHAR_ERROR
-        end
-      end
+      Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_BLANK_ERROR)
+      Puppet::Type::Brocade_messages.list_special_char_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_SPECIAL_CHAR_ERROR)
     end
   end
 

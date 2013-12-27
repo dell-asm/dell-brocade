@@ -10,21 +10,15 @@ Puppet::Type.newtype(:brocade_zone_membership) do
   newparam(:zonename) do
     desc "Zone name"
     isnamevar
-    newvalues(/^\S+$/)
     validate do |value|
-      if value.strip.length == 0
-        raise ArgumentError, Puppet::Type::Brocade_messages::ZONE_NAME_BLANK_ERROR
-      end
+      Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_BLANK_ERROR)
     end
   end
 
   newparam(:member) do
     desc "Member Name"
-    newvalues(/^\S+$/)
     validate do |value|
-      if value.strip.length == 0
-        raise ArgumentError, Puppet::Type::Brocade_messages::CONFIG_NAME_BLANK_ERROR
-      end
+      Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ALIAS_NAME_BLANK_ERROR)
     end
   end
 
