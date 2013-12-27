@@ -1,12 +1,23 @@
-require 'puppet/util/network_device/brocade_fos/possible_facts'
-
 module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
+  SWITCHSHOW_HASH = {
+    'Switch Name' => 'switchName'
+  }
+
+def self.register_brocade_param(base, command_val)
+  param_hash = Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base::SWITCHSHOW_HASH
+  param_hash.keys.each do |key|
+    base.register_param key do
+      s = param_hash[key]+ ":" + "\\s+(.*)?"
+      reg = Regexp.new(s)
+      match reg
+      cmd command_val
+    end
+  end
+end
+
   def self.register(base)
-    
-   base.register_param ['Switch Name'] do
-      match /switchName:\s+(.*)?/
-      cmd "switchshow"
-   end
+
+ Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base.register_brocade_param(base,'switchshow')
 
    base.register_param ['Switch State'] do
       match /switchState:\s+(.*)?/
@@ -17,7 +28,7 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
       match /switchDomain:\s+(.*)?/
       cmd "switchshow"
    end
-   
+
    base.register_param ['Switch Wwn'] do
       match /switchWwn:\s+(.*)?/
       cmd "switchshow"
@@ -32,17 +43,17 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
       match /switchBeacon:\s+(.*)?/
       cmd "switchshow"
    end
-   
+
    base.register_param ['Switch Role'] do
       match /switchRole:\s+(.*)?/
       cmd "switchshow"
    end
-   
+
    base.register_param ['Switch Mode'] do
       match /switchMode:\s+(.*)?/
       cmd "switchshow"
    end
-   
+
    base.register_param ['FC Router'] do
       match /FC Router:\s+(.*)?/
       cmd "switchshow"
@@ -101,11 +112,11 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
           item=line.scan(/cfg:\s+(.*)\b\s/)
             item = item.flatten.first
             if item.nil? || item.empty? || item =~ /^\s+$/ || res.has_value?(item) then
-              next 
+              next
             else
-              i=i+1	     
+              i=i+1
               res["Zone_Config_#{i}"]=item
-            end 
+            end
         end
         res
       end
@@ -142,11 +153,11 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
             if item.nil? || item.empty? || item =~ /^\s+$/ then
               next
             else
-              if zonesList.nil? || zonesList.empty? then 
+              if zonesList.nil? || zonesList.empty? then
                 zonesList = zonesList + "#{item}"
-              else 
+              else
                zonesList = zonesList + ",  #{item}"
-             end  
+             end
           end
         end
         zonesList
