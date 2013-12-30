@@ -2,8 +2,7 @@ module Puppet::Provider::Brocade_messages
 
         ZONE_CREATE_DEBUG="Puppet::Provider::brocade_zone: A Brocade zone with zonename: %s, zonemember:  %s is being added."
         ZONE_DESTROY_DEBUG="Puppet::Provider::brocade_zone: A Brocade zone with zonename: %s is being deleted."
-	ZONE_EXISTS_DEBUG="Puppet::Provider::brocade_zone: Verifying whether or not a Brocade zone with zonename: %s exists."
-	CONFIG_DOC="Manage zone config creation, deletion and state change."
+	ZONE_EXISTS_DEBUG="Puppet::Provider::brocade_zone: Verifying whether or not a Brocade zone with zonename: %s exists."	
 	CONFIG_ALREADY_EXIST="Config %s already exists."
 	CONFIG_NO_EFFECTIVE_CONFIG="Could not disable the config as no effective configuration found."
 	CONFIG_DESTORY_DEBUG="Puppet::Provider::brocade_config: The Config %s is being deleted."
@@ -14,9 +13,8 @@ module Puppet::Provider::Brocade_messages
 	CONFIG_CREATE_ERROR="Could not create the config %s because of the following issue: %s"
 	CONFIG_ENABLE_ERROR="Could not enable the config %s because of the following issue: %s"
 	CONFIG_ENABLE_PROMPT="/Do you want to enable/"
-	CONFIG_DISABLE_PROMPT="/Do you want to disable /"
+	CONFIG_DISABLE_PROMPT="/Do you want to disable /"	
 	
-	CONFIG_MEMBERSHIP_DOC="Manage addition and removal of zones to config."
 	CONFIG_MEMBERSHIP_CREATE_DEBUG="Puppet::Provider::brocade_config_membership: Adding Zone(s) %s to Config %s."
 	CONFIG_MEMBERSHIP_CREATE_ERROR="Unable to add the Zone(s) %s to Config %s.Error: %s"
 	CONFIG_MEMBERSHIP_ALREADY_EXIST_INFO="Zone(s) %s already added to Config %s"
@@ -32,4 +30,7 @@ module Puppet::Provider::Brocade_messages
 	ZONE_CREATE_ERROR="Unable to create the Zone %s .Error=%s"
 	ZONE_ALREADY_EXIST_INFO="Zone %s already created"
 	ZONE_ALREADY_REMOVED_INFO="Zone %s already removed"
+	ALIAS_CREATE_DEBUG="Puppet::Provider::brocade_alias: A Brocade alias: %s, for member: %s is being created."
+	ALIAS_DESTROY_DEBUG="Puppet::Provider::brocade_alias: A Brocade alias: %s is being deleted."
+	ALIAS_EXIST_DEBUG="Puppet::Provider::brocade_alias: Verifying whether or not the Brocade alias: %s exists."
 end

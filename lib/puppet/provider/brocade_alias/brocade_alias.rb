@@ -1,6 +1,6 @@
 require 'puppet/provider/brocade_fos'
 require 'puppet/provider/brocade_responses'
-
+require 'puppet/provider/brocade_messages'
 
 Puppet::Type.type(:brocade_alias).provide(:brocade_alias, :parent => Puppet::Provider::Brocade_fos) do
   @doc = "Manage brocade alias creation and deletion."
@@ -9,7 +9,7 @@ Puppet::Type.type(:brocade_alias).provide(:brocade_alias, :parent => Puppet::Pro
 
 
  def create
-    Puppet.debug("Puppet::Provider::brocade_alias: A Brocade alias: #{@resource[:alias_name]}, for member: #{@resource[:member]} is being created.")
+    Puppet.debug(Puppet::Provider::Brocade_messages::ALIAS_CREATE_DEBUG%[@resource[:alias_name],@resource[:member]])
     response = @transport.command("alicreate #{@resource[:alias_name]}, \"#{@resource[:member]}\"", :noop => false)
     if !response.include? Puppet::Provider::Brocade_responses::RESPONSE_DUPLICATE_NAME
       cfg_save
@@ -17,7 +17,7 @@ Puppet::Type.type(:brocade_alias).provide(:brocade_alias, :parent => Puppet::Pro
   end
 
   def destroy
-    Puppet.debug("Puppet::Provider::brocade_alias: A Brocade alias: #{@resource[:alias_name]} is being deleted.")
+    Puppet.debug(Puppet::Provider::Brocade_messages::ALIAS_DESTROY_DEBUG%[@resource[:alias_name]])
     response = @transport.command("alidelete  #{@resource[:alias_name]}", :noop => false)
     if !response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND
        cfg_save
@@ -25,7 +25,7 @@ Puppet::Type.type(:brocade_alias).provide(:brocade_alias, :parent => Puppet::Pro
   end
 
   def exists?
-    Puppet.debug("Puppet::Provider::brocade_alias: Verifying whether or not the Brocade alias: #{@resource[:alias_name]} exists.")
+    Puppet.debug(Puppet::Provider::Brocade_messages::ALIAS_EXIST_DEBUG%[@resource[:alias_name]])
     self.device_transport
     response = @transport.command("alishow #{@resource[:alias_name]}", :noop => false)
     if !response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST

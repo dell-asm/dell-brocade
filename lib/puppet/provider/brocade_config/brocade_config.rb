@@ -3,7 +3,7 @@ require 'puppet/provider/brocade_responses'
 require 'puppet/provider/brocade_messages'
 
 Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::Provider::Brocade_fos) do
-  @doc = Puppet::Provider::Brocade_messages::CONFIG_DOC
+  @doc = "Manage zone config creation, deletion and state change."
   mk_resource_methods
 
   def create    
