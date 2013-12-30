@@ -36,12 +36,12 @@ Puppet::Type.type(:brocade_zone_membership).provide(:brocade_zone_membership, :p
   mk_resource_methods
 
 	def create
-    Puppet.debug(Puppet::Provider::Brocade_messages::ZONE_MEMBERSHIP_CREATE_DEBUG%[@resource[:member],@resource[:zonename]])
+    Puppet.debug(Puppet::Provider::Brocade_messages::ZONE_MEMBERSHIP_CREATE_DEBUG%[@resource[:zonename],@resource[:member]])
 		create_local
 	end 
 
     def destroy
-    Puppet.debug(Puppet::Provider::Brocade_messages::ZONE_MEMBERSHIP_DESTROY_DEBUG%[@resource[:member],@resource[:zonename]])
+    Puppet.debug(Puppet::Provider::Brocade_messages::ZONE_MEMBERSHIP_DESTROY_DEBUG%[@resource[:zonename],@resource[:member]])
 		destroy_local
 	end
 
