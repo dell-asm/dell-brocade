@@ -1,103 +1,61 @@
 module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
   SWITCHSHOW_HASH = {
-    'Switch Name' => 'switchName'
+    'Switch Name' => 'switchName',
+	  'Switch State' => 'switchState',
+	  'Switch Domain' => 'switchDomain',
+	  'Switch Wwn' => 'switchWwn',
+	  'Zone Config' => 'zoning',
+	  'Switch Beacon' => 'switchBeacon',
+	  'Switch Role' => 'switchRole',
+	  'Switch Mode' => 'switchMode',
+	  'FC Router' => 'FC Router',
+	  'FC Router BB Fabric ID' => 'FC Router BB Fabric ID'	
   }
+  CHASISSSHOW_HASH = {
+     'Switch Name' => 'Serial Num',
+     'Switch State' => 'Factory Serial Num'    
+   }
+   
+  HADUMP_HASH = {
+       'Ethernet IP Address' => 'Ethernet IP Address',
+       'Ethernet Subnetmask' => 'Ethernet Subnetmask',
+       'Gateway IP Address' => 'Gateway IP Address'   
+     }
 
-def self.register_brocade_param(base, command_val)
-  param_hash = Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base::SWITCHSHOW_HASH
-  param_hash.keys.each do |key|
-    base.register_param key do
-      s = param_hash[key]+ ":" + "\\s+(.*)?"
-      reg = Regexp.new(s)
-      match reg
-      cmd command_val
+  def self.register_brocade_param(base, command_val, hash_name)
+  param_hash = hash_name
+    param_hash.keys.each do |key|
+      base.register_param key do
+        s = param_hash[key]+ ":" + "\\s+(.*)?"
+        reg = Regexp.new(s)
+        match reg
+        cmd command_val
+      end
     end
   end
-end
 
   def self.register(base)
+  
+    #Register facts for switchshow command	  
+    Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base.register_brocade_param(base,'switchshow',SWITCHSHOW_HASH) 
 
- Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base.register_brocade_param(base,'switchshow')
+    #Register facts for chassisshow command	  
+    Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base.register_brocade_param(base,'chassisshow',CHASISSSHOW_HASH)
 
-   base.register_param ['Switch State'] do
-      match /switchState:\s+(.*)?/
-      cmd "switchshow"
-   end
+    #Register facts for hadump command	  
+    Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base.register_brocade_param(base,'hadump',HADUMP_HASH)
 
-   base.register_param ['Switch Domain'] do
-      match /switchDomain:\s+(.*)?/
-      cmd "switchshow"
-   end
-
-   base.register_param ['Switch Wwn'] do
-      match /switchWwn:\s+(.*)?/
-      cmd "switchshow"
-   end
-
-   base.register_param ['Zone Config'] do
-      match /zoning:\s+(.*)?/
-      cmd "switchshow"
-   end
-
-   base.register_param ['Switch Beacon'] do
-      match /switchBeacon:\s+(.*)?/
-      cmd "switchshow"
-   end
-
-   base.register_param ['Switch Role'] do
-      match /switchRole:\s+(.*)?/
-      cmd "switchshow"
-   end
-
-   base.register_param ['Switch Mode'] do
-      match /switchMode:\s+(.*)?/
-      cmd "switchshow"
-   end
-
-   base.register_param ['FC Router'] do
-      match /FC Router:\s+(.*)?/
-      cmd "switchshow"
-   end
-
-   base.register_param ['FC Router BB Fabric ID'] do
-      match /FC Router BB Fabric ID:\s+(.*)?/
-      cmd "switchshow"
-   end
-
-   base.register_param ['FC Ports'] do
+    base.register_param ['FC Ports'] do
       match /FC ports =\s+(.*)?/
-      cmd "switchshow -portcount"
-   end
+      cmd "switchshow -portcount"   
+    end
 
-   base.register_param ['Switch Health Status'] do
+    base.register_param ['Switch Health Status'] do
       match /SwitchState:\s+(.*)?/
       cmd "switchstatusshow"
-   end
-
-   base.register_param ['Serial Number'] do
-      match /Serial Num:\s+(.*)?/
-      cmd "chassisshow"
-   end
-
-   base.register_param ['Factory Serial Number'] do
-      match /Factory Serial Num:\s+(.*)?/
-      cmd "chassisshow"
-   end
-
-   base.register_param ['Ethernet IP Address'] do
-      match /Ethernet IP Address:\s+(.*)?/
-      cmd "hadump"
-   end
-
-   base.register_param ['Ethernet Subnetmask'] do
-      match /Ethernet Subnetmask:\s+(.*)?/
-      cmd "hadump"
-   end
-
-   base.register_param ['Gateway IP Address'] do
-      match /Gateway IP Address:\s+(.*)?/
-      cmd "hadump"
-   end
+    end
+  
+   
 
    base.register_param ['Fabric Os'] do
       match /OS:\s+(.*)?/
@@ -185,7 +143,5 @@ end
       end
       cmd "zoneshow"
    end
-
-
   end
 end
