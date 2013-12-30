@@ -20,8 +20,7 @@ Puppet::Type.newtype(:brocade_zone_membership) do
     desc "This parameter describes the member node to be added in the zone"
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ALIAS_NAME_BLANK_ERROR)
-	  Puppet::Type::Brocade_messages.tokenize_list(value).each do |line|
-        Puppet::Type::Brocade_messages.member_wwpn_format_check(line.strip, Puppet::Type::Brocade_messages::MEMBER_WWPN_INVALID_FORMAT_ERROR) 
+	  Puppet::Type::Brocade_messages.member_value_format_check(value)
       end		
     end
   end
