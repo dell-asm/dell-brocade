@@ -53,8 +53,8 @@ class Puppet::Util::NetworkDevice::Base_fos
 
   def update_transport_for_uncrypted_url
     @transport.user = @url.user
-    @transport.password = @url.password
-
+    #@transport.password = @url.password
+    @transport.password = URI.decode(@url.password)
   end
 
   private
