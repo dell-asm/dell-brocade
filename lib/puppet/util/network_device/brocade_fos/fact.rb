@@ -1,3 +1,4 @@
+#This class provides generic method to parse the fact from command output
 require 'puppet/util/network_device/brocade_fos'
 require 'puppet/util/network_device/value_helper'
 

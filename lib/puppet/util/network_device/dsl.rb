@@ -1,3 +1,4 @@
+#This module provides various methods to register facts. It overrides retrieve method.
 require 'puppet/util/network_device'
 require 'puppet/util/network_device/sorter'
 

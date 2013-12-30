@@ -1,3 +1,4 @@
+#Lookup class which helps in registering the facts and retrieving the fact values
 require 'puppet/util/network_device/brocade_fos'
 require 'puppet/util/network_device/brocade_fos/fact'
 require 'puppet/util/network_device/brocade_fos/possible_facts'

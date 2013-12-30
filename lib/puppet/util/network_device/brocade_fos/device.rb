@@ -1,3 +1,4 @@
+#This class is called by the puppet framework for retrieving the facts. It retrieves the facts and initialize the switch variables.
 require 'puppet'
 require 'puppet/util'
 require 'puppet/util/network_device/base_fos'

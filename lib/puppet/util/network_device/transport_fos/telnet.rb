@@ -1,3 +1,4 @@
+#This class handles Telnet specific transport for brocade switch
 require 'puppet/util/network_device'
 require 'puppet/util/network_device/transport_fos'
 require 'puppet/util/network_device/transport_fos/base_fos'
