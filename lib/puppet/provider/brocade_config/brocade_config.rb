@@ -23,7 +23,7 @@ require 'puppet/provider/brocade_messages'
   def process_config_creation 
     Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_CREATE_DEBUG%[@resource[:configname],resource[:member_zone]])
     response =  @transport.command("cfgcreate  #{@resource[:configname]},  \"#{@resource[:member_zone]}\"", :noop => false)
-    if (!response.include? Puppet::Provider::Brocade_responses::RESPONSE_INVALID) 
+    if !((response.include? Puppet::Provider::Brocade_responses::RESPONSE_INVALID)||(response.include? Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG ))
       cfg_save
     else
       raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_CREATE_ERROR%[@resource[:configname],response]
@@ -43,7 +43,7 @@ require 'puppet/provider/brocade_messages'
     response = @transport.command("cfgActvShow", :noop => false)
     if ( !response.include? Puppet::Provider::Brocade_responses::RESPONSE_NO_EFFECTIVE_CONFIG )
       Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_DISABLE_DEBUG)
-      @transport.command("cfgDisable", :prompt => 'Puppet::Provider::Brocade_messages::CONFIG_DISABLE_PROMPT')
+      @transport.command("cfgDisable", :prompt => Puppet::Provider::Brocade_messages::CONFIG_DISABLE_PROMPT)
       @transport.command("yes", :noop => false)
     else
       Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_NO_EFFECTIVE_CONFIG)
