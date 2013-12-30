@@ -5,16 +5,8 @@ Puppet::Type.newtype(:brocade_config) do
 
   apply_to_device
 
-  ensurable do 
-    desc "Config ensure property"
-    newvalue(:present) do
-      provider.create
-    end
-    newvalue(:absent) do 
-      provider.destroy
-    end
-  end
-
+  ensurable 
+ 
   newparam(:configname) do
     desc "This parameter describes the config name on Brocade"
     isnamevar
@@ -26,7 +18,11 @@ Puppet::Type.newtype(:brocade_config) do
 
   newparam(:member_zone) do
     desc "This parameter describes the zone in the config"
-    #newvalues(/^\S+$/)
+    validate do |value|
+      Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_BLANK_ERROR)
+	  Puppet::Type::Brocade_messages.list_special_char_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_SPECIAL_CHAR_ERROR)
+      end		
+    end
   end
 
   newproperty(:configstate) do

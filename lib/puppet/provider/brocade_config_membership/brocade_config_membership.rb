@@ -1,6 +1,6 @@
 require 'puppet/provider/brocade_fos'
 require 'puppet/provider/brocade_responses'
-
+require 'puppet/provider/brocade_messages'
 
 Puppet::Type.type(:brocade_config_membership).provide(:brocade_config_membership, :parent => Puppet::Provider::Brocade_fos) do
   @doc = Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_DOC

@@ -5,15 +5,7 @@ Puppet::Type.newtype(:brocade_config_membership) do
 
   apply_to_device
 
-  ensurable do
-    desc "Config zone addition, removal ensure property."
-    newvalue(:present) do
-      provider.create
-    end
-    newvalue(:absent) do
-      provider.destroy
-    end
-  end
+  ensurable 
 
   newparam(:configname) do
     desc "This parameter describes the config name on Brocade"
