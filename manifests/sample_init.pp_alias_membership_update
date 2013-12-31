@@ -12,9 +12,8 @@
 #
 # [Remember: No empty lines between comments and class definition]
 class brocade {
-  brocade_alias { 'Demotitle':
-	alias_name   => 'Demoname',
-    ensure	   => 'present',
-    member 	   => '50:00:d3:10:00:5e:c4:35'
+  brocade_alias_membership { 'DemoAlias' :
+  ensure	 => 'present',
+  member 	 => '00:09:08:07:06:05:04:03'
   }
 }

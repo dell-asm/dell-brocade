@@ -22,6 +22,7 @@ However, this module may be compatible with other versions.
 This module supports the following functionality:
 
  * Alias creation and deletion.
+ * Addition and Removal of Members from alias.
  * Zone creation and deletion.
  * Addition and Removal of Members from zones.
  * Config creation and deletion.

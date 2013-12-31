@@ -1,6 +1,6 @@
 # Class: brocade
 #
-# This module manages compellent
+# This module manages brocade switch
 #
 # Parameters:
 #
