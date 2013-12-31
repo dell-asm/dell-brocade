@@ -24,7 +24,7 @@ module Puppet::Provider::Brocade_messages
     ZONE_MEMBERSHIP_CREATE_DEBUG="Puppet::Provider::brocade_zone_membership: A zone member with the zonename: %s and zonemember: %s is being added to the zone"
     ZONE_MEMBERSHIP_CREATE_ERROR="Unable to add member %s to zone %s because of the following issue: %s"
     ZONE_MEMBERSHIP_ALREADY_EXIST_INFO="Member(s) %s already added to Zone %s"
-    ZONE_MEMBERSHIP_DESTROY_DEBUG="Puppet::Provider::brocade_config_membership: A zone member with the zonename: %s and  zonemember: %s is being removed from the zone"
+    ZONE_MEMBERSHIP_DESTROY_DEBUG="Puppet::Provider::brocade_zone_membership: A zone member with the zonename: %s and  zonemember: %s is being removed from the zone"
     ZONE_MEMBERSHIP_ALREADY_REMOVED_INFO="Member(s) %s already removed from Zone %s"
     ZONE_MEMBERSHIP_DESTROY_ERROR="Unable to remove the Member(s) %s from Zone %s Error: %s"
 	ZONE_CREATE_ERROR="Unable to create the Zone %s .Error=%s"

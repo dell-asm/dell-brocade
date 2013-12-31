@@ -16,7 +16,7 @@ Puppet::Type.type(:brocade_alias).provide(:brocade_alias, :parent => Puppet::Pro
 	elsif(response.include? Puppet::Provider::Brocade_responses::RESPONSE_DUPLICATE_NAME)
 	  Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_ALREADY_EXIST_INFO%[@resource[:alias_name]])
 	else
-	  raise Puppet::Error, Puppet::Provider::Brocade_messages::ALIAS_CREATE_ERROR %[@resource[:alias_name],response]
+	  raise Puppet::Error, Puppet::Provider::Brocade_messages::ALIAS_CREATE_ERROR%[@resource[:alias_name],response]
     end
   end
 
