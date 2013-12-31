@@ -1,6 +1,6 @@
 module Puppet::Provider::Brocade_messages
 
-    ZONE_CREATE_DEBUG="Puppet::Provider::brocade_zone: A Brocade zone with zonename: %s, zonemember:  %s is being added."
+    ZONE_CREATE_DEBUG="Puppet::Provider::brocade_zone: A Brocade zone with zonename: %s, zonemember:  %s is being created."
     ZONE_DESTROY_DEBUG="Puppet::Provider::brocade_zone: A Brocade zone with zonename: %s is being deleted."
 	ZONE_EXISTS_DEBUG="Puppet::Provider::brocade_zone: Verifying whether or not a Brocade zone with zonename: %s exists."	
 	CONFIG_ALREADY_EXIST="Config %s already exists."
