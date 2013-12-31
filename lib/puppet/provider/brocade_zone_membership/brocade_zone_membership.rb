@@ -6,7 +6,7 @@ def check_error_cond(response)
 return ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND ) || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_INVALID)  || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
 end
 
-  def create_local
+  def create_zone_membership
     response = String.new("")
     response = @transport.command("zoneadd #{@resource[:zonename]},\"#{@resource[:member]}\"", :noop => false)
     if check_error_cond(response)
@@ -18,7 +18,7 @@ end
     end
   end
 
-  def destroy_local
+  def destroy_zone_membership
     response = String.new("")
     response =  @transport.command("zoneremove #{@resource[:zonename]},\"#{@resource[:member]}\"", :noop => false)
     if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST) || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND )
@@ -37,12 +37,12 @@ Puppet::Type.type(:brocade_zone_membership).provide(:brocade_zone_membership, :p
 
 	def create
     Puppet.debug(Puppet::Provider::Brocade_messages::ZONE_MEMBERSHIP_CREATE_DEBUG%[@resource[:zonename],@resource[:member]])
-		create_local
+		create_zone_membership
 	end 
 
     def destroy
     Puppet.debug(Puppet::Provider::Brocade_messages::ZONE_MEMBERSHIP_DESTROY_DEBUG%[@resource[:zonename],@resource[:member]])
-		destroy_local
+		destroy_zone_membership
 	end
 
   def exists?

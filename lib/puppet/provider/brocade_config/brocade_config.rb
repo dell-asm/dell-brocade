@@ -2,7 +2,7 @@ require 'puppet/provider/brocade_fos'
 require 'puppet/provider/brocade_responses'
 require 'puppet/provider/brocade_messages'
 
-  def create_local
+  def create_config
     response = @transport.command("cfgshow #{@resource[:configname]}", :noop => false)
     if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST )
       process_config_creation
@@ -50,7 +50,7 @@ require 'puppet/provider/brocade_messages'
     end
   end
 
-  def destroy_local
+  def destroy_config
     Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_DESTORY_DEBUG%[@resource[:configname]])
     response = @transport.command("cfgdelete  #{@resource[:configname]}", :noop => false)
     if (!response.include? Puppet::Provider::Brocade_responses::RESPONSE_SHOULD_NOT_BE_DELETED ) && (!response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND )
@@ -66,13 +66,13 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
   mk_resource_methods
 
   def create    
-	create_local
+	create_config
   end
 
 
   def destroy
     Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_DESTORY_DEBUG%[@resource[:configname]])
-	destroy_local
+	destroy_config
   end
 
   def exists?
