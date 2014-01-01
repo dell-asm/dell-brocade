@@ -2,10 +2,10 @@
 # Access Mechanism 
 # --------------------------------------------------------------------------
 
-The Brocade switch module uses the ssh protocol to interact with the brocade switch device.
+  The Brocade switch module uses the SSH protocol to interact with the Brocade switches.
 
 # --------------------------------------------------------------------------
-#  Supported Functionality
+# Supported Functionality
 # --------------------------------------------------------------------------
 
 	- Add zone to config
@@ -18,29 +18,29 @@ The Brocade switch module uses the ssh protocol to interact with the brocade swi
 
   1. Add zone to config
 
-     This method adds zone or zone list(semicolon separated) to the config as per the parameter(member_zone) specified in the definition.	 
+     This method adds zone or zone list, separated by semicolons (;), to the config as per the parameter (member_zone) specified in the definition.	 
    
   2. Remove zone from config
 
-     This method removes zone or zone list(semicolon separated) from the config as per the parameter(member_zone) specified in the definition.	 
+     This method removes zone or zone list, separated by semicolons (;), from the config as per the parameter (member_zone) specified in the definition.	 
 	 
 
 # -------------------------------------------------------------------------
-# Summary of parameters.
+# Summary of Parameters
 # -------------------------------------------------------------------------
 
-    configname: (Required) This parameter defines the name of the config to which zone(s) to be added/destroyed.
+    configname: (Required) This parameter defines the name of the config to which zones to be added or destroyed.
 
-	ensure: (Required) This parameter is required to call the add or remove method.
-    Possible values: present/absent
-    If the value of the ensure parameter is set to present, the module calls the create method.
-    If the value of the ensure parameter is set to absent, the modules calls the destroy method.
+	ensure: (Required) This parameter is required to call the 'Add zone to config' or 'Remove zone from config' method.
+            The possible values are: "present" and "absent"
+            If the 'ensure' parameter is set to present, the module calls the 'Add zone to config' method.
+            If the 'ensure' parameter is set to absent, the modules calls the 'Remove zone from config' method.
 
-    member_zone: (Required) This parameter defines semicolon(;) separated list of zones to be added or removed from config.
+    member_zone: (Required) This parameter defines the zones, separated by semicolons(;), to be added or removed from config.
     
 
 # -------------------------------------------------------------------------
-# Parameter signature 
+# Parameter Signature 
 # -------------------------------------------------------------------------
 
 #Provide brocade_zone type properties in *.pp manifest file
@@ -55,9 +55,9 @@ The Brocade switch module uses the ssh protocol to interact with the brocade swi
 # Usage
 # --------------------------------------------------------------------------
    Refer to the examples in the manifest directory.
-   The following files capture the details for the sample init.pp and supported files:
+   The following file capture the details for the sample init.pp and supported files:
 
-    - sample_config_membership.pp
+    - sample_init.pp_config_membership_update
     
    A user can create an init.pp file based on the above sample files and call the "puppet device" command , for example: 
    # puppet device

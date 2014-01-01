@@ -13,6 +13,7 @@
 # [Remember: No empty lines between comments and class definition]
 class brocade {
   brocade_config { 'Democonfig' :
+	configname  => 'Democonfig',
 	member_zone   => 'Demozone',
     ensure	   => 'present',
     configstate	=> 'disable'

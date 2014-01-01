@@ -2,7 +2,7 @@
 # Access Mechanism 
 # --------------------------------------------------------------------------
 
-The Brocade switch module uses the ssh protocol to interact with the brocade switch device.
+  The Brocade switch module uses the SSH protocol to interact with the Brocade switches.
 
 # --------------------------------------------------------------------------
 #  Supported Functionality
@@ -20,44 +20,46 @@ The Brocade switch module uses the ssh protocol to interact with the brocade swi
 
   1. Create Config
 
-     The create method creates the zone config as per the parameter(config name) specified in the definition.	 
+     This method creates the zone config as per the parameter(config name) specified in the definition.	 
    
   2. Delete Config
 
-     The delete method deletes the zone config from the brocade switch device. 	 
+     This method deletes the zone config from the Brocade switch. 	 
 
   3. Activate Config
 
-     The activate method enables the zone config on the brocade switch device. 	
+     This method enables the zone config on the Brocade switch. 	
 	 
   4. De-activate Config
 
-     The deactivate method disables the zone config on the brocade switch device. 	 
+     This method disables the zone config on the Brocade switch. 	 
 
 # -------------------------------------------------------------------------
-# Summary of parameters.
+# Summary of Parameters
 # -------------------------------------------------------------------------
 
-    configname: (Required) This parameter defines the name of the zone config that needs to be created/deleted.
+    configname: (Required) This parameter defines the name of the zone config that needs to be created or deleted.
 
-	ensure: (Required) This parameter is required to call the create or delete method.
-    Possible values: present/absent
-    If the value of the ensure parameter is set to present, the module calls the create method.
-    If the value of the ensure parameter is set to absent, the modules calls the destroy method.
+	ensure: (Required) This parameter is required to call the 'Create Config' or 'Delete Config' method.
+            The possible values are: "present" and "absent"
+            If the 'ensure' parameter is set to present, the module calls the 'Create Config' method.
+            If the 'ensure' parameter is set to absent, the module calls the 'Delete Config' method.
 
-    member_zone: If present, this parameter specifies the semicolon(;) separated list of zone(s) es to be added to the config. 
+    member_zone: If present, this parameter defines the list of zones, separated by semicolons(;), to be added to the config. 
 	
-	configstate: If present, this parameter specifies activate or deactivate the specified zone config. Valid values are enable/disable. 
-	Config state can be updated only when 'ensure' property is 'present'.
+	configstate: If present, this parameter activates or deactivates the specified zone config. 
+	             The possible values are: "enable" and "disable" 
+	             The Config state can be updated only when 'ensure' parameter is set to "present".
     
 
 # -------------------------------------------------------------------------
-# Parameter signature 
+# Parameter Signature 
 # -------------------------------------------------------------------------
 
 #Provide brocade_config type properties in *.pp manifest file
 
-  brocade_config { 'Democonfig:
+ brocade_config { 'Democonfig' :
+	configname  => 'Democonfig',
 	member_zone   => 'Demozone',
     ensure	   => 'present',
     configstate	=> 'disable'
@@ -67,9 +69,9 @@ The Brocade switch module uses the ssh protocol to interact with the brocade swi
 # Usage
 # --------------------------------------------------------------------------
    Refer to the examples in the manifest directory.
-   The following files capture the details for the sample init.pp and supported files:
+   The following file contains the details of the sample init.pp and supported files:
 
-    - sample_brocade_config.pp
+    - sample_init.pp_config
     
    A user can create an init.pp file based on the above sample files and call the "puppet device" command , for example: 
    # puppet device

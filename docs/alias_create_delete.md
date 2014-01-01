@@ -2,14 +2,14 @@
 # Access Mechanism 
 # --------------------------------------------------------------------------
 
-The Brocade switch module uses the ssh protocol to interact with the brocade switch device.
+  The Brocade switch module uses the SSH protocol to interact with the Brocade switches.
 
 # --------------------------------------------------------------------------
 #  Supported Functionality
 # --------------------------------------------------------------------------
 
-	- Create Alias
-	- Delete Alias
+  - Create Alias
+  - Delete Alias
 
 # -------------------------------------------------------------------------
 # Functionality Description
@@ -18,29 +18,29 @@ The Brocade switch module uses the ssh protocol to interact with the brocade swi
 
   1. Create Alias
 
-     The create method creates the alias as per the parameter(alias_name) specified in the definition.	 
+     This method creates the alias as per the parameter (alias_name) specified in the definition.	 
    
   2. Delete Alias
 
-     The delete method deletes the alias from the brocade switch device. 	 
+     This method deletes the alias from the Brocade switch. 	 
 
 
 # -------------------------------------------------------------------------
-# Summary of parameters.
+# Summary of Parameters
 # -------------------------------------------------------------------------
 
-    alias_name: (Required) This parameter defines the name of the alias that needs to be created/destroyed.
+    alias_name: (Required) This parameter defines the name of the alias that needs to be created or destroyed.
 
-	ensure: (Required) This parameter is required to call the create or destroy method.
-    Possible values: present/absent
-    If the value of the ensure parameter is set to present, the module calls the create method.
-    If the value of the ensure parameter is set to absent, the modules calls the destroy method.
+	ensure: (Required) This parameter is required to call the 'Create Alias' or 'Delete Alias' method.
+            The possible values are: "present" or "absent"
+            If the 'ensure' parameter is set to "present", the module calls the 'Create Alias' method.
+            If the 'ensure' parameter is set to "absent", the module calls the 'Delete Alias' method.
 
-    member: (Required) This parameter specifies the memberWWPN of the nodes to be added to the alias. To specify a MemberWWPN, use XX:XX:XX:XX:XX:XX:XX:XX.
+    member: (Required) This parameter defines the memberWWPN of the nodes to be added to the alias. To specify a MemberWWPN, use the format: XX:XX:XX:XX:XX:XX:XX:XX.
     
 
 # -------------------------------------------------------------------------
-# Parameter signature 
+# Parameter Signature 
 # -------------------------------------------------------------------------
 
 #Provide brocade_alias type properties in *.pp manifest file
@@ -55,9 +55,9 @@ The Brocade switch module uses the ssh protocol to interact with the brocade swi
 # Usage
 # --------------------------------------------------------------------------
    Refer to the examples in the manifest directory.
-   The following files capture the details for the sample init.pp and supported files:
+   The following file contains the details of the sample init.pp and supported files:
 
-    - sample_alias.pp
+    - sample_init.pp_alias
     
    A user can create an init.pp file based on the above sample files and call the "puppet device" command , for example: 
    # puppet device
