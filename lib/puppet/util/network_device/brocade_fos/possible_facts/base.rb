@@ -12,8 +12,8 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
 	  'FC Router BB Fabric ID' => 'FC Router BB Fabric ID'	
   }
   CHASISSSHOW_HASH = {
-     'Switch Name' => 'Serial Num',
-     'Switch State' => 'Factory Serial Num'    
+     'Serial Number' => 'Serial Num',
+     'Factory Serial Number' => 'Factory Serial Num'    
    }
    
   HADUMP_HASH = {
