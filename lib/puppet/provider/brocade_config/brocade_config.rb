@@ -6,7 +6,7 @@ require 'puppet/provider/brocade_messages'
     response = @transport.command("cfgshow #{@resource[:configname]}", :noop => false)
     if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST )
       process_config_creation
-	else
+    else
       Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_ALREADY_EXIST%[@resource[:configname]])
     end	
     process_config_state
@@ -61,27 +61,25 @@ require 'puppet/provider/brocade_messages'
   end
 
 
-Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::Provider::Brocade_fos) do
-  @doc = "Manage zone config creation, deletion and state change."
-  mk_resource_methods
+  Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::Provider::Brocade_fos) do
+    @doc = "Manage zone config creation, deletion and state change."
+    mk_resource_methods
 
-  def create    
-	create_config
-  end
+    def create    
+      create_config
+    end
 
+    def destroy
+      Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_DESTORY_DEBUG%[@resource[:configname]])
+      destroy_config
+    end
 
-  def destroy
-    Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_DESTORY_DEBUG%[@resource[:configname]])
-	destroy_config
-  end
-
-  def exists?
-    self.device_transport
-    if "#{@resource[:ensure]}" == "present" 
-      false
-    else
-      true
+    def exists?
+      self.device_transport
+      if "#{@resource[:ensure]}" == "present" 
+        false
+      else
+        true
+      end
     end
   end
-
-end
