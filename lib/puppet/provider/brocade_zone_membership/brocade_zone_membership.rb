@@ -1,9 +1,10 @@
 require 'puppet/provider/brocade_fos'
+require 'puppet/provider/brocade_fos'
 require 'puppet/provider/brocade_responses'
 require 'puppet/provider/brocade_messages'
 
 def check_error_cond(response)
-return ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND ) || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_INVALID)  || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
+return ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND ) || ( response.downcase.include? (Puppet::Provider::Brocade_responses::RESPONSE_INVALID).downcase)  || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
 end
 
   def create_zone_membership

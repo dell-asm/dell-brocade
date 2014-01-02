@@ -23,7 +23,7 @@ require 'puppet/provider/brocade_messages'
   def process_config_creation 
     Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_CREATE_DEBUG%[@resource[:configname],resource[:member_zone]])
     response =  @transport.command("cfgcreate  #{@resource[:configname]},  \"#{@resource[:member_zone]}\"", :noop => false)
-    if !((response.include? Puppet::Provider::Brocade_responses::RESPONSE_INVALID)||(response.include? Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG ))
+    if !((response.downcase.include? (Puppet::Provider::Brocade_responses::RESPONSE_INVALID).downcase)||(response.include? Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG ))
       cfg_save
     else
       raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_CREATE_ERROR%[@resource[:configname],response]

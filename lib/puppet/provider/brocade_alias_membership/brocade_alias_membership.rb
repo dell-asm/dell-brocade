@@ -11,7 +11,7 @@ Puppet::Type.type(:brocade_alias_membership).provide(:brocade_alias_membership, 
  def create
     Puppet.debug(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_CREATE_DEBUG%[@resource[:member],@resource[:alias_name]])
     response = @transport.command("aliadd #{@resource[:alias_name]}, \"#{@resource[:member]}\"", :noop => false)
-	if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND ) || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_INVALID) 
+	if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND ) || ( response.downcase.include? (Puppet::Provider::Brocade_responses::RESPONSE_INVALID).downcase) 
       raise Puppet::Error, Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_CREATE_ERROR%[@resource[:member],@resource[:alias_name],response]
     elsif response.include? Puppet::Provider::Brocade_responses::RESPONSE_ALREADY_CONTAINS
       Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_EXIST_INFO%[@resource[:member],@resource[:alias_name]])
