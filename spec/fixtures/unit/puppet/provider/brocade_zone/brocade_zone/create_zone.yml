@@ -1,0 +1,4 @@
+CreateZone1:
+  zonename: NewZone1
+  member: wwpn1
+ensure: present
