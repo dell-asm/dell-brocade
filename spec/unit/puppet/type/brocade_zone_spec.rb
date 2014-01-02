@@ -6,7 +6,8 @@ describe Puppet::Type.type(:brocade_zone) do
   context 'should compile with given test params' do
     let(:params) { {
         :zonename   => 'Demoname',
-        :member   => 'DemoAlias',
+        :member   => 'DemoAlias;50:00:d3:10:00:5e:c4:0d',
+		:ensure   => 'present',
       }}
     it do
       expect {
