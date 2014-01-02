@@ -23,7 +23,7 @@ Puppet::Type.type(:brocade_alias_membership).provide(:brocade_alias_membership, 
   def destroy
     Puppet.debug(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_DESTROY_DEBUG%[@resource[:member],@resource[:alias_name]])
     response =  @transport.command("aliremove #{@resource[:alias_name]},\"#{@resource[:member]}\"", :noop => false)
-    if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
+    if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST) || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
       raise Puppet::Error, Puppet::Provider::Brocade_responses::ALIAS_MEMBERSHIP_DESTROY_ERROR%[@resource[:member],@resource[:alias_name],response]
 	elsif (response.include? Puppet::Provider::Brocade_responses::RESPONSE_IS_NOT_IN )
 	  Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_REMOVED_INFO%[@resource[:member],@resource[:alias_name]])

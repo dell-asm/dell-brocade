@@ -55,7 +55,9 @@ require 'puppet/provider/brocade_messages'
     response = @transport.command("cfgdelete  #{@resource[:configname]}", :noop => false)
     if (!response.include? Puppet::Provider::Brocade_responses::RESPONSE_SHOULD_NOT_BE_DELETED ) && (!response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND )
       cfg_save
-    else
+    elsif (response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
+	  Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_ALREADY_REMOVED_INFO%[@resource[:configname]])
+	else
       raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_DESTROY_ERROR%[@resource[:configname],response]
     end
   end
