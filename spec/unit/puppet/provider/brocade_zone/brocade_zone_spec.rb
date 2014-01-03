@@ -40,7 +40,6 @@ describe Puppet::Type.type(:brocade_zone).provider(:brocade_zone) do
     #provider_object.instance_variable_set(:@transport, dummy_transport)
     provider_object.resource= dummy_resource
     provider_object.transport= dummy_transport
-    provider_object.instance_variable_set(:@transport, dummy_transport)
  dummy_transport.should_receive(:command).once.with(provider_object.get_Create_Brocade_Zone_Command,ops_hash).and_return (Puppet::Provider::Brocade_responses::RESPONSE_INVALID)
    
    expect {provider_object.create}.to raise_error(Puppet::Error)
