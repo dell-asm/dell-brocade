@@ -2,46 +2,26 @@
 
 require 'spec_helper'
 require 'yaml'
-require 'puppet/provider/equallogic'
-require 'puppet/util/network_device/equallogic/device'
+require 'puppet/provider/brocade_fos'
+require 'puppet/util/network_device/brocade_fos/device'
+require 'puppet/util/network_device/base_fos'
 
 describe Puppet::Type.type(:brocade_zone).provider(:brocade_zone) do
-
-  device_conf =  YAML.load_file(my_deviceurl('brocade','device_conf.yml'))
-  before :each do
-    Facter.stubs(:value).with(:url).returns(device_conf['url'])
-    described_class.stubs(:suitable?).returns true
-    Puppet::Type.type(:brocade_zone).stubs(:defaultprovider).returns described_class
-  end
-
-  create_zone_yml =  YAML.load_file(my_fixture('create_zone.yml'))
-  create_node1 = create_zone_yml['CreateVolume1']  
-
-  let :create_zone do
-    Puppet::Type.type(:brocade_zone).new(
-		:zonename => create_node1['zonename'],
-		:member => create_node1['member'],
-		:ensure   => create_node1['ensure'],
-    )
-  end
-
   
-  describe "when asking exists?" do
-    it "should return true if resource/volume is present" do
-      create_zone.provider.set(:ensure => :present)
-      create_zone.provider.should be_exists
-    end
 
-  describe "when creating a new volume - with unique name" do
-    it "should be able to create a volume" do
-      create_zone.provider.create
-    end
+context "when brocade_zone provider is created " do
+  it "should have create method defined for brocade_zone" do
+        described_class.instance_method(:create).should_not == nil
   end
 
-  describe "when creating a new volume - with name already exists" do
-    it "should not be allowed to create a volume with duplicate name" do
-      create_zone.provider.create
-    end
+  it "should have destroy method defined for brocade_zone" do
+    described_class.instance_method(:destroy).should_not == nil
   end
 
+  it "should have exists? method defined for brocade_zone" do
+     described_class.instance_method(:exists?).should_not == nil
+
+  end
 end
+end
+
