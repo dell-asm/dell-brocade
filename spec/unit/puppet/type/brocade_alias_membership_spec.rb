@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Puppet::Type.type(:brocade_alias) do
-  let(:title) { 'brocade_alias' }
+describe Puppet::Type.type(:brocade_alias_membership) do
+  let(:title) { 'brocade_alias_membership' }
 
   context 'should compile with given test params' do
     let(:params) { {
@@ -36,7 +36,7 @@ describe Puppet::Type.type(:brocade_alias) do
   end
   describe "when validating values" do
     describe "validating alias_name param" do
-      it "should allow a valid alias name " do
+      it "should allow a valid alias name" do
         described_class.new(:alias_name => 'alias_demo', :ensure => 'present',:member => '0f:0a:0a:0a:0a:0a:0a:0a')[:alias_name].should == 'alias_demo'
       end
 	  
@@ -61,7 +61,7 @@ describe Puppet::Type.type(:brocade_alias) do
 
     end
 	describe "validating member param" do
-      it "should allow a valid member wwpn format" do
+      it "should allow a valid member wwpn format to the given alias name" do
         described_class.new(:alias_name => 'alias_demo', :ensure => 'present',:member => '0f:0a:0a:0a:0a:0a:0a:0a')[:member].should == '0f:0a:0a:0a:0a:0a:0a:0a'
       end
 	  
