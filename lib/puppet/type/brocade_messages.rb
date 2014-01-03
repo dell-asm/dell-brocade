@@ -10,6 +10,7 @@ module Puppet::Type::Brocade_messages
 	 
 	 ZONE_NAME_BLANK_ERROR="Unable to perform the operation because the zone name is blank."
 	 ZONE_NAME_SPECIAL_CHAR_ERROR="Unable to perform the operation because the zone name contains special characters."
+	 ZONE_MEMBER_BLANK_ERROR="Unable to perform the operation because the member is blank."
 	 
   def empty_value_check(value, error)
     if value.strip.length == 0

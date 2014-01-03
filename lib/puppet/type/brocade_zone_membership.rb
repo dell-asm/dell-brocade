@@ -19,7 +19,7 @@ Puppet::Type.newtype(:brocade_zone_membership) do
   newparam(:member) do
     desc "This parameter describes the member node to be added in the zone"
     validate do |value|
-      Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ALIAS_NAME_BLANK_ERROR)
+      Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ZONE_MEMBER_BLANK_ERROR)
 	  Puppet::Type::Brocade_messages.member_value_format_check(value)
     end
   end
