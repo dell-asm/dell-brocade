@@ -9,7 +9,7 @@ module Puppet::Provider::Brocade_responses
 	RESPONSE_SHOULD_NOT_BE_DELETED="should not be deleted"
 	RESPONSE_INVALID="Invalid"
 	RESPONSE_NO_EFFECTIVE_CONFIG="no configuration in effect"
-	RESPONSE_NAME_TOO_LONG="Name too long"
+	RESPONSE_NAME_TOO_LONG="too long"
 	RESPONSE_INVALID_NAME="invalid name"
 
 end

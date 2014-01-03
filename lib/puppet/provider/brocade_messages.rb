@@ -6,7 +6,7 @@ module Puppet::Provider::Brocade_messages
 	CONFIG_ALREADY_EXIST="Config %s already exists."
 	CONFIG_NO_EFFECTIVE_CONFIG="Could not disable the config as no effective configuration found."
 	CONFIG_DESTORY_DEBUG="Puppet::Provider::brocade_config: The Config %s is being deleted."
-	CONFIG_CREATE_DEBUG="Puppet::Provider::brocade_config: A Config %s with members %s is being created."
+	CONFIG_CREATE_DEBUG="Puppet::Provider::brocade_config: A Config %s with member(s) %s is being created."
 	CONFIG_ENABLE_DEBUG="Puppet::Provider::brocade_config: The Config %s is being enabled."
 	CONFIG_DISABLE_DEBUG="Puppet::Provider::brocade_config: The current effective Config is being disabled."
 	CONFIG_DESTROY_ERROR="Could not delete the config %s because of the following issue: %s"
