@@ -21,12 +21,5 @@ class Brocade_config_fixture
   def get_config_name
     brocade_config[:configname]
   end
- 
-   def enable_config
-     brocade_config[:configstate] =>'enable'
-   end
-   
-   def disable_config
-     brocade_config[:configstate] =>'disable'
-   end
+  
 end
