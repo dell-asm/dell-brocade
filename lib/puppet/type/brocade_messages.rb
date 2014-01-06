@@ -48,7 +48,7 @@ module Puppet::Type::Brocade_messages
   end
 		
   def member_wwpn_format_check(item, error)
-    unless item  =~ /^([0-9a-f]{2}:){7}[0-9a-f]{2}$/
+    unless item  =~ /^([0-9a-fA-F]{2}:){7}[0-9a-fA-F]{2}$/
       raise ArgumentError, error
     end
   end
