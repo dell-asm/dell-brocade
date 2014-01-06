@@ -30,22 +30,27 @@ describe Puppet::Type.type(:brocade_config).provider(:brocade_config) do
 
   context "when brocade config is created and/or its state is changed" do
   it "should warn if brocade config name already exist and process the brocade config state" do
+    #Given
 	fixture = Brocade_config_fixture.new
-	dummy_transport=double('transport')
-    dummy_transport.stub(:command).and_return "abc"    
-	fixture.provider.transport = dummy_transport 
+	mock_transport=double('transport')
+    mock_transport.stub(:command).and_return ""    
+	fixture.provider.transport = mock_transport 
 	
+	#Then
 	resp = Puppet::Provider::Brocade_messages::CONFIG_ALREADY_EXIST%[fixture.get_config_name]	
-    Puppet.stub(:info).once.with(resp)
+    Puppet.stub(:info)
+	Puppet.should_receive(:info).once.with(resp)
 	fixture.provider.stub(:process_config_state)
 	
+	#When
     fixture.provider.create
   end
   
   it "should create brocade config if brocade config name is not present and process the brocade config state" do
+    #Given
   	fixture = Brocade_config_fixture.new
-	dummy_transport=double('transport')
-    dummy_transport.stub(:command) do |arg1, arg2|
+	mock_transport=double('transport')
+    mock_transport.stub(:command) do |arg1, arg2|
 	  if arg1.include? "cfgshow"
 	    Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST
 	  elsif arg1.include? "cfgcreate"
@@ -53,51 +58,54 @@ describe Puppet::Type.type(:brocade_config).provider(:brocade_config) do
 	  end
 	end	
 	
-	fixture.provider.transport = dummy_transport 
-	
+	fixture.provider.transport = mock_transport	
 	fixture.provider.stub(:process_config_state)
+	
+	#Then
 	fixture.provider.stub(:cfg_save)
 	fixture.provider.should_receive(:cfg_save).once
 	
+	#When
 	fixture.provider.create
   end
 	
   it "should raise error if response contains 'invalid' while creating brocade config" do
+    #Given
    	fixture = Brocade_config_fixture.new
-	dummy_transport=double('transport')
-     dummy_transport.stub(:command) do |arg1, arg2|
+	mock_transport=double('transport')
+    mock_transport.stub(:command) do |arg1, arg2|
 	  if arg1.include? "cfgshow"
 	    Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST
 	  elsif arg1.include? "cfgcreate"
 	    Puppet::Provider::Brocade_responses::RESPONSE_INVALID
 	  end
 	end	
-	fixture.provider.transport = dummy_transport 
-	
+	fixture.provider.transport = mock_transport 	
 	fixture.provider.stub(:process_config_state)
 	
+	#When - Then
     expect {fixture.provider.create}.to raise_error(Puppet::Error)
   end
 	
    it "should raise error if response contains 'name too long' while creating brocade config" do
+    #Given
    	fixture = Brocade_config_fixture.new
-	dummy_transport=double('transport')
-    dummy_transport.stub(:command) do |arg1, arg2|
+	mock_transport=double('transport')
+    mock_transport.stub(:command) do |arg1, arg2|
 	  if arg1.include? "cfgshow"
 	    Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST
 	  elsif arg1.include? "cfgcreate"
 	    Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG
 	  end
 	end	
-	fixture.provider.transport = dummy_transport 
-	
+	fixture.provider.transport = mock_transport 	
 	fixture.provider.stub(:process_config_state)
 	
+	#When - Then
     expect {fixture.provider.create}.to raise_error(Puppet::Error)
   end
    
-   it "should enable the brocade config state when brocade config state value is enabled in resource" do	
-   end
+   it "should enable the brocade config state when brocade config state value is enabled in resource" 
 	
    it "should raise error if response contains 'not found' while enabling the brocade config state"
    
