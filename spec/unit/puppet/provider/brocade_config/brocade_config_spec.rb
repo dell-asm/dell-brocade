@@ -79,10 +79,30 @@ describe Puppet::Type.type(:brocade_config).provider(:brocade_config) do
     expect {fixture.provider.create}.to raise_error(Puppet::Error)
   end
 	
-   it "should raise error if response contains 'name too long' while creating brocade config"
+   it "should raise error if response contains 'name too long' while creating brocade config" do
+   	fixture = Brocade_config_fixture.new
+	dummy_transport=double('transport')
+    dummy_transport.stub(:command) do |arg1, arg2|
+	  if arg1.include? "cfgshow"
+	    Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST
+	  elsif arg1.include? "cfgcreate"
+	    Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG
+	  end
+	end	
+	fixture.provider.transport = dummy_transport 
+	
+	fixture.provider.stub(:process_config_state)
+	
+    expect {fixture.provider.create}.to raise_error(Puppet::Error)
+  end
    
-   it "should enable the brocade config state when brocade config state value is enabled in resource"
-   
+   it "should enable the brocade config state when brocade config state value is enabled in resource" do
+    fixture = Brocade_config_fixture.new
+	dummy_transport=double('transport')
+	fixture.enable_config
+	
+   end
+	
    it "should raise error if response contains 'not found' while enabling the brocade config state"
    
    it "should disable the brocade config state when brocade config state value is disabled in resource"
@@ -107,30 +127,3 @@ describe Puppet::Type.type(:brocade_config).provider(:brocade_config) do
    end
     
 end
-
-class Brocade_config_fixture
-
-  attr_accessor :brocade_config, :provider
-
-  def initialize
-    @brocade_config = get_brocade_config	
-	@provider = brocade_config.provider	
-  end
-  
-  private 
-  def  get_brocade_config
-    Puppet::Type.type(:brocade_config).new(
-    :configname => 'DemoConfig',
-    :ensure => 'present',
-    :member_zone => 'DemoZone',
-	:configstate => 'disable',
-    )
-  end
-  
-  public
-  def get_config_name
-    brocade_config[:configname]
-  end
- 
-end
-
