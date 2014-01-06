@@ -96,11 +96,7 @@ describe Puppet::Type.type(:brocade_config).provider(:brocade_config) do
     expect {fixture.provider.create}.to raise_error(Puppet::Error)
   end
    
-   it "should enable the brocade config state when brocade config state value is enabled in resource" do
-    fixture = Brocade_config_fixture.new
-	dummy_transport=double('transport')
-	fixture.enable_config
-	
+   it "should enable the brocade config state when brocade config state value is enabled in resource" do	
    end
 	
    it "should raise error if response contains 'not found' while enabling the brocade config state"
