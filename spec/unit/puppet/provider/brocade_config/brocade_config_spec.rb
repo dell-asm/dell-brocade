@@ -8,7 +8,7 @@ require 'puppet/util/network_device/base_fos'
 require 'rspec/mocks'
 require 'puppet/provider/brocade_responses'
 require 'puppet/provider/brocade_messages'
-require 'rspec/mocks/standalone'
+require 'fixtures/unit/puppet/provider/brocade_config/brocade_config_fixture'
 
 describe Puppet::Type.type(:brocade_config).provider(:brocade_config) do
 
