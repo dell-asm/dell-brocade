@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 require 'yaml'
+require 'rspec/expectations'
 require 'puppet/provider/brocade_fos'
 require 'puppet/util/network_device/brocade_fos/device'
 require 'puppet/util/network_device'
@@ -36,27 +37,28 @@ describe Puppet::Type.type(:brocade_zone).provider(:brocade_zone) do
   
   context "#create" do
     
-    it "should create a brocade zone" do
+   it "should create a brocade zone" do
       type = create_zone
       type_provider = type.provider
       type_provider.device_transport.connect
       type_provider.create
       response = type_provider.device_transport.command(get_zoneshow,:noop=>false)
-      if response.include? "does not exist"
-        raise Puppet::Error, "zone #{create_zone[:zonename]} does not exist."
-      end
+      #puts "Create:: #{response}"
+      expect {response.should include("does not exist")
+      }.to raise_error
     end
-    
+
     it "should destroy a brocade zone" do
       type = destroy_zone
       type_provider = type.provider
       type_provider.device_transport.connect
       type.provider.destroy
       response = type_provider.device_transport.command(get_zoneshow,:noop=>false)
-      if !response.include? "does not exist"
-        raise Puppet::Error, "Failed to delete the Zone #{create_zone[:zonename]}."
-      end
+      #puts "Destroy:: #{response}"
+      expect {response.should_not include("does not exist")
+      }.to raise_error
     end
+
     
   end   
   
