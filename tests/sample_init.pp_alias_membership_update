@@ -1,0 +1,19 @@
+# Class: brocade
+#
+# This module manages brocade switch
+#
+# Parameters:
+#
+# Actions:
+#
+# Requires:
+#
+# Sample Usage:
+#
+# [Remember: No empty lines between comments and class definition]
+class brocade {
+  brocade_alias_membership { 'DemoAlias' :
+  ensure	 => 'present',
+  member 	 => '00:09:08:07:06:05:04:03'
+  }
+}
