@@ -9,7 +9,6 @@ require 'rspec/mocks'
 require 'puppet/provider/brocade_responses'
 require 'puppet/provider/brocade_messages'
 require 'puppet/util/network_device/transport_fos/ssh'
-require 'puppet/spec/integrations/provider'
 
 
 describe Puppet::Type.type(:brocade_zone).provider(:brocade_zone) do
@@ -18,8 +17,6 @@ describe Puppet::Type.type(:brocade_zone).provider(:brocade_zone) do
 
   before :each do
     Facter.stubs(:value).with(:url).returns(device_conf['url'])
-    described_class.stubs(:suitable?).returns true
-    Puppet::Type.type(:brocade_zone).stubs(:defaultprovider).returns described_class
   end
 
   let :create_zone do
@@ -29,17 +26,21 @@ describe Puppet::Type.type(:brocade_zone).provider(:brocade_zone) do
       :member	=> 'testMember',
     )
   end
-
-  let :create_provider do
-    described_class.new()
-  end 
-
+  
   context "#create" do
     it "should create a brocade zone" do
       type = create_zone
       type_provider = type.provider
       type_provider.device_transport.connect
+      type_provider.create
+      response = type_provider.device_transport.command(get_zoneshow,:noop=>false)
+      if response.include? "does not exist"
+        raise Puppet::Error, "zone #{create_zone[:zonename]} does not exist."
+      end
     end
-  end 
+  end   
+  
+  def get_zoneshow
+    command = "zoneshow #{create_zone[:zonename]}"
+  end
 end
-
