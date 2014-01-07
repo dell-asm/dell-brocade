@@ -3,7 +3,7 @@ require 'puppet/provider/brocade_responses'
 require 'puppet/provider/brocade_messages'
 
   def create_config
-    response = @transport.command("cfgshow #{@resource[:configname]}", :noop => false)
+    response = @transport.command(get_brocade_config_show_command, :noop => false)
     if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST )
       process_config_creation
     else
@@ -22,7 +22,7 @@ require 'puppet/provider/brocade_messages'
 
   def process_config_creation 
     Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_CREATE_DEBUG%[@resource[:configname],resource[:member_zone]])
-    response =  @transport.command("cfgcreate  #{@resource[:configname]},  \"#{@resource[:member_zone]}\"", :noop => false)
+    response =  @transport.command(get_brocade_config_create_command, :noop => false)
     if !((response.downcase.include? (Puppet::Provider::Brocade_responses::RESPONSE_INVALID).downcase)||(response.include? Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG ))
       cfg_save
     else
@@ -32,7 +32,7 @@ require 'puppet/provider/brocade_messages'
 
   def config_enable
     Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_ENABLE_DEBUG%[@resource[:configname]])    
-    @transport.command("cfgenable #{@resource[:configname]}", :prompt => Puppet::Provider::Brocade_messages::CONFIG_ENABLE_PROMPT)
+    @transport.command(get_brocade_config_enable_command, :prompt => Puppet::Provider::Brocade_messages::CONFIG_ENABLE_PROMPT)
     response = @transport.command("yes", :noop => false)
     if response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND
        raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_ENABLE_ERROR%[@resource[:configname],response]
@@ -53,16 +53,28 @@ require 'puppet/provider/brocade_messages'
   def destroy_config
     Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_DESTORY_DEBUG%[@resource[:configname]])
     response = @transport.command("cfgdelete  #{@resource[:configname]}", :noop => false)
-    if (!response.include? Puppet::Provider::Brocade_responses::RESPONSE_SHOULD_NOT_BE_DELETED ) && (!response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND )
-      cfg_save
-    elsif (response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
+    if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
 	  Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_ALREADY_REMOVED_INFO%[@resource[:configname]])
-	else
+	elsif (response.include? Puppet::Provider::Brocade_responses::RESPONSE_SHOULD_NOT_BE_DELETED )
       raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_DESTROY_ERROR%[@resource[:configname],response]
+	else
+	  cfg_save  
     end
   end
 
-
+  public
+  def get_brocade_config_show_command
+    return "cfgshow #{@resource[:configname]}"
+  end
+  
+  def get_brocade_config_create_command
+    return "cfgcreate  #{@resource[:configname]},  \"#{@resource[:member_zone]}\""
+  end
+  
+  def get_brocade_config_enable_command
+    return  "cfgenable #{@resource[:configname]}"
+  end
+    
   Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::Provider::Brocade_fos) do
     @doc = "Manage zone config creation, deletion and state change."
     mk_resource_methods
