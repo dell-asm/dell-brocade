@@ -52,7 +52,7 @@ require 'puppet/provider/brocade_messages'
 
   def destroy_config
     Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_DESTORY_DEBUG%[@resource[:configname]])
-    response = @transport.command("cfgdelete  #{@resource[:configname]}", :noop => false)
+    response = @transport.command(get_brocade_config_delete_command, :noop => false)
     if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
 	  Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_ALREADY_REMOVED_INFO%[@resource[:configname]])
 	elsif (response.include? Puppet::Provider::Brocade_responses::RESPONSE_SHOULD_NOT_BE_DELETED )
@@ -74,7 +74,11 @@ require 'puppet/provider/brocade_messages'
   def get_brocade_config_enable_command
     return  "cfgenable #{@resource[:configname]}"
   end
-    
+  
+  def get_brocade_config_delete_command
+    return  "cfgdelete  #{@resource[:configname]}"
+  end
+  
   Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::Provider::Brocade_fos) do
     @doc = "Manage zone config creation, deletion and state change."
     mk_resource_methods
