@@ -27,7 +27,15 @@ describe Puppet::Type.type(:brocade_zone).provider(:brocade_zone) do
     )
   end
   
+  let :destroy_zone do
+    Puppet::Type.type(:brocade_zone).new(
+      :zonename => 'testZone25',
+      :ensure   => 'absent',
+    )
+  end
+  
   context "#create" do
+    
     it "should create a brocade zone" do
       type = create_zone
       type_provider = type.provider
@@ -38,9 +46,21 @@ describe Puppet::Type.type(:brocade_zone).provider(:brocade_zone) do
         raise Puppet::Error, "zone #{create_zone[:zonename]} does not exist."
       end
     end
+    
+    it "should destroy a brocade zone" do
+      type = destroy_zone
+      type_provider = type.provider
+      type_provider.device_transport.connect
+      type.provider.destroy
+      response = type_provider.device_transport.command(get_zoneshow,:noop=>false)
+      if !response.include? "does not exist"
+        raise Puppet::Error, "Failed to delete the Zone #{create_zone[:zonename]}."
+      end
+    end
+    
   end   
   
   def get_zoneshow
     command = "zoneshow #{create_zone[:zonename]}"
-  end
+  end  
 end
