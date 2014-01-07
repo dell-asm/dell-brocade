@@ -6,7 +6,14 @@ class Puppet::Provider::Brocade_fos < Puppet::Provider
   attr_accessor :device, :transport
 
   def device_transport
-    @device ||=Puppet::Util::NetworkDevice.current
+    #@device ||=Puppet::Util::NetworkDevice.current
+    if Facter.value(:url) then   
+      Puppet.debug "Puppet::Util::NetworkDevice::Brocade_fos: connecting via facter url."
+      @device ||= Puppet::Util::NetworkDevice::Brocade_fos::Device.new(Facter.value(:url))
+    else
+      @device ||= Puppet::Util::NetworkDevice.current
+      raise Puppet::Error, "Puppet::Util::NetworkDevice::Equallogic: device not initialized #{caller.join("\n")}" unless @device
+    end
     @transport = @device.transport
   end
 
