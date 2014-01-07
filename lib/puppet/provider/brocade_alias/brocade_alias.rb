@@ -7,26 +7,29 @@ Puppet::Type.type(:brocade_alias).provide(:brocade_alias, :parent => Puppet::Pro
 
  mk_resource_methods
 
-
+ def get_create_alias_command
+  return "alicreate #{@resource[:alias_name]}, \"#{@resource[:member]}\""
+ end
+ 
  def create
     Puppet.debug(Puppet::Provider::Brocade_messages::ALIAS_CREATE_DEBUG%[@resource[:alias_name],@resource[:member]])
-    response = @transport.command("alicreate #{@resource[:alias_name]}, \"#{@resource[:member]}\"", :noop => false)
-    if !((response.include? Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG )|| (response.include? Puppet::Provider::Brocade_responses::RESPONSE_INVALID_NAME))
-	  cfg_save
+    response = @transport.command(get_create_alias_command, :noop => false)
+    if((response.include? Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG )|| (response.include? Puppet::Provider::Brocade_responses::RESPONSE_INVALID_NAME))
+	  raise Puppet::Error, Puppet::Provider::Brocade_messages::ALIAS_CREATE_ERROR%[@resource[:alias_name],response]
 	elsif(response.include? Puppet::Provider::Brocade_responses::RESPONSE_DUPLICATE_NAME)
 	  Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_ALREADY_EXIST_INFO%[@resource[:alias_name]])
 	else
-	  raise Puppet::Error, Puppet::Provider::Brocade_messages::ALIAS_CREATE_ERROR%[@resource[:alias_name],response]
+	  cfg_save
     end
   end
 
   def destroy
     Puppet.debug(Puppet::Provider::Brocade_messages::ALIAS_DESTROY_DEBUG%[@resource[:alias_name]])
     response = @transport.command("alidelete  #{@resource[:alias_name]}", :noop => false)
-    if !(response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
-       cfg_save
-	else
-	   Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_DOES_NOT_EXIST_INFO%[@resource[:alias_name]])
+    if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
+	 Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_DOES_NOT_EXIST_INFO%[@resource[:alias_name]])
+    else
+      cfg_save
     end
   end
 
