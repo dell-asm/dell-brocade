@@ -21,24 +21,29 @@ describe Puppet::Type.type(:brocade_alias).provider(:brocade_alias), '(integrati
     described_class.stubs(:suitable?).returns true    
   end
 
-  let :create_alias do
+  let :dummy_alias do
     Puppet::Type.type(:brocade_alias).new(
-      :alias_name     => 'testalias11',
+      :alias_name  => 'testalias2',
       :ensure   => 'present',
       :member   => '0f:0a:0a:0a:0a:0a:0a:0a',
     )
   end
-
-  let :create_provider do
-    described_class.new()
+  
+  let :type_provider do
+    dummy_alias.provider
+  end
+  
+  before :each do
+    type_provider.device_transport.connect  
   end
 
-  context "test for create and delete alias" do
-    it "should create a brocade alias" do
-      type = create_alias
-      type_provider = type.provider
-      type_provider.device_transport.connect
+  context "when create and delete alias without any error" do
+    it "should be create a brocade alias" do     
       response = type_provider.create
+    end
+    
+    it "should delete the brocade alias" do     
+      response = type_provider.destroy
     end
   end
 
