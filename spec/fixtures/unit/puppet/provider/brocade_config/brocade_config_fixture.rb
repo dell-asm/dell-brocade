@@ -26,4 +26,7 @@ class Brocade_config_fixture
     brocade_config[:configstate] = 'enable'
   end
   
+  def set_config_ensure_absent
+    brocade_config[:ensure] = 'absent'
+  end
 end
