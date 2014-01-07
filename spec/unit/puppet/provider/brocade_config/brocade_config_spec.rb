@@ -11,7 +11,8 @@ require 'puppet/provider/brocade_messages'
 require 'fixtures/unit/puppet/provider/brocade_config/brocade_config_fixture'
 
 NOOP_HASH = { :noop => false}
-PROMPT_HASH = {:prompt => Puppet::Provider::Brocade_messages::CONFIG_ENABLE_PROMPT}
+ENABLE_PROMPT_HASH = {:prompt => Puppet::Provider::Brocade_messages::CONFIG_ENABLE_PROMPT}
+DISABLE_PROMPT_HASH = {:prompt => Puppet::Provider::Brocade_messages::CONFIG_DISABLE_PROMPT}
 
 describe Puppet::Type.type(:brocade_config).provider(:brocade_config) do
 
@@ -89,18 +90,60 @@ describe Puppet::Type.type(:brocade_config).provider(:brocade_config) do
 	@fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_brocade_config_show_command, NOOP_HASH).and_return ("")
 	@fixture.provider.should_receive(:process_config_state).once.and_call_original
 	@fixture.provider.should_receive(:config_enable).once.and_call_original
-	@fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_brocade_config_enable_command, PROMPT_HASH).and_return ("")
+	@fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_brocade_config_enable_command, ENABLE_PROMPT_HASH).and_return ("")
 	@fixture.provider.transport.should_receive(:command).once.with("yes", NOOP_HASH).and_return ("")
 	
 	#When
 	@fixture.provider.create
   end
 	
-   it "should raise error if response contains 'not found' while enabling the brocade config state"
+   it "should raise error if response contains 'not found' while enabling the brocade config state" do
+   #Given
+   Puppet.stub(:info)
+   @fixture.set_configstate_enable
+  
+   #Then
+   @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_brocade_config_show_command, NOOP_HASH).and_return ("")
+   @fixture.provider.should_receive(:process_config_state).once.and_call_original
+   @fixture.provider.should_receive(:config_enable).once.and_call_original
+   @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_brocade_config_enable_command, ENABLE_PROMPT_HASH).and_return ("")
+   @fixture.provider.transport.should_receive(:command).once.with("yes", NOOP_HASH).and_return (Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
+  
+   #When
+   expect {@fixture.provider.create}.to raise_error(Puppet::Error)
    
-   it "should disable the brocade config state when brocade config state value is disabled in resource"
+   end
    
-   it "should warn if no effective brocade config found while disabling the brocade config state"
+   it "should disable the brocade config state when brocade config state value is disabled in resource" do
+   #Given
+   Puppet.stub(:info)
+  
+   #Then
+   @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_brocade_config_show_command, NOOP_HASH).and_return ("")
+   @fixture.provider.should_receive(:process_config_state).once.and_call_original
+   @fixture.provider.should_receive(:config_disable).once.and_call_original
+   @fixture.provider.transport.should_receive(:command).once.with("cfgActvShow", NOOP_HASH).and_return ("")
+   @fixture.provider.transport.should_receive(:command).once.with("cfgDisable", DISABLE_PROMPT_HASH).and_return ("")
+   @fixture.provider.transport.should_receive(:command).once.with("yes", NOOP_HASH).and_return ("")
+  
+   #When
+   @fixture.provider.create
+   end
+   
+   it "should warn if no effective brocade config found while disabling the brocade config state" do
+   #Given
+   Puppet.stub(:info)
+  
+   #Then
+   @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_brocade_config_show_command, NOOP_HASH).and_return ("")
+   @fixture.provider.should_receive(:process_config_state).once.and_call_original
+   @fixture.provider.should_receive(:config_disable).once.and_call_original
+   @fixture.provider.transport.should_receive(:command).once.with("cfgActvShow", NOOP_HASH).and_return (Puppet::Provider::Brocade_responses::RESPONSE_NO_EFFECTIVE_CONFIG)
+   Puppet.should_receive(:info).once.with(Puppet::Provider::Brocade_messages::CONFIG_NO_EFFECTIVE_CONFIG)
+  
+   #When
+   @fixture.provider.create
+   end
   
   end
    
