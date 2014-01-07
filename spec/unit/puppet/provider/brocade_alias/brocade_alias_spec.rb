@@ -28,12 +28,45 @@ describe Puppet::Type.type(:brocade_alias).provider(:brocade_alias) do
   end
 
   context "when brocade alias is created" do
-    it "should raise error if response contains 'name too long' while creating brocade alias" 
+    it "should raise error if response contains 'invalid' while creating brocade alias" do
+	 #Given
+	  fixture = Brocade_alias_fixture.new
+	  ops_hash = {:noop => false}
+	  dummy_transport=double('transport')
+	  fixture.provider.transport = dummy_transport 
+	 
+	 #When-Then
+      dummy_transport.should_receive(:command).once.with(fixture.provider.get_create_alias_command,ops_hash).and_return(Puppet::Provider::Brocade_responses::RESPONSE_INVALID_NAME)
+	  expect {fixture.provider.create}.to raise_error(Puppet::Error)
+	end
 	
-	it "should raise error if response contains 'invalid' while creating brocade alias" 
+	it "should raise error if response contains 'name too long' while creating brocade alias" do
+	 #Given
+      fixture = Brocade_alias_fixture.new
+	  ops_hash = {:noop => false}
+	  dummy_transport=double('transport')
+	  fixture.provider.transport = dummy_transport 
+	  
+	  #When-Then
+      dummy_transport.should_receive(:command).once.with(fixture.provider.get_create_alias_command,ops_hash).and_return(Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG)
+	  expect {fixture.provider.create}.to raise_error(Puppet::Error)	
+	end
 	
-	it "should warn if brocade alias name already exist" 
-	
+	it "should warn if brocade alias name already exist" do
+	  fixture = Brocade_alias_fixture.new
+	  ops_hash = {:noop => false}
+	  dummy_transport=double('transport')
+	  fixture.provider.transport = dummy_transport 
+	  
+      #When-Then
+      dummy_transport.should_receive(:command).once.with(fixture.provider.get_create_alias_command,ops_hash).and_return(Puppet::Provider::Brocade_responses::RESPONSE_DUPLICATE_NAME)
+      Puppet.stub(:info)
+	  Puppet.should_receive(:info).once.with(Puppet::Provider::Brocade_messages::ALIAS_ALREADY_EXIST_INFO%[fixture.get_alias_name])
+	  
+	  #When
+	  fixture.provider.create
+	  
+	  end
 	it "should create the brocade alias" 
 	
   end
@@ -48,6 +81,30 @@ describe Puppet::Type.type(:brocade_alias).provider(:brocade_alias) do
    	it "should return true when the brocade alias exist" 
 	
 	it "should return false when the brocade alias does not exist" 	
+  end
+  
+  class Brocade_alias_fixture
+
+  attr_accessor :brocade_alias, :provider
+
+  def initialize
+    @brocade_alias = get_brocade_alias
+	@provider = brocade_alias.provider	
+  end
+  
+  private 
+  def  get_brocade_alias
+    Puppet::Type.type(:brocade_alias).new(
+    :alias_name => 'DemoAlias',
+    :ensure => 'present',
+    :member => '0f:0a:0a:0a:0a:0a:0a:0a'
+	)
+  end
+  
+  public
+  def get_alias_name
+    brocade_alias[:alias_name]
+  end
   end
   
 end
