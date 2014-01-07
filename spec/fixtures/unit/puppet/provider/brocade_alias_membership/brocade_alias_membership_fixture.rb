@@ -23,10 +23,5 @@ class Brocade_alias_membership_fixture
     return brocade_alias_mem_objects
 
   end
-# public
-
-# def get_config_name
-# brocade_config[:configname]
-# end
 
 end

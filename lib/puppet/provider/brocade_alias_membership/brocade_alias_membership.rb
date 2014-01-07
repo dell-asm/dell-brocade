@@ -6,17 +6,16 @@ Puppet::Type.type(:brocade_alias_membership).provide(:brocade_alias_membership, 
   @doc = "Manage brocade alias members addition and removal."
 
   mk_resource_methods
-  
   def get_create_brocade_alias_membership_command
     command = "aliadd  #{@resource[:alias_name]}, \"#{@resource[:member]}\""
     return command
   end
 
-def get_destroy_brocade_alias_membership_command
+  def get_destroy_brocade_alias_membership_command
     command = "aliremove  #{@resource[:alias_name]}, \"#{@resource[:member]}\""
     return command
   end
-  
+
   def create
     Puppet.debug(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_CREATE_DEBUG%[@resource[:member],@resource[:alias_name]])
     response = @transport.command(get_create_brocade_alias_membership_command, :noop => false)
