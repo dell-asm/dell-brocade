@@ -22,4 +22,8 @@ class Brocade_config_fixture
     brocade_config[:configname]
   end
   
+  def set_configstate_enable
+    brocade_config[:configstate] = 'enable'
+  end
+  
 end
