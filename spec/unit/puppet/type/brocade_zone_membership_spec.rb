@@ -59,7 +59,7 @@ describe Puppet::Type.type(:brocade_zone_membership) do
       end
 
       it "should not support empty member list" do
-        expect { described_class.new(:member => '', :zonename => 'zonename', :ensure => 'present')}.to raise_error(Puppet::Error, /Unable to perform the operation because the alias name is blank./)
+        expect { described_class.new(:member => '', :zonename => 'zonename', :ensure => 'present')}.to raise_error(Puppet::Error, /Unable to perform the operation because the member is blank./)
       end
 
       it "should not support special characters for alias" do

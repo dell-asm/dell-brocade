@@ -5,13 +5,22 @@ require 'puppet/provider/brocade_messages'
 Puppet::Type.type(:brocade_alias_membership).provide(:brocade_alias_membership, :parent => Puppet::Provider::Brocade_fos) do
   @doc = "Manage brocade alias members addition and removal."
 
- mk_resource_methods
+  mk_resource_methods
+  
+  def get_create_brocade_alias_membership_command
+    command = "aliadd  #{@resource[:alias_name]}, \"#{@resource[:member]}\""
+    return command
+  end
 
-
- def create
+def get_destroy_brocade_alias_membership_command
+    command = "aliremove  #{@resource[:alias_name]}, \"#{@resource[:member]}\""
+    return command
+  end
+  
+  def create
     Puppet.debug(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_CREATE_DEBUG%[@resource[:member],@resource[:alias_name]])
-    response = @transport.command("aliadd #{@resource[:alias_name]}, \"#{@resource[:member]}\"", :noop => false)
-	if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND ) || ( response.downcase.include? (Puppet::Provider::Brocade_responses::RESPONSE_INVALID).downcase) 
+    response = @transport.command(get_create_brocade_alias_membership_command, :noop => false)
+    if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND ) || ( response.downcase.include? (Puppet::Provider::Brocade_responses::RESPONSE_INVALID).downcase)
       raise Puppet::Error, Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_CREATE_ERROR%[@resource[:member],@resource[:alias_name],response]
     elsif response.include? Puppet::Provider::Brocade_responses::RESPONSE_ALREADY_CONTAINS
       Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_EXIST_INFO%[@resource[:member],@resource[:alias_name]])
@@ -22,22 +31,22 @@ Puppet::Type.type(:brocade_alias_membership).provide(:brocade_alias_membership, 
 
   def destroy
     Puppet.debug(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_DESTROY_DEBUG%[@resource[:member],@resource[:alias_name]])
-    response =  @transport.command("aliremove #{@resource[:alias_name]},\"#{@resource[:member]}\"", :noop => false)
+    response =  @transport.command(get_destroy_brocade_alias_membership_command, :noop => false)
     if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST) || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
       raise Puppet::Error, Puppet::Provider::Brocade_responses::ALIAS_MEMBERSHIP_DESTROY_ERROR%[@resource[:member],@resource[:alias_name],response]
-	elsif (response.include? Puppet::Provider::Brocade_responses::RESPONSE_IS_NOT_IN )
-	  Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_REMOVED_INFO%[@resource[:member],@resource[:alias_name]])
-    else 
+    elsif (response.include? Puppet::Provider::Brocade_responses::RESPONSE_IS_NOT_IN )
+      Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_REMOVED_INFO%[@resource[:member],@resource[:alias_name]])
+    else
       cfg_save
-	end
+    end
   end
 
   def exists?
     self.device_transport
-    if "#{@resource[:ensure]}" == "present" 
-      false
+    if "#{@resource[:ensure]}" == "present"
+    false
     else
-      true
+    true
     end
   end
 
