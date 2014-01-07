@@ -12,7 +12,7 @@ class Puppet::Provider::Brocade_fos < Puppet::Provider
       @device ||= Puppet::Util::NetworkDevice::Brocade_fos::Device.new(Facter.value(:url))
     else
       @device ||= Puppet::Util::NetworkDevice.current
-      raise Puppet::Error, "Puppet::Util::NetworkDevice::Equallogic: device not initialized #{caller.join("\n")}" unless @device
+      raise Puppet::Error, "Puppet::Util::NetworkDevice::Brocade_fos: device not initialized #{caller.join("\n")}" unless @device
     end
     @transport = @device.transport
   end
