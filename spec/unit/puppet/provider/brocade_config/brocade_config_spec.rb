@@ -47,10 +47,10 @@ describe Puppet::Type.type(:brocade_config).provider(:brocade_config) do
   end
   
   it "should create brocade config if brocade config name is not present and process the brocade config state" do
-    #Given
+        #Given
   	fixture = Brocade_config_fixture.new
 	mock_transport=double('transport')
-    mock_transport.stub(:command) do |arg1, arg2|
+        mock_transport.stub(:command) do |arg1, arg2|
 	  if arg1.include? "cfgshow"
 	    Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST
 	  elsif arg1.include? "cfgcreate"
@@ -112,21 +112,24 @@ describe Puppet::Type.type(:brocade_config).provider(:brocade_config) do
    it "should disable the brocade config state when brocade config state value is disabled in resource"
    
    it "should warn if no effective brocade config found while disabling the brocade config state"
-   end
+  
+  end
+   
+   
    
    context "when brocade config is deleted" do
-   it "should delete the already existing brocade config"
+  	 it "should delete the already existing brocade config"
    
-   it "should warn if brocade config name does not exist"
+  	 it "should warn if brocade config name does not exist"
    
-   it "should raise error if response contains 'should not be deleted'"
+  	 it "should raise error if response contains 'should not be deleted'"
    
    end
    
    context "when brocade config existence is validated" do
-   it "should return false when the brocade config existence is required"
+   	it "should return false when the brocade config existence is required"
    
-   it "should return true when the brocade config existence is not required"
+   	it "should return true when the brocade config existence is not required"
    
    end
     
