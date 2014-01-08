@@ -5,35 +5,33 @@ require 'fixtures/unit/puppet/provider/brocade_config_membership/Brocade_config_
 
 NOOP_HASH = { :noop => false}
 
-describe Puppet::Type.type(:brocade_config_membership).provider(:brocade_config_membership) do
+describe "Brocade Config Membership Provider" do
 
 #Given
   before(:each) do
     @fixture = Brocade_config_membership_fixture.new
     dummy_transport=double('transport')
-    dummy_transport.stub(:command).and_return ""
     @fixture.provider.transport = dummy_transport
-    @fixture.provider.stub(:cfg_save)
   end
 
   context "when brocade config membership provider is created " do
 
     it "should have parent 'Puppet::Provider::Brocade_fos'" do
-      described_class.new.should be_kind_of(Puppet::Provider::Brocade_fos)
+      @fixture.provider.should be_kind_of(Puppet::Provider::Brocade_fos)
 
     end
 
     it "should have create method defined for brocade config membership" do
-      described_class.instance_method(:create).should_not == nil
+      @fixture.provider.class.instance_method(:create).should_not == nil
 
     end
 
     it "should have destroy method defined for brocade config membership" do
-      described_class.instance_method(:destroy).should_not == nil
+      @fixture.provider.class.instance_method(:destroy).should_not == nil
     end
 
     it "should have exists? method defined for brocade config membership" do
-      described_class.instance_method(:exists?).should_not == nil
+      @fixture.provider.class.instance_method(:exists?).should_not == nil
     end
 
   end
@@ -91,72 +89,80 @@ describe Puppet::Type.type(:brocade_config_membership).provider(:brocade_config_
       @fixture.provider.create
     end
 
-  # end
+  end
 
-  # context "when brocade config membership is deleted" do
-  #
-  # before(:each) do
-  # @destroyInfoMsg = Puppet::Provider::Brocade_messages::config_membership_ALREADY_REMOVED_INFO%[@fixture.brocade_config_membership[:member],@fixture.brocade_config_membership[:alias_name]]
-  # end
-  #
-  # it "should save the configuration, if brocade config membership is deleted successfully" do
-  # #Then
-  # @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_destroy_brocade_config_membership_command, NOOP_HASH).and_return ("")
-  # @fixture.provider.should_receive(:cfg_save).once
-  #
-  # #When
-  # @fixture.provider.destroy
-  # end
-  #
-  # it "should warn if brocade alias name does not exist" do
-  # #Then
-  # @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_destroy_brocade_config_membership_command, NOOP_HASH).and_return (Puppet::Provider::Brocade_responses::RESPONSE_IS_NOT_IN)
-  # Puppet.should_receive(:info).once.with(@destroyInfoMsg).and_return("")
-  # @fixture.provider.should_not_receive(:cfg_save)
-  #
-  # #When
-  # @fixture.provider.destroy
-  # end
-  #
-  # it "should raise error if response contains 'does not exist' while deleting the brocade config membership" do
-  # #Then
-  # @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_destroy_brocade_config_membership_command, NOOP_HASH).and_return (Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
-  # @fixture.provider.should_not_receive(:cfg_save)
-  #
-  # #When
-  # expect {@fixture.provider.destroy}.to raise_error(Puppet::Error)
-  # end
-  #
-  # it "should raise error if response contains 'not found' while deleting the brocade config membership" do
-  # #Then
-  # @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_destroy_brocade_config_membership_command, NOOP_HASH).and_return (Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
-  # @fixture.provider.should_not_receive(:cfg_save)
-  #
-  # #When
-  # expect {@fixture.provider.destroy}.to raise_error(Puppet::Error)
-  # end
-  #
-  # end
-  #
-  # context "when brocade config membership existence is validated" do
-  #
-  # it "should return true when the brocade config membership exist" do
-  #
-  # @fixture.provider.should_receive(:device_transport).once
-  #
-  # @fixture.provider.exists?.should == false
-  #
-  # end
-  #
-  # it "should return false when the brocade config membership does not exist" do
-  # @fixture = Brocade_config_membership_fixture_with_absent.new
-  #
-  # @fixture.provider.should_receive(:device_transport).once
-  #
-  # @fixture.provider.exists?.should == true
-  #
-  # end
-  #
+  context "when brocade config membership is deleted" do
+
+    before(:each) do
+      @destroyInfoMsg = Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_REMOVED_INFO%[@fixture.brocade_config_membership[:member_zone],@fixture.brocade_config_membership[:configname]]
+    end
+
+    it "should save the configuration, if brocade config membership is deleted successfully" do
+    #Then
+      @fixture.provider.should_receive(:config_remove_zone).once.and_call_original
+
+      @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_config_remove_command, NOOP_HASH).and_return ("")
+      @fixture.provider.should_receive(:cfg_save).once
+
+      #When
+      @fixture.provider.destroy
+    end
+
+    it "should warn if brocade config membership does not exist" do
+    #Then
+      @fixture.provider.should_receive(:config_remove_zone).once.and_call_original
+
+      @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_config_remove_command, NOOP_HASH).and_return (Puppet::Provider::Brocade_responses::RESPONSE_IS_NOT_IN)
+      Puppet.should_receive(:info).once.with(@destroyInfoMsg).and_return("")
+      @fixture.provider.should_not_receive(:cfg_save)
+
+      #When
+      @fixture.provider.destroy
+    end
+
+    it "should raise error if response contains 'invalid' while deleting the brocade config membership" do
+    #Then
+      @fixture.provider.should_receive(:config_remove_zone).once.and_call_original
+
+      @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_config_remove_command, NOOP_HASH).and_return (Puppet::Provider::Brocade_responses::RESPONSE_INVALID)
+      @fixture.provider.should_not_receive(:cfg_save)
+
+      #When
+      expect {@fixture.provider.destroy}.to raise_error(Puppet::Error)
+    end
+
+    it "should raise error if response contains 'too long' while deleting the brocade config membership" do
+    #Then
+      @fixture.provider.should_receive(:config_remove_zone).once.and_call_original
+
+      @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_config_remove_command, NOOP_HASH).and_return (Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG)
+      @fixture.provider.should_not_receive(:cfg_save)
+
+      #When
+      expect {@fixture.provider.destroy}.to raise_error(Puppet::Error)
+    end
+
+  end
+
+  context "when brocade config membership existence is validated" do
+
+    it "should return true when the brocade config membership exist" do
+
+      @fixture.provider.should_receive(:device_transport).once
+
+      @fixture.provider.exists?.should == false
+
+    end
+
+    it "should return false when the brocade config membership does not exist" do
+      @fixture = Brocade_config_membership_fixture_with_absent.new
+
+      @fixture.provider.should_receive(:device_transport).once
+
+      @fixture.provider.exists?.should == true
+
+    end
+
   end
 
 end

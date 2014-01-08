@@ -5,35 +5,34 @@ require 'fixtures/unit/puppet/provider/brocade_alias_membership/Brocade_alias_me
 
 NOOP_HASH = { :noop => false}
 
-describe Puppet::Type.type(:brocade_alias_membership).provider(:brocade_alias_membership) do
+describe "Brocade Alias Membership Provider" do
 
 #Given
   before(:each) do
     @fixture = Brocade_alias_membership_fixture.new
     dummy_transport=double('transport')
-    dummy_transport.stub(:command).and_return ""
     @fixture.provider.transport = dummy_transport
-    @fixture.provider.stub(:cfg_save)
+ 
   end
 
   context "when brocade alias membership provider is created " do
 
     it "should have parent 'Puppet::Provider::Brocade_fos'" do
-      described_class.new.should be_kind_of(Puppet::Provider::Brocade_fos)
+      @fixture.provider.should be_kind_of(Puppet::Provider::Brocade_fos)
 
     end
 
     it "should have create method defined for brocade alias membership" do
-      described_class.instance_method(:create).should_not == nil
+      @fixture.provider.class.instance_method(:create).should_not == nil
 
     end
 
     it "should have destroy method defined for brocade alias membership" do
-      described_class.instance_method(:destroy).should_not == nil
+      @fixture.provider.class.instance_method(:destroy).should_not == nil
     end
 
     it "should have exists? method defined for brocade_alias_membership" do
-      described_class.instance_method(:exists?).should_not == nil
+      @fixture.provider.class.instance_method(:exists?).should_not == nil
     end
 
   end
