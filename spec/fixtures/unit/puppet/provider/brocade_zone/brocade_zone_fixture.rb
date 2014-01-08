@@ -5,7 +5,7 @@ class Brocade_zone_fixture
   def initialize
     @brocade_zone = get_brocade_zone	
 	@provider = brocade_zone.provider	
-  end
+	end
   
   private 
   def  get_brocade_zone
@@ -20,5 +20,4 @@ class Brocade_zone_fixture
     brocade_zone[:zonename]
   end
   
-
 end
