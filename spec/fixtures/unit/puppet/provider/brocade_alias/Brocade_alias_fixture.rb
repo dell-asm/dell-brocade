@@ -20,5 +20,8 @@ class Brocade_alias_fixture
   def get_alias_name
     brocade_alias[:alias_name]
   end
-end
   
+  def get_member_name
+    brocade_alias[:member]
+  end
+end
