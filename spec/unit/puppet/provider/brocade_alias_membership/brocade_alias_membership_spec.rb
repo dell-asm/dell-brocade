@@ -141,7 +141,9 @@ describe Puppet::Type.type(:brocade_alias_membership).provider(:brocade_alias_me
     end
 
     it "should return false when the brocade alias membership does not exist" do
-
+      
+      @fixture = Brocade_alias_membership_fixture_with_absent.new
+      
       @fixture.provider.should_receive(:device_transport).once
 
       @fixture.provider.exists?.should == true
