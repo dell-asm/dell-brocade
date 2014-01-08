@@ -10,7 +10,7 @@ NOOP_HASH = { :noop => false}
 ENABLE_PROMPT_HASH = {:prompt => Puppet::Provider::Brocade_messages::CONFIG_ENABLE_PROMPT}
 DISABLE_PROMPT_HASH = {:prompt => Puppet::Provider::Brocade_messages::CONFIG_DISABLE_PROMPT}
 
-describe Puppet::Type.type(:brocade_config).provider(:brocade_config) do
+describe "Brocade_config" do
 
   before(:each) do
     @fixture = Brocade_config_fixture.new
@@ -23,20 +23,19 @@ describe Puppet::Type.type(:brocade_config).provider(:brocade_config) do
 
   context "when brocade config provider is created " do
     it "should have create method defined for brocade_config" do
-      described_class.instance_method(:create).should_not == nil
-
+      @fixture.provider.class.instance_method(:create).should_not == nil
     end
 
     it "should have destroy method defined for brocade_config" do
-      described_class.instance_method(:destroy).should_not == nil
+      @fixture.provider.class.instance_method(:destroy).should_not == nil
     end
 
     it "should have exists? method defined for brocade_config" do
-      described_class.instance_method(:exists?).should_not == nil
+      @fixture.provider.class.instance_method(:exists?).should_not == nil
     end
 
     it "should have parent 'Puppet::Provider::Brocade_fos'" do
-      described_class.new.should be_kind_of(Puppet::Provider::Brocade_fos)
+      @fixture.provider.should be_kind_of(Puppet::Provider::Brocade_fos)
     end
   end
 
