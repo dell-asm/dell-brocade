@@ -31,7 +31,7 @@ Puppet::Type.type(:brocade_zone).provide(:brocade_zone, :parent => Puppet::Provi
 
   def destroy
     Puppet.debug(Puppet::Provider::Brocade_messages::ZONE_DESTROY_DEBUG%[@resource[:zonename]])
-    response = @transport.command("zonedelete  #{@resource[:zonename]}", :noop => false)
+    response = @transport.command(get_delete_brocade_zone_command, :noop => false)
     if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
       Puppet.info(Puppet::Provider::Brocade_messages::ZONE_ALREADY_REMOVED_INFO%[@resource[:zonename]])
     else
