@@ -21,30 +21,37 @@ describe Puppet::Type.type(:brocade_alias).provider(:brocade_alias), '(integrati
     described_class.stubs(:suitable?).returns true    
   end
 
-  let :dummy_alias do
+  let :create_alias do
     Puppet::Type.type(:brocade_alias).new(
       :alias_name  => 'testalias2',
       :ensure   => 'present',
       :member   => '0f:0a:0a:0a:0a:0a:0a:0a',
     )
   end
-  
-  let :type_provider do
-    dummy_alias.provider
+  let :destroy_alias do
+    Puppet::Type.type(:brocade_alias).new(
+      :alias_name  => 'testalias2',
+      :ensure   => 'absent',      
+    )
   end
   
-  before :each do
-    type_provider.device_transport.connect  
-  end
-
   context "when create and delete alias without any error" do
-    it "should be create a brocade alias" do     
-      response = type_provider.create
+    it "should be create a brocade alias" do  
+      create_alias.provider.device_transport.connect  
+      create_alias.provider.create
+      response = create_alias.provider.device_transport.command(get_alias_show_cmd(create_alias[:alias_name]),:noop=>false)
+      response.should_not include("does not exist")               
     end
-    
     it "should delete the brocade alias" do     
-      response = type_provider.destroy
+      destroy_alias.provider.device_transport.connect  
+      destroy_alias.provider.destroy
+      response = destroy_alias.provider.device_transport.command(get_alias_show_cmd(create_alias[:alias_name]),:noop=>false)
+      #response.should_not include(create_alias[:alias_name]))   
     end
+  end
+  
+  def get_alias_show_cmd(aliasname)
+    command = "alishow #{aliasname}"    
   end
 
 end
