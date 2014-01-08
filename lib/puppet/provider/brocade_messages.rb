@@ -12,8 +12,8 @@ module Puppet::Provider::Brocade_messages
 	CONFIG_DESTROY_ERROR="Could not delete the config %s because of the following issue: %s"
 	CONFIG_CREATE_ERROR="Could not create the config %s because of the following issue: %s"
 	CONFIG_ENABLE_ERROR="Could not enable the config %s because of the following issue: %s"
-	CONFIG_ENABLE_PROMPT="/Do you want to enable/"
-	CONFIG_DISABLE_PROMPT="/Do you want to disable /"
+	CONFIG_ENABLE_PROMPT=/Do you want to enable/
+	CONFIG_DISABLE_PROMPT=/Do you want to disable/
     CONFIG_ALREADY_REMOVED_INFO="Config %s is already removed"	
 	
 	CONFIG_MEMBERSHIP_CREATE_DEBUG="Puppet::Provider::brocade_config_membership: Adding Zone(s) %s to Config %s."
