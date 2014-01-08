@@ -1,4 +1,3 @@
-#! /usr/bin/env ruby
 require 'spec_helper'
 require 'fixtures/unit/puppet/provider/brocade_alias/Brocade_alias_fixture'
 

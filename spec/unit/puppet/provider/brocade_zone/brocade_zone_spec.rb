@@ -1,5 +1,3 @@
-#! /usr/bin/env ruby
-
 require 'spec_helper'
 require 'yaml'
 require 'puppet/provider/brocade_fos'
