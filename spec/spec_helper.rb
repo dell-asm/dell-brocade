@@ -8,6 +8,7 @@ require 'rspec/mocks'
 require 'puppet/provider/brocade_fos'
 require 'puppet/provider/brocade_responses'
 require 'puppet/provider/brocade_messages'
+require 'puppet/provider/brocade_commands'
 
 module_path = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 $LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), '..','lib'))
