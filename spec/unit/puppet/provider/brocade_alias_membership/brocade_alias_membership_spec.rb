@@ -130,11 +130,23 @@ describe Puppet::Type.type(:brocade_alias_membership).provider(:brocade_alias_me
 
   end
 
-  context "when brocade alias membership existance is validated" do
+  context "when brocade alias membership existence is validated" do
 
-    it "should return true, if ensure property has value present"
+    it "should return true when the brocade alias membership exist" do
 
-    it "should return false, if ensure property has value absent"
+      @fixture.provider.should_receive(:device_transport).once
+
+      @fixture.provider.exists?.should == false
+
+    end
+
+    it "should return false when the brocade alias membership does not exist" do
+
+      @fixture.provider.should_receive(:device_transport).once
+
+      @fixture.provider.exists?.should == true
+
+    end
 
   end
 

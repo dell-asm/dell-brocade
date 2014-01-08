@@ -32,18 +32,16 @@ describe Puppet::Type.type(:brocade_zone).provider(:brocade_zone) do
   it "should throw error if response is RESPONSE_INVALID or RESPONSE_NAME_TOO_LONG" do
     dummy_transport=double('transport')
     dummy_resource = {:zonename => "zone", :member => "member"}
-    
- 
-   ops_hash = { :noop => false}
+
+    ops_hash = { :noop => false}
     provider_object = described_class.new
-    #provider_object.instance_variable_set(:@resource, dummy_resource)
-    #provider_object.instance_variable_set(:@transport, dummy_transport)
+    
     provider_object.resource= dummy_resource
     provider_object.transport= dummy_transport
- dummy_transport.should_receive(:command).once.with(provider_object.get_Create_Brocade_Zone_Command,ops_hash).and_return (Puppet::Provider::Brocade_responses::RESPONSE_INVALID)
-   
-   expect {provider_object.create}.to raise_error(Puppet::Error)
-  
+    dummy_transport.should_receive(:command).once.with(provider_object.get_create_brocade_zone_command,ops_hash).and_return (Puppet::Provider::Brocade_responses::RESPONSE_INVALID)
+
+    expect {provider_object.create}.to raise_error(Puppet::Error)
+
   end
 
   it "should warn if brocade zone name is already exist"

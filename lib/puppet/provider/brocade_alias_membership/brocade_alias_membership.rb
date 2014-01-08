@@ -42,7 +42,7 @@ Puppet::Type.type(:brocade_alias_membership).provide(:brocade_alias_membership, 
 
   def exists?
     self.device_transport
-    if "#{@resource[:ensure]}" == "present"
+    if ("#{@resource[:ensure]}" == "present")
     false
     else
     true

@@ -16,4 +16,4 @@ class Brocade_alias_membership_fixture
     )
   end
 
- end
+end
