@@ -1,8 +1,8 @@
-# Brocade switch device module
+# Brocade network device module
 
 **Table of Contents**
 
-- [Brocade switch device module](#Brocade-network-device-module)
+- [Brocade network device module](#Brocade-network-device-module)
 	- [Overview](#overview)
 	- [Features](#features)
 	- [Requirements](#requirements)
@@ -11,7 +11,7 @@
 		- [Brocade operations](#Brocade-operations)
 
 ## Overview
-The Brocade switch device is designed to extend the support for managing Brocade switch configuration using Puppet and its Network Device functionality.
+The Brocade network device module is designed to add support for managing Brocade switch configuration using Puppet and its Network Device functionality.
 
 Following Brocade models have been verified using this module:
 - Brocade-6510
@@ -60,7 +60,6 @@ For example:
     member => '"50:00:d3:10:00:5e:c4:ad ; 50:00:d3:10:00:5e:c4:ac"'
   }
 
-
   brocade_zone { 'demozone':
     ensure => 'present',
     member => 'demoAlias'
@@ -75,14 +74,4 @@ For example:
 
 This creates an Alias for the members, adds the Alias to a zone, and then adds the zone to the config (in Deactivation mode) as per defined input parameters.
 
-You can also use any of the above operations individually, or create new defined types, as required. The following readme files, shipped with this module, contain the 
-details of each operation and parameters:
-
-  -alias_create_delete.md 
-  -alias_membership_update.md
-  -zone_create_delete.md
-  -zone_membership_update.md
-  -config_membership_update.md
-  -config_create_delete_activate_deactivate.md
-  
-  
+You can also use any of the above operations individually, or create new defined types, as required. 
