@@ -10,30 +10,29 @@ require 'fixtures/unit/puppet/provider/brocade_zone/brocade_zone_fixture'
 
 NOOP_HASH = { :noop => false}
 
-describe "testing the brocade zone" do
+describe "Brocade Zone behavior testing" do
 
   before(:each) do
     @fixture = Brocade_zone_fixture.new
-
     mock_transport=double('transport')
     @fixture.provider.transport = mock_transport
     @fixture.provider.stub(:cfg_save)
   end
 
   context "when brocade_zone provider is created " do
-    it "should have create method defined for brocade_zone" do
+    it "should have a create method defined for brocade_zone" do
       @fixture.provider.class.instance_method(:create).should_not == nil
     end
 
-    it "should have destroy method defined for brocade_zone" do
+    it "should have a destroy method defined for brocade_zone" do
       @fixture.provider.class.instance_method(:destroy).should_not == nil
     end
 
-    it "should have exists? method defined for brocade_zone" do
+    it "should have a exists? method defined for brocade_zone" do
       @fixture.provider.class.instance_method(:exists?).should_not == nil
     end
 
-    it "should have parent 'Puppet::Provider::Brocade_fos'" do
+    it "should have a parent 'Puppet::Provider::Brocade_fos'" do
       @fixture.provider.should be_kind_of(Puppet::Provider::Brocade_fos)
     end
   end
