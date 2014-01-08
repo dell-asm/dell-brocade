@@ -2,13 +2,8 @@
 
 require 'spec_helper'
 require 'yaml'
-require 'puppet/provider/brocade_fos'
 require 'puppet/util/network_device/brocade_fos/device'
-require 'puppet/util/network_device/base_fos'
-require 'rspec/mocks'
 require 'puppet/provider/brocade_fos'
-require 'puppet/provider/brocade_responses'
-require 'puppet/provider/brocade_messages'
 require 'puppet/util/network_device/transport_fos/ssh'
 
 
@@ -40,13 +35,13 @@ describe Puppet::Type.type(:brocade_alias).provider(:brocade_alias), '(integrati
       create_alias.provider.device_transport.connect  
       create_alias.provider.create
       response = create_alias.provider.device_transport.command(get_alias_show_cmd(create_alias[:alias_name]),:noop=>false)
-      expect {response.should_not include("does not exist")}               
+      response.should_not include("does not exist")        
     end
     it "should delete the brocade alias" do     
       destroy_alias.provider.device_transport.connect  
       destroy_alias.provider.destroy
       response = destroy_alias.provider.device_transport.command(get_alias_show_cmd(create_alias[:alias_name]),:noop=>false)
-      expect {response.should include("does not exist")}   
+      response.should include("does not exist")   
     end
   end
   
