@@ -88,8 +88,12 @@ class Puppet::Util::NetworkDevice::Transport_fos::Ssh < Puppet::Util::NetworkDev
   end
 
   def send(line, noop = false)
-    Puppet.debug "SSH Command send: #{line}" if Puppet[:debug]
-    @channel.send_data(line + "\n") unless noop
+    if @channel
+      Puppet.debug "SSH Command send: #{line}" if Puppet[:debug]
+      @channel.send_data(line + "\n") unless noop
+    else
+      Puppet.debug "SSH Command can not be sent, channel does not exist any more."
+    end
   end
 
   def eof?
