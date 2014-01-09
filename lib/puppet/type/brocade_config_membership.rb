@@ -6,10 +6,18 @@ Puppet::Type.newtype(:brocade_config_membership) do
   apply_to_device
 
   ensurable
+  newparam(:name, :namevar => true) do
+  desc "Brocade configname:member_zone name."
 
+    munge do |value|
+      @resource[:configname], @resource[:member_zone] = value.split(':',2)
+      value
+    end
+  end
+  
   newparam(:configname) do
     desc "This parameter describes the config name on Brocade"
-    isnamevar
+    
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::CONFIG_NAME_BLANK_ERROR)
       Puppet::Type::Brocade_messages.special_char_check(value, Puppet::Type::Brocade_messages::CONFIG_NAME_SPECIAL_CHAR_ERROR)
