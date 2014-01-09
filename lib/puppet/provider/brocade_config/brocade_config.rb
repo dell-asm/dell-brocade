@@ -55,7 +55,7 @@ def destroy_config
   response = @transport.command(get_brocade_config_delete_command, :noop => false)
   if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
     Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_ALREADY_REMOVED_INFO%[@resource[:configname]])
-  elsif (response.include? Puppet::Provider::Brocade_responses::RESPONSE_SHOULD_NOT_BE_DELETED )
+  elsif (response.include? Puppet::Provider::Brocade_responses::RESPONSE_SHOULD_NOT_BE_DELETED || (response.include? Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG ))
     raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_DESTROY_ERROR%[@resource[:configname],response]
   else
     cfg_save
