@@ -4,7 +4,6 @@ require 'puppet/util/network_device/transport_fos'
 
 class Puppet::Util::NetworkDevice::Transport_fos::Base_fos
   attr_accessor :user, :password, :host, :port, :default_prompt, :timeout, :cache
-
   def initialize
     @timeout = 10
     @cache = {}

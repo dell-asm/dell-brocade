@@ -6,17 +6,16 @@ require 'puppet/provider/brocade_commands'
 Puppet::Type.type(:brocade_alias).provide(:brocade_alias, :parent => Puppet::Provider::Brocade_fos) do
   @doc = "Manage brocade alias creation and deletion."
 
- mk_resource_methods
- 
- def create
+  mk_resource_methods
+  def create
     Puppet.debug(Puppet::Provider::Brocade_messages::ALIAS_CREATE_DEBUG%[@resource[:alias_name],@resource[:member]])
     response = @transport.command((Puppet::Provider::Brocade_commands::ALIAS_CREATE_COMMAND%[@resource[:alias_name],@resource[:member]]), :noop => false)
     if((response.include? Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG )|| (response.include? Puppet::Provider::Brocade_responses::RESPONSE_INVALID_NAME))
-	  raise Puppet::Error, Puppet::Provider::Brocade_messages::ALIAS_CREATE_ERROR%[@resource[:alias_name],response]
-	elsif(response.include? Puppet::Provider::Brocade_responses::RESPONSE_DUPLICATE_NAME)
-	  Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_ALREADY_EXIST_INFO%[@resource[:alias_name]])
-	else
-	  cfg_save
+      raise Puppet::Error, Puppet::Provider::Brocade_messages::ALIAS_CREATE_ERROR%[@resource[:alias_name],response]
+    elsif(response.include? Puppet::Provider::Brocade_responses::RESPONSE_DUPLICATE_NAME)
+      Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_ALREADY_EXIST_INFO%[@resource[:alias_name]])
+    else
+      cfg_save
     end
   end
 
@@ -24,7 +23,7 @@ Puppet::Type.type(:brocade_alias).provide(:brocade_alias, :parent => Puppet::Pro
     Puppet.debug(Puppet::Provider::Brocade_messages::ALIAS_DESTROY_DEBUG%[@resource[:alias_name]])
     response = @transport.command(Puppet::Provider::Brocade_commands::ALIAS_DELETE_COMMAND%[@resource[:alias_name]], :noop => false)
     if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
-	 Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_DOES_NOT_EXIST_INFO%[@resource[:alias_name]])
+      Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_DOES_NOT_EXIST_INFO%[@resource[:alias_name]])
     else
       cfg_save
     end
@@ -35,9 +34,9 @@ Puppet::Type.type(:brocade_alias).provide(:brocade_alias, :parent => Puppet::Pro
     self.device_transport
     response = @transport.command(Puppet::Provider::Brocade_commands::ALIAS_SHOW_COMMAND%[@resource[:alias_name]], :noop => false)
     if !(response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
-      true
+    true
     else
-      false
+    false
     end
   end
 

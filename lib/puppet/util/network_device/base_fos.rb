@@ -22,7 +22,6 @@ class Puppet::Util::NetworkDevice::Base_fos
     end
   end
 
-
   private
 
   def update_transport_usr_password
@@ -34,7 +33,6 @@ class Puppet::Util::NetworkDevice::Base_fos
     end
 
   end
-
 
   private
 
@@ -72,17 +70,16 @@ class Puppet::Util::NetworkDevice::Base_fos
 
   end
 
-
   private
 
   def query_present_and_crypted?
 
     if @query
       if @query['crypt'] == ['true']
-        return true
+      return true
       end
     end
-   return false
+    return false
   end
 
   private

@@ -10,7 +10,6 @@ class Puppet::Util::NetworkDevice::Brocade_fos::Facts
   include Puppet::Util::NetworkDevice::Dsl
 
   attr_reader :transport
-
   def initialize(transport)
     @transport = transport
   end
@@ -26,8 +25,8 @@ class Puppet::Util::NetworkDevice::Brocade_fos::Facts
   def param_class
     return Puppet::Util::NetworkDevice::Brocade_fos::Fact
   end
-  
-# TODO
+
+  # TODO
   def facts
     @params
   end

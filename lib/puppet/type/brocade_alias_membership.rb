@@ -12,18 +12,18 @@ Puppet::Type.newtype(:brocade_alias_membership) do
     isnamevar
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ALIAS_NAME_BLANK_ERROR)
-	  Puppet::Type::Brocade_messages.special_char_check(value, Puppet::Type::Brocade_messages::ALIAS_NAME_SPECIAL_CHAR_ERROR)
+      Puppet::Type::Brocade_messages.special_char_check(value, Puppet::Type::Brocade_messages::ALIAS_NAME_SPECIAL_CHAR_ERROR)
     end
   end
 
   newparam(:member) do
     desc "This parameter describes the MemberWWPN value whose alias is to be updated."
     validate do |value|
-       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::MEMBER_WWPN_BLANK_ERROR)
-       Puppet::Type::Brocade_messages.tokenize_list(value).each do |line|
-        Puppet::Type::Brocade_messages.member_wwpn_format_check(line.strip, Puppet::Type::Brocade_messages::MEMBER_WWPN_INVALID_FORMAT_ERROR)  
-       end
-	 end
+      Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::MEMBER_WWPN_BLANK_ERROR)
+      Puppet::Type::Brocade_messages.tokenize_list(value).each do |line|
+        Puppet::Type::Brocade_messages.member_wwpn_format_check(line.strip, Puppet::Type::Brocade_messages::MEMBER_WWPN_INVALID_FORMAT_ERROR)
+      end
+    end
   end
 
 end

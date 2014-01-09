@@ -3,7 +3,6 @@ require 'tsort'
 class Puppet::Util::NetworkDevice::Sorter
 
   include TSort
-
   def initialize(param)
     @param = param
   end

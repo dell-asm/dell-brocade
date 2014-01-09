@@ -4,10 +4,9 @@ require 'puppet/util/network_device'
 # This is the base Class of all prefetched brocade device providers
 class Puppet::Provider::Brocade_fos < Puppet::Provider
   attr_accessor :device, :transport
-
   def device_transport
     #@device ||=Puppet::Util::NetworkDevice.current
-    if Facter.value(:url) then   
+    if Facter.value(:url) then
       Puppet.debug "Puppet::Util::NetworkDevice::Brocade_fos: connecting via facter url."
       @device ||= Puppet::Util::NetworkDevice::Brocade_fos::Device.new(Facter.value(:url))
     else

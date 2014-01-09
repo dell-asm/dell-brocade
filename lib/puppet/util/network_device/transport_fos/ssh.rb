@@ -3,10 +3,8 @@ require 'puppet/util/network_device'
 require 'puppet/util/network_device/transport_fos'
 require 'puppet/util/network_device/transport_fos/base_fos'
 
-
 class Puppet::Util::NetworkDevice::Transport_fos::Ssh < Puppet::Util::NetworkDevice::Transport_fos::Base_fos
   attr_accessor :buf, :ssh, :channel
-
   def initialize
     super
     unless Puppet.features.ssh?
@@ -79,7 +77,7 @@ class Puppet::Util::NetworkDevice::Transport_fos::Ssh < Puppet::Util::NetworkDev
           line = nil
           yield nil if block_given?
         end
-        break
+      break
       end
     end
     line.split(/\n/).each do |l|

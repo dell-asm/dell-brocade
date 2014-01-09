@@ -16,7 +16,7 @@ Puppet::Type.newtype(:brocade_zone) do
     end
   end
 
- newparam(:member) do
+  newparam(:member) do
     desc "This parameter describes/displays the member to be added on the Brocade."
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ALIAS_NAME_BLANK_ERROR)

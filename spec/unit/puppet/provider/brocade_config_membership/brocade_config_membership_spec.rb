@@ -46,7 +46,7 @@ describe "Brocade Config Membership Provider" do
     #Then
       @fixture.provider.should_receive(:config_add_zone).once.ordered.and_call_original
 
-      @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_config_add_command, NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_ADD_MEMBER_COMMAND%[@fixture.brocade_config_membership[:configname],@fixture.brocade_config_membership[:member_zone]], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
       @fixture.provider.should_not_receive(:cfg_save)
 
       #When
@@ -58,7 +58,7 @@ describe "Brocade Config Membership Provider" do
     #Then
       @fixture.provider.should_receive(:config_add_zone).once.ordered.and_call_original
 
-      @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_config_add_command, NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_INVALID)
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_ADD_MEMBER_COMMAND%[@fixture.brocade_config_membership[:configname],@fixture.brocade_config_membership[:member_zone]], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_INVALID)
       @fixture.provider.should_not_receive(:cfg_save)
 
       #When
@@ -69,7 +69,7 @@ describe "Brocade Config Membership Provider" do
     #Then
       @fixture.provider.should_receive(:config_add_zone).once.ordered.and_call_original
 
-      @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_config_add_command, NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_ALREADY_CONTAINS)
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_ADD_MEMBER_COMMAND%[@fixture.brocade_config_membership[:configname],@fixture.brocade_config_membership[:member_zone]], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_ALREADY_CONTAINS)
       Puppet.should_receive(:info).once.with(@createInfoMsg).ordered.and_return("")
       @fixture.provider.should_not_receive(:cfg_save)
 
@@ -82,7 +82,7 @@ describe "Brocade Config Membership Provider" do
     #Then
       @fixture.provider.should_receive(:config_add_zone).once.ordered.and_call_original
 
-      @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_config_add_command, NOOP_HASH).ordered.and_return ("")
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_ADD_MEMBER_COMMAND%[@fixture.brocade_config_membership[:configname],@fixture.brocade_config_membership[:member_zone]], NOOP_HASH).ordered.and_return ("")
       @fixture.provider.should_receive(:cfg_save).once.ordered
 
       #When
@@ -101,7 +101,7 @@ describe "Brocade Config Membership Provider" do
     #Then
       @fixture.provider.should_receive(:config_remove_zone).once.ordered.and_call_original
 
-      @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_config_remove_command, NOOP_HASH).ordered.and_return ("")
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_REMOVE_MEMBER_COMMAND%[@fixture.brocade_config_membership[:configname],@fixture.brocade_config_membership[:member_zone]], NOOP_HASH).ordered.and_return ("")
       @fixture.provider.should_receive(:cfg_save).once.ordered
 
       #When
@@ -112,7 +112,7 @@ describe "Brocade Config Membership Provider" do
     #Then
       @fixture.provider.should_receive(:config_remove_zone).once.ordered.and_call_original
 
-      @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_config_remove_command, NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_IS_NOT_IN)
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_REMOVE_MEMBER_COMMAND%[@fixture.brocade_config_membership[:configname],@fixture.brocade_config_membership[:member_zone]], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_IS_NOT_IN)
       Puppet.should_receive(:info).once.with(@destroyInfoMsg).ordered.and_return("")
       @fixture.provider.should_not_receive(:cfg_save)
 
@@ -124,7 +124,7 @@ describe "Brocade Config Membership Provider" do
     #Then
       @fixture.provider.should_receive(:config_remove_zone).once.ordered.and_call_original
 
-      @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_config_remove_command, NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_INVALID)
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_REMOVE_MEMBER_COMMAND%[@fixture.brocade_config_membership[:configname],@fixture.brocade_config_membership[:member_zone]], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_INVALID)
       @fixture.provider.should_not_receive(:cfg_save)
 
       #When
@@ -135,7 +135,7 @@ describe "Brocade Config Membership Provider" do
     #Then
       @fixture.provider.should_receive(:config_remove_zone).once.ordered.and_call_original
 
-      @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_config_remove_command, NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG)
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_REMOVE_MEMBER_COMMAND%[@fixture.brocade_config_membership[:configname],@fixture.brocade_config_membership[:member_zone]], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG)
       @fixture.provider.should_not_receive(:cfg_save)
 
       #When

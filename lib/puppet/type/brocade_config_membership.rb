@@ -5,7 +5,7 @@ Puppet::Type.newtype(:brocade_config_membership) do
 
   apply_to_device
 
-  ensurable 
+  ensurable
 
   newparam(:configname) do
     desc "This parameter describes the config name on Brocade"

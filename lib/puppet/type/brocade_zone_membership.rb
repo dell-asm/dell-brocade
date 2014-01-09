@@ -12,7 +12,7 @@ Puppet::Type.newtype(:brocade_zone_membership) do
     isnamevar
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_BLANK_ERROR)
-	  Puppet::Type::Brocade_messages.special_char_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_SPECIAL_CHAR_ERROR)
+      Puppet::Type::Brocade_messages.special_char_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_SPECIAL_CHAR_ERROR)
     end
   end
 
@@ -20,7 +20,7 @@ Puppet::Type.newtype(:brocade_zone_membership) do
     desc "This parameter describes the member node to be added in the zone"
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ZONE_MEMBER_BLANK_ERROR)
-	  Puppet::Type::Brocade_messages.member_value_format_check(value)
+      Puppet::Type::Brocade_messages.member_value_format_check(value)
     end
   end
 

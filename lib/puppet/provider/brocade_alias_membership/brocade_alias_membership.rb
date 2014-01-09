@@ -7,10 +7,9 @@ Puppet::Type.type(:brocade_alias_membership).provide(:brocade_alias_membership, 
   @doc = "Manage brocade alias members addition and removal."
 
   mk_resource_methods
-
   def create
     Puppet.debug(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_CREATE_DEBUG%[@resource[:member],@resource[:alias_name]])
-    response = @transport.command(Puppet::Provider::Brocade_commands::ALIAS_MEMBERSHIP_CREATE_COMMAND%[@resource[:alias_name],@resource[:member]], :noop => false)
+    response = @transport.command(Puppet::Provider::Brocade_commands::ALIAS_MEMBER_ADD_COMMAND%[@resource[:alias_name],@resource[:member]], :noop => false)
     if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND ) || ( response.downcase.include? (Puppet::Provider::Brocade_responses::RESPONSE_INVALID).downcase)
       raise Puppet::Error, Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_CREATE_ERROR%[@resource[:member],@resource[:alias_name],response]
     elsif response.include? Puppet::Provider::Brocade_responses::RESPONSE_ALREADY_CONTAINS
@@ -22,7 +21,7 @@ Puppet::Type.type(:brocade_alias_membership).provide(:brocade_alias_membership, 
 
   def destroy
     Puppet.debug(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_DESTROY_DEBUG%[@resource[:member],@resource[:alias_name]])
-    response =  @transport.command(Puppet::Provider::Brocade_commands::ALIAS_MEMBERSHIP_DELETE_COMMAND%[@resource[:alias_name],@resource[:member]], :noop => false)
+    response =  @transport.command(Puppet::Provider::Brocade_commands::ALIAS_MEMBER_REMOVE_COMMAND%[@resource[:alias_name],@resource[:member]], :noop => false)
     if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST) || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
       raise Puppet::Error, Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_DESTROY_ERROR%[@resource[:member],@resource[:alias_name],response]
     elsif (response.include? Puppet::Provider::Brocade_responses::RESPONSE_IS_NOT_IN )

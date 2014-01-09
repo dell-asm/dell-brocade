@@ -7,7 +7,6 @@ require 'puppet/util/network_device/brocade_fos/facts'
 class Puppet::Util::NetworkDevice::Brocade_fos::Device < Puppet::Util::NetworkDevice::Base_fos
 
   attr_accessor :enable_password, :switch
-
   def initialize(url, options = {})
     super(url)
     @initialized = false

@@ -18,7 +18,8 @@ namespace :rspec do
 end
 
 task :default => :test
-task :spec => :test
+task :rspec => :test
+task :lint => :test
 
 RSpec::Core::RakeTask.new(:test)
 
