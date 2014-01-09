@@ -10,9 +10,8 @@ class Brocade_config_membership_fixture
 
   def  get_brocade_config_membership
     Puppet::Type.type(:brocade_config_membership).new(
-    :configname => 'DemoConfig',
+    :name => 'DemoConfig:DemoZone1;DemoZone2',
     :ensure => 'present',
-    :member_zone => 'DemoZone',
     )
   end
 
@@ -30,9 +29,8 @@ class Brocade_config_membership_fixture_with_absent
 
   def  get_brocade_config_membership
     Puppet::Type.type(:brocade_config_membership).new(
-    :configname => 'DemoConfig',
+    :name => 'DemoConfig:DemoZone1;DemoZone2',
     :ensure => 'absent',
-    :member_zone => 'DemoZone',
     )
   end
 
