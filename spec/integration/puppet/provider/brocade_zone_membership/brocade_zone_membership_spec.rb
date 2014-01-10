@@ -64,7 +64,6 @@ describe "Integration test for brocade zone membership" do
       zone_add_member.provider.device_transport.connect
       zone_add_member.provider.create
       zone_show_res = zone_add_member.provider.device_transport.command(get_zone_show_cmd(zone_add_member[:zonename]),:noop=>false)
-      puts "zone_show_res after adding member:#{zone_show_res}"
       zone_add_member.provider.device_transport.close
       presense?(zone_show_res,zone_add_member[:member]).should == true
     end
