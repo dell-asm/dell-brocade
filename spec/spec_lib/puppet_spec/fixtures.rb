@@ -2,6 +2,7 @@ module PuppetSpec::Fixtures
   def fixtures(*rest)
     File.join(PuppetSpec::FIXTURE_DIR, *rest)
   end
+
   def my_fixture_dir
     callers = caller
     while line = callers.shift do
@@ -10,6 +11,7 @@ module PuppetSpec::Fixtures
     end
     fail "sorry, I couldn't work out your path from the caller stack!"
   end
+
   def my_fixture(name)
     file = File.join(my_fixture_dir, name)
     unless File.readable? file then
@@ -17,6 +19,7 @@ module PuppetSpec::Fixtures
     end
     return file
   end
+
   def my_fixtures(glob = '*', flags = 0)
     files = Dir.glob(File.join(my_fixture_dir, glob), flags)
     unless files.length > 0 then

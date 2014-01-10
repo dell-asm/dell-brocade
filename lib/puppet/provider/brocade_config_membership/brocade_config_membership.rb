@@ -48,20 +48,20 @@ Puppet::Type.type(:brocade_config_membership).provide(:brocade_config_membership
       @resource[:member_zone].split(";").each do |member|
         if !(response.include? member)
           Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ADD_INFO%[member, @resource[:configname]])
-          return false
+        return false
         end
       end
       Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_EXIST_INFO%[@resource[:member_zone],@resource[:configname]])
-      true
-    else 
+    true
+    else
       @resource[:member_zone].split(";").each do |member|
         if(response.include? member)
           Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_REMOVED_INFO%[member, @resource[:configname]])
-          return true
+        return true
         end
       end
       Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_REMOVED_INFO%[@resource[:member_zone],@resource[:configname]])
-      false
+    false
     end
   end
 end

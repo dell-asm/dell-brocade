@@ -12,7 +12,7 @@ describe "Brocade Device" do
   end
 
   context 'when creating the brocade device' do
-    it 'should initialize the parent' 
+    it 'should initialize the parent'
 
   # it 'should prefer the enable password from the options' do
   # cisco = Puppet::Util::NetworkDevice::Cisco_ios::Device.new('ssh://user:password@localhost:22/?enable=enable_password', :enable_password => 'mypass')

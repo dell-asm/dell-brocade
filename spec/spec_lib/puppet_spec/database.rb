@@ -4,7 +4,7 @@ def sqlite?
       require 'sqlite3'
       $sqlite = true
     rescue LoadError
-      $sqlite = false
+    $sqlite = false
     end
   end
   $sqlite

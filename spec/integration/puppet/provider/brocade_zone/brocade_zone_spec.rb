@@ -6,7 +6,6 @@ require 'puppet/util/network_device/brocade_fos/device'
 require 'puppet/provider/brocade_fos'
 require 'puppet/util/network_device/transport_fos/ssh'
 
-
 describe "Integration test for brocade zone create and destroy" do
 
   device_conf =  YAML.load_file(my_deviceurl('brocade','device_conf.yml'))
@@ -17,21 +16,21 @@ describe "Integration test for brocade zone create and destroy" do
 
   let :create_zone do
     Puppet::Type.type(:brocade_zone).new(
-      :zonename     => 'testZone25',
-      :ensure   => 'present',
-      :member => 'testMember',
+    :zonename     => 'testZone25',
+    :ensure   => 'present',
+    :member => 'testMember',
     )
   end
 
   let :destroy_zone do
     Puppet::Type.type(:brocade_zone).new(
-      :zonename => 'testZone25',
-      :ensure   => 'absent',
+    :zonename => 'testZone25',
+    :ensure   => 'absent',
     )
   end
-  
+
   def get_zoneshow_cmd(zonename)
-    command = "zoneshow #{zonename}"    
+    command = "zoneshow #{zonename}"
   end
 
   context "should Create and Destroy Zone" do
@@ -49,7 +48,7 @@ describe "Integration test for brocade zone create and destroy" do
         else
           puts "Successfully saved the Config"
         end
-      end 
+      end
       destroy_zone.provider.device_transport.close
       create_zone.provider.device_transport.connect
       create_zone.provider.create
@@ -57,7 +56,7 @@ describe "Integration test for brocade zone create and destroy" do
       create_zone.provider.device_transport.close
       create_response.should_not include("does not exist")
     end
-    
+
     it "should destroy a brocade zone" do
       create_zone.provider.device_transport.connect
       create_zone.provider.create
@@ -70,16 +69,16 @@ describe "Integration test for brocade zone create and destroy" do
       destroy_response.should include("does not exist")
     end
 
-  end   
+  end
 
   def presense?(response_string,key_to_check)
     retval = false
     if response_string.include?("#{key_to_check}")
-      retval = true
+    retval = true
     else
-      retval = false
-    end 
+    retval = false
+    end
     return retval
   end
-  
+
 end

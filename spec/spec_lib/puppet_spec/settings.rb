@@ -7,5 +7,5 @@ module PuppetSpec::Settings
     :vardir       => { :type => :directory, :default => "test", :desc => "vardir" },
     :rundir       => { :type => :directory, :default => "test", :desc => "rundir" },
   }
-  
+
 end

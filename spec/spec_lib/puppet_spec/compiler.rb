@@ -20,8 +20,8 @@ module PuppetSpec::Compiler
 
   def apply_compiled_manifest(manifest, prioritizer = Puppet::Graph::SequentialPrioritizer.new)
     transaction = Puppet::Transaction.new(compile_to_ral(manifest),
-                                         Puppet::Transaction::Report.new("apply"),
-                                         prioritizer)
+    Puppet::Transaction::Report.new("apply"),
+    prioritizer)
     transaction.evaluate
     transaction.report.finalize_report
 

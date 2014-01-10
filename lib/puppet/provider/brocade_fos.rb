@@ -3,6 +3,7 @@ require 'puppet/util/network_device'
 
 # This is the base Class of all prefetched brocade device providers
 class Puppet::Provider::Brocade_fos < Puppet::Provider
+  @doc = "Base class for all prefetched brocade providers. It creates device transport and manage configuration saving"
   attr_accessor :device, :transport
   def device_transport
     #@device ||=Puppet::Util::NetworkDevice.current

@@ -146,42 +146,42 @@ describe "Brocade Config Membership Provider" do
 
   context "when brocade config membership existence is validated" do
     it "should warn when the given brocade config does not exist" do
-      #Given
+    #Given
       @createInfoMsg = Puppet::Provider::Brocade_messages::CONFIG_DOES_NOT_EXIST_INFO%[@fixture.brocade_config_membership[:configname]]
-      
-      #Then 
+
+      #Then
       @fixture.provider.should_receive(:device_transport).once.ordered
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@fixture.brocade_config_membership[:configname]], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
-      Puppet.should_receive(:info).once.with(@createInfoMsg).ordered.and_return("")     
-      
+      Puppet.should_receive(:info).once.with(@createInfoMsg).ordered.and_return("")
+
       #When
-      @fixture.provider.exists? 
+      @fixture.provider.exists?
     end
-    
+
     it "should return true when the brocade config have expected members" do
-      #Given
+    #Given
       @createInfoMsg = Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_EXIST_INFO%[@fixture.brocade_config_membership[:member_zone], @fixture.brocade_config_membership[:configname]]
-      
+
       #Then
       @fixture.provider.should_receive(:device_transport).once.ordered
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@fixture.brocade_config_membership[:configname]], NOOP_HASH).ordered.and_return (@fixture.brocade_config_membership[:member_zone])
-      Puppet.should_receive(:info).once.with(@createInfoMsg).ordered.and_return("")     
-      
+      Puppet.should_receive(:info).once.with(@createInfoMsg).ordered.and_return("")
+
       #when
       @fixture.provider.exists?
 
     end
 
     it "should return false when the brocade config does not have an expected member present in the given member list" do
-      #Given      
+    #Given
       @member_zone1, @member_zone2 = @fixture.brocade_config_membership[:member_zone].split(';',2)
       @createInfoMsg = Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ADD_INFO%[@member_zone2, @fixture.brocade_config_membership[:configname]]
 
       #Then
       @fixture.provider.should_receive(:device_transport).once.ordered
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@fixture.brocade_config_membership[:configname]], NOOP_HASH).ordered.and_return (@member_zone1)
-      Puppet.should_receive(:info).once.with(@createInfoMsg).ordered.and_return("")     
-     
+      Puppet.should_receive(:info).once.with(@createInfoMsg).ordered.and_return("")
+
       #when
       @fixture.provider.exists?
     end

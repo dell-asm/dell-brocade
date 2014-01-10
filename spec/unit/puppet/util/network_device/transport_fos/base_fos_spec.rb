@@ -1,5 +1,4 @@
 require 'spec_helper'
-
 require 'puppet/util/network_device/transport_fos/base_fos'
 
 describe Puppet::Util::NetworkDevice::Transport_fos::Base_fos do

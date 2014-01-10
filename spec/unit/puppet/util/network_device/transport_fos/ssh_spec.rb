@@ -1,5 +1,4 @@
 require 'spec_helper'
-
 require 'puppet/util/network_device/transport_fos/ssh'
 
 describe Puppet::Util::NetworkDevice::Transport_fos::Ssh, :if => Puppet.features.ssh? do

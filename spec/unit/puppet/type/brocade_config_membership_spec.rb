@@ -23,14 +23,14 @@ describe Puppet::Type.type(:brocade_config_membership) do
       described_class.key_attributes.should == [:name]
     end
 
-  context "when validating attributes" do
-    [:configname, :member_zone].each do |param|
-      it "should have a #{param} parameter" do
-        described_class.attrtype(param).should == :param
+    context "when validating attributes" do
+      [:configname, :member_zone].each do |param|
+        it "should have a #{param} parameter" do
+          described_class.attrtype(param).should == :param
+        end
       end
     end
-  end
-    
+
     describe "when validating ensure property" do
       it "should support present" do
         described_class.new(:name => 'DemoConfig:DemoMemberZone', :ensure => 'present')[:ensure].should == :present

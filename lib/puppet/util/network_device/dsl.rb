@@ -3,7 +3,6 @@ require 'puppet/util/network_device'
 require 'puppet/util/network_device/sorter'
 
 module Puppet::Util::NetworkDevice::Dsl
-
   def register_param(params, klass = nil, &block)
     # Make it so that we can register multiple Params at the same time
     # and assign every Param an index number that must match the Regex
@@ -31,9 +30,9 @@ module Puppet::Util::NetworkDevice::Dsl
       unless respond_to?(:skip_params_to_hash) && skip_params_to_hash.include?(data[0])
         unless data[1].value.nil? || data[1].value.to_s.empty?
           if data[1].value.is_a?(Hash)
-            res.merge!(data[1].value)
+          res.merge!(data[1].value)
           else
-            res[data[0]] = data[1].value
+          res[data[0]] = data[1].value
           end
         end
       end
@@ -56,43 +55,43 @@ module Puppet::Util::NetworkDevice::Dsl
       Puppet::Util::Autoload.new(self, File.join(mod_path_base, path_addition), :wrap => false).load(mod)
       if path_addition.empty?
         mod_const_base.const_get(mod.to_s.capitalize).register(self)
-        @included_modules << mod
+      @included_modules << mod
       else
         mod_const_base.const_get(path_addition.to_s.capitalize).const_get(mod.to_s.capitalize).register(self)
-        @included_modules << mod
+      @included_modules << mod
       end
     end
   end
 
   def evaluate_new_params
     Puppet::Util::NetworkDevice::Sorter.new(@params).tsort.each do |param|
-      #Skip if the param has already been evaluated
+    #Skip if the param has already been evaluated
       next if param.evaluated
       if param.cmd != false
         # Let the Transport Cache the Command for us since we are only dealing here with 'show' type commands
         out = @transport.command(param.cmd, :cache => true, :noop => false)
         if out.nil?
-          param.evaluated = true
-          next
+        param.evaluated = true
+        next
         end
-        param.parse(out)
+      param.parse(out)
       elsif param.match_param.is_a? Array
         param.parse([param.match_param].flatten.collect{|p|@params[p].value})
       else
-        param.parse(@params[param.match_param].value)
-      end      
+      param.parse(@params[param.match_param].value)
+      end
       checkparamhook(param)
     end
     evaluate_new_params unless @params.each_value.select {|param| param.evaluated == false}.empty?
   end
-  
+
   def checkparamhook(param)
     @after_hooks ||= {}
     if @after_hooks[param.name]
-       @after_hooks[param.name].each do |mod|
-          register_new_module(mod[:mod], mod[:path_addition]) if mod[:block].call
+      @after_hooks[param.name].each do |mod|
+        register_new_module(mod[:mod], mod[:path_addition]) if mod[:block].call
+      end
     end
-  end
   end
 
   def retrieve
@@ -151,9 +150,9 @@ module Puppet::Util::NetworkDevice::Dsl
       match do |txt|
         result = txt.scan(match_re).flatten
         if block_given?
-          yield result
+        yield result
         else
-          result
+        result
         end
       end
       cmd fetch_cmd
