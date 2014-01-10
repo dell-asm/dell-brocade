@@ -5,8 +5,7 @@ describe Puppet::Type.type(:brocade_alias_membership) do
 
   context 'should compile with given test params' do
     let(:params) { {
-        :alias_name   => 'DemoAlias',
-        :member   => '0f:0a:0a:0a:0a:0a:0a:0a',
+        :name   => 'DemoAlias:0f:0a:0a:0a:0a:0a:0a:0a',
         :ensure   => 'present',
       }}
     it do
@@ -18,11 +17,12 @@ describe Puppet::Type.type(:brocade_alias_membership) do
   end
 
   context "when validating attributes" do
-    it "should have alias name as its keyattribute" do
-      described_class.key_attributes.should == [:alias_name]
+    it "should have name as its keyattribute" do
+      described_class.key_attributes.should == [:name]
     end
+    
     describe "when validating attributes" do
-      [:alias_name, :member].each do |param|
+      [:name,:alias_name, :member].each do |param|
         it "should hava a #{param} parameter" do
           described_class.attrtype(param).should == :param
         end
@@ -34,45 +34,62 @@ describe Puppet::Type.type(:brocade_alias_membership) do
         end
       end
     end
+    
     describe "when validating values" do
+      
+      describe "validating name param" do
+        it "should be a tuple of two values" do
+          described_class.new(:name => 'alias_demo:0f:0a:0a:0a:0a:0a:0a:0a', :ensure => 'present')[:name].should == 'alias_demo:0f:0a:0a:0a:0a:0a:0a:0a'
+        end
+        
+        it "should have alias name value before first splitter(:)" do
+          described_class.new(:name => 'alias_demo:0f:0a:0a:0a:0a:0a:0a:0a', :ensure => 'present')[:alias_name].should == 'alias_demo'
+        end
+        
+        it "should have member value(s) after first splitter(:)" do
+          described_class.new(:name => 'alias_demo:0f:0a:0a:0a:0a:0a:0a:0a', :ensure => 'present')[:member].should == '0f:0a:0a:0a:0a:0a:0a:0a'
+        end
+        
+      end
       describe "validating alias_name param" do
         it "should allow a valid alias name" do
-          described_class.new(:alias_name => 'alias_demo', :ensure => 'present',:member => '0f:0a:0a:0a:0a:0a:0a:0a')[:alias_name].should == 'alias_demo'
+          described_class.new(:name => 'alias_demo:0f:0a:0a:0a:0a:0a:0a:0a', :ensure => 'present')[:alias_name].should == 'alias_demo'
         end
 
         it "should not allow blank value in the alias name" do
-          expect { described_class.new(:alias_name => '', :ensure => 'present',:member => '0f:0a:0a:0a:0a:0a:0a:0a') }.to raise_error Puppet::Error
+          expect { described_class.new(:name => ':0f:0a:0a:0a:0a:0a:0a:0a', :ensure => 'present') }.to raise_error Puppet::Error
         end
+        
         it "should not allow special characters in the alias name" do
-          expect { described_class.new(:alias_name => '$%^&!', :ensure => 'present',:member => '0f:0a:0a:0a:0a:0a:0a:0a') }.to raise_error Puppet::Error
+          expect { described_class.new(:name => '@$%#^:0f:0a:0a:0a:0a:0a:0a:0a', :ensure => 'present') }.to raise_error Puppet::Error
         end
       end
       describe "validating ensure property" do
         it "should support present value" do
-          described_class.new(:alias_name => 'DemoAlias', :member => '0f:0a:0a:0a:0a:0a:0a:0a', :ensure => 'present')[:ensure].should == :present
+          described_class.new(:name => 'alias_demo:0f:0a:0a:0a:0a:0a:0a:0a', :ensure => 'present')[:ensure].should == :present
         end
 
         it "should support absent value" do
-          described_class.new(:alias_name => 'DemoAlias', :member => '0f:0a:0a:0a:0a:0a:0a:0a', :ensure => 'absent')[:ensure].should == :absent
+          described_class.new(:name => 'alias_demo:0f:0a:0a:0a:0a:0a:0a:0a', :ensure => 'absent')[:ensure].should == :absent
         end
         it "should not allow values other than present or absent" do
-          expect { described_class.new(:alias_name => 'alias_demo', :ensure => 'foo',:member => '0f:0a:0a:0a:0a:0a:0a:0a') }.to raise_error Puppet::Error
+          expect { described_class.new(:name => 'alias_demo:0f:0a:0a:0a:0a:0a:0a:0a', :ensure => 'foo') }.to raise_error Puppet::Error
         end
 
       end
       describe "validating member param" do
         it "should allow a valid member wwpn format to the given alias name" do
-          described_class.new(:alias_name => 'alias_demo', :ensure => 'present',:member => '0f:0a:0a:0a:0a:0a:0a:0a')[:member].should == '0f:0a:0a:0a:0a:0a:0a:0a'
+          described_class.new(:name => 'alias_demo:0f:0a:0a:0a:0a:0a:0a:0a', :ensure => 'present')[:member].should == '0f:0a:0a:0a:0a:0a:0a:0a'
         end
 
         it "should not allow blank member name" do
-          expect { described_class.new(:alias_name => 'alias_demo_new', :ensure => 'present',:member => '')}.to raise_error Puppet::Error
+          expect { described_class.new(:name => 'alias_demo:', :ensure => 'present')}.to raise_error Puppet::Error
         end
         it "should not allow special char in the member value" do
-          expect { described_class.new(:alias_name => 'alias_demo_new', :ensure => 'present',:member => '0%:0a:0a:0a:0a:0a:0a:0a') }.to raise_error Puppet::Error
+          expect { described_class.new(:name => 'alias_demo:0f:0a:0a%0a:0a:0a:0a:0a', :ensure => 'present') }.to raise_error Puppet::Error
         end
         it "should not allow invalid WWPN in the member value" do
-          expect { described_class.new(:alias_name => 'alias_demo_new', :ensure => 'present',:member => '0f:0a:0a:0a:0a:0a:0a') }.to raise_error Puppet::Error
+          expect { described_class.new(:name => 'alias_demo:0f:0a:0a:0a:0a:0a', :ensure => 'present') }.to raise_error Puppet::Error
         end
       end
     end
