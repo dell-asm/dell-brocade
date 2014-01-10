@@ -53,11 +53,11 @@ describe "Integration test for brocade zone create and destroy" do
       create_zone.provider.device_transport.connect
       create_zone.provider.create
       create_response = create_zone.provider.device_transport.command(get_zoneshow_cmd(create_zone[:zonename]),:noop=>false)
-      create_zone.provider.device_transport.close
       create_response.should_not include("does not exist")
+      create_zone.provider.device_transport.close
     end
 
-    it "should destroy a brocade zone" do
+    it "should be able to destroy a brocade zone" do
       create_zone.provider.device_transport.connect
       create_zone.provider.create
 

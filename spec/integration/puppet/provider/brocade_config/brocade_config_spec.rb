@@ -12,7 +12,6 @@ describe "Integration Testing for Brocade config" do
 
   before :each do
     Facter.stubs(:value).with(:url).returns(device_conf['url'])
-  #described_class.stubs(:suitable?).returns true
   end
 
   let :create_config_disable do
@@ -37,7 +36,7 @@ describe "Integration Testing for Brocade config" do
   end
 
   context "when create and delete config without any error" do
-    it "should create a brocade config" do
+    it "should be able to create a brocade config" do
       create_config_disable.provider.device_transport.connect
       create_config_disable.provider.create
       response = create_config_disable.provider.device_transport.command(get_brocade_config_show_command(create_config_disable[:configname]),:noop=>false)
@@ -50,7 +49,8 @@ describe "Integration Testing for Brocade config" do
       create_config_enable.provider.create
       response = create_config_enable.provider.device_transport.command(get_brocade_config_show_command(create_config_enable[:configname]),:noop=>false)
       response.should_not include("does not exist")
-      getEffectiveConfiguration
+      verify_config_enabled
+      create_config_enable.provider.device_transport.close
     end
 
     it "should delete the brocade config" do
@@ -58,6 +58,7 @@ describe "Integration Testing for Brocade config" do
       destroy_config.provider.destroy
       response = destroy_config.provider.device_transport.command(get_brocade_config_show_command(destroy_config[:configname]),:noop=>false)
       response.should include("does not exist")
+      destroy_config_enable.provider.device_transport.close
     end
   end
 
@@ -69,7 +70,7 @@ describe "Integration Testing for Brocade config" do
     command = "cfgactvshow"
   end
 
-  def getEffectiveConfiguration
+  def verify_config_enabled
     response = String.new("")
     #response =  @device.transport.command("zoneshow", :noop => false)
     response = create_config_enable.provider.device_transport.command(get_brocade_zone_show_command,:noop=>false)
