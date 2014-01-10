@@ -1,3 +1,4 @@
+# Method Value Helper Module
 module Puppet::Util::NetworkDevice::ValueHelper
   def define_value_method(methods)
     methods.each do |meth|

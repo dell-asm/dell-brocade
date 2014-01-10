@@ -1,5 +1,6 @@
 require 'tsort'
 
+# Utility class for sorting
 class Puppet::Util::NetworkDevice::Sorter
 
   include TSort

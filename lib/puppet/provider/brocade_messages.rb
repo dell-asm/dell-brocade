@@ -1,3 +1,4 @@
+# Abstracts all messages in brocade provider module
 module Puppet::Provider::Brocade_messages
 
   ZONE_CREATE_DEBUG="Puppet::Provider::brocade_zone: A Brocade zone with zonename: %s, zonemember:  %s is being created."

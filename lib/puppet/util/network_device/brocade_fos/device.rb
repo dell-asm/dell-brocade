@@ -1,9 +1,9 @@
-#This class is called by the puppet framework for retrieving the facts. It retrieves the facts and initialize the switch variables.
 require 'puppet'
 require 'puppet/util'
 require 'puppet/util/network_device/base_fos'
 require 'puppet/util/network_device/brocade_fos/facts'
 
+#This class is called by the puppet framework for retrieving the facts. It retrieves the facts and initialize the switch variables.
 class Puppet::Util::NetworkDevice::Brocade_fos::Device < Puppet::Util::NetworkDevice::Base_fos
 
   attr_accessor :enable_password, :switch

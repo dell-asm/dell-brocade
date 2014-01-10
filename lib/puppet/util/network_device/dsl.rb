@@ -1,7 +1,7 @@
-#This module provides various methods to register facts. It overrides retrieve method.
 require 'puppet/util/network_device'
 require 'puppet/util/network_device/sorter'
 
+#This module provides various methods to register facts. It overrides retrieve method.
 module Puppet::Util::NetworkDevice::Dsl
   def register_param(params, klass = nil, &block)
     # Make it so that we can register multiple Params at the same time

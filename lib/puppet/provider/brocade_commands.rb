@@ -1,5 +1,5 @@
+# Abstracts all device commands in brocade module
 module Puppet::Provider::Brocade_commands
-  @doc = "Abstracts all the commands used in the module."
   
   ALIAS_CREATE_COMMAND = "alicreate %s, %s"
   ALIAS_DELETE_COMMAND = "alidelete %s"

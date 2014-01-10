@@ -1,7 +1,7 @@
-#This class provides generic method to parse the fact from command output
 require 'puppet/util/network_device/brocade_fos'
 require 'puppet/util/network_device/value_helper'
 
+#This class provides generic method to parse the fact from command output
 class Puppet::Util::NetworkDevice::Brocade_fos::Fact
   attr_accessor :name, :idx, :value, :evaluated
   extend Puppet::Util::NetworkDevice::ValueHelper

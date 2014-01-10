@@ -1,5 +1,6 @@
 require 'puppet/util/network_device/brocade_fos/device'
 
+#Create Singleton cache to store the Device
 class Puppet::Util::NetworkDevice::Singelton_fos
   def self.lookup(url)
     @map ||= {}

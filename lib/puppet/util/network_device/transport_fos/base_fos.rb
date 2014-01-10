@@ -1,7 +1,7 @@
-#Base class to provide generic methods for supporting different transport protocols.
 require 'puppet/util/network_device'
 require 'puppet/util/network_device/transport_fos'
 
+#Base class to provide generic methods for supporting different transport protocols.
 class Puppet::Util::NetworkDevice::Transport_fos::Base_fos
   attr_accessor :user, :password, :host, :port, :default_prompt, :timeout, :cache
   def initialize

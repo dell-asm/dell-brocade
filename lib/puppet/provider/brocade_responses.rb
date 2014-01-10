@@ -1,3 +1,4 @@
+# ABstracts all device command responses
 module Puppet::Provider::Brocade_responses
 
   RESPONSE_NOT_FOUND="not found"

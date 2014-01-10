@@ -1,5 +1,6 @@
 require 'puppet/brocademodel'
 
+# Base class for all possible facts
 module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
   SWITCHSHOW_HASH = {
     'Switch Name' => 'switchName',

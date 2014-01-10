@@ -1,10 +1,10 @@
-#Lookup class which helps in registering the facts and retrieving the fact values
 require 'puppet/util/network_device/brocade_fos'
 require 'puppet/util/network_device/brocade_fos/fact'
 require 'puppet/util/network_device/brocade_fos/possible_facts'
 require 'puppet/util/network_device/sorter'
 require 'puppet/util/network_device/dsl'
 
+#Lookup class which helps in registering the facts and retrieving the fact values
 class Puppet::Util::NetworkDevice::Brocade_fos::Facts
 
   include Puppet::Util::NetworkDevice::Dsl

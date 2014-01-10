@@ -1,3 +1,4 @@
+# Abstracts all messages in brocade types
 module Puppet::Type::Brocade_messages
 
   ALIAS_NAME_BLANK_ERROR="Unable to perform the operation because the alias name is blank."

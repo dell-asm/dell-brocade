@@ -1,8 +1,8 @@
-#This class handles SSH transport for brocade switch
 require 'puppet/util/network_device'
 require 'puppet/util/network_device/transport_fos'
 require 'puppet/util/network_device/transport_fos/base_fos'
 
+#This class handles SSH transport for brocade switch
 class Puppet::Util::NetworkDevice::Transport_fos::Ssh < Puppet::Util::NetworkDevice::Transport_fos::Base_fos
   attr_accessor :buf, :ssh, :channel
   def initialize
