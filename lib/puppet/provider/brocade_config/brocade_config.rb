@@ -1,21 +1,12 @@
 require 'puppet/provider/brocade_fos'
 require 'puppet/provider/brocade_responses'
 require 'puppet/provider/brocade_messages'
+require 'puppet/provider/brocade_commands'
 
-def create_config
-  response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@resource[:configname]], :noop => false)
-  if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST )
-    process_config_creation
-  else
-    Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_ALREADY_EXIST%[@resource[:configname]])
-  end
-  process_config_state
-end
-
-def process_config_state
-  if "#{@resource[:configstate]}" == "enable"
+def process_config_state(value)
+  if value == :enable
     config_enable
-  elsif "#{@resource[:configstate]}" == "disable"
+  elsif value == :disable
     config_disable
   end
 end
@@ -27,6 +18,10 @@ def process_config_creation
     cfg_save
   else
     raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_CREATE_ERROR%[@resource[:configname],response]
+  end
+  
+  if "#{@resource[:configstate]}" == "enable"
+    config_enable
   end
 end
 
@@ -40,14 +35,9 @@ def config_enable
 end
 
 def config_disable
-  response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_ACTV_SHOW_COMMAND, :noop => false)
-  if ( !response.include? Puppet::Provider::Brocade_responses::RESPONSE_NO_EFFECTIVE_CONFIG )
     Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_DISABLE_DEBUG)
     @transport.command(Puppet::Provider::Brocade_commands::CONFIG_DISABLE_COMMAND, :prompt => Puppet::Provider::Brocade_messages::CONFIG_DISABLE_PROMPT)
     @transport.command(Puppet::Provider::Brocade_commands::YES_COMMAND, :noop => false)
-  else
-    Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_NO_EFFECTIVE_CONFIG)
-  end
 end
 
 def destroy_config
@@ -66,7 +56,7 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
   @doc = "Manage zone config creation, deletion and state change."
   mk_resource_methods
   def create
-    create_config
+    process_config_creation
   end
 
   def destroy
@@ -76,10 +66,24 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
 
   def exists?
     self.device_transport
-    if "#{@resource[:ensure]}" == "present"
+    response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@resource[:configname]], :noop => false)
+    if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST )
       false
     else
       true
     end
+  end
+  
+  def configstate
+    response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_ACTV_SHOW_COMMAND, :noop => false)
+    if ( response.include? @resource[:configname])
+      :enable
+    else
+      :disable
+    end
+  end
+  
+  def configstate=(value)
+    process_config_state(value)
   end
 end
