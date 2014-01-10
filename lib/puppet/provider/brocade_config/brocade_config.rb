@@ -12,41 +12,41 @@ def process_config_state(value)
 end
 
 def process_config_creation
-  Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_CREATE_DEBUG%[@resource[:configname],resource[:member_zone]])
-  response =  @transport.command(Puppet::Provider::Brocade_commands::CONFIG_CREATE_COMMAND%[@resource[:configname], @resource[:member_zone]], :noop => false)
+  Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_CREATE_DEBUG%[@CONFIG_NAME,resource[:member_zone]])
+  response =  @transport.command(Puppet::Provider::Brocade_commands::CONFIG_CREATE_COMMAND%[@CONFIG_NAME, @MEMBER_ZONE], :noop => false)
   if !((response.downcase.include? (Puppet::Provider::Brocade_responses::RESPONSE_INVALID).downcase)||(response.include? Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG ))
     cfg_save
   else
-    raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_CREATE_ERROR%[@resource[:configname],response]
+    raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_CREATE_ERROR%[@CONFIG_NAME,response]
   end
-  
-  if "#{@resource[:configstate]}" == "enable"
+
+  if "#{@CONFIG_STATE}" == "enable"
     config_enable
   end
 end
 
 def config_enable
-  Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_ENABLE_DEBUG%[@resource[:configname]])
-  @transport.command(Puppet::Provider::Brocade_commands::CONFIG_ENABLE_COMMAND%[@resource[:configname]], :prompt => Puppet::Provider::Brocade_messages::CONFIG_ENABLE_PROMPT)
+  Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_ENABLE_DEBUG%[@CONFIG_NAME])
+  @transport.command(Puppet::Provider::Brocade_commands::CONFIG_ENABLE_COMMAND%[@CONFIG_NAME], :prompt => Puppet::Provider::Brocade_messages::CONFIG_ENABLE_PROMPT)
   response = @transport.command(Puppet::Provider::Brocade_commands::YES_COMMAND, :noop => false)
   if response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND
-    raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_ENABLE_ERROR%[@resource[:configname],response]
+    raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_ENABLE_ERROR%[@CONFIG_NAME,response]
   end
 end
 
 def config_disable
-    Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_DISABLE_DEBUG)
-    @transport.command(Puppet::Provider::Brocade_commands::CONFIG_DISABLE_COMMAND, :prompt => Puppet::Provider::Brocade_messages::CONFIG_DISABLE_PROMPT)
-    @transport.command(Puppet::Provider::Brocade_commands::YES_COMMAND, :noop => false)
+  Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_DISABLE_DEBUG)
+  @transport.command(Puppet::Provider::Brocade_commands::CONFIG_DISABLE_COMMAND, :prompt => Puppet::Provider::Brocade_messages::CONFIG_DISABLE_PROMPT)
+  @transport.command(Puppet::Provider::Brocade_commands::YES_COMMAND, :noop => false)
 end
 
 def destroy_config
-  Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_DESTORY_DEBUG%[@resource[:configname]])
-  response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_DELETE_COMMAND%[@resource[:configname]], :noop => false)
+  Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_DESTORY_DEBUG%[@CONFIG_NAME])
+  response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_DELETE_COMMAND%[@CONFIG_NAME], :noop => false)
   if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
-    Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_ALREADY_REMOVED_INFO%[@resource[:configname]])
+    Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_ALREADY_REMOVED_INFO%[@CONFIG_NAME])
   elsif (response.include? Puppet::Provider::Brocade_responses::RESPONSE_SHOULD_NOT_BE_DELETED || (response.include? Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG ))
-    raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_DESTROY_ERROR%[@resource[:configname],response]
+    raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_DESTROY_ERROR%[@CONFIG_NAME,response]
   else
     cfg_save
   end
@@ -54,36 +54,48 @@ end
 
 Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::Provider::Brocade_fos) do
   @doc = "Manage zone config creation, deletion and state change."
+
   mk_resource_methods
+  def initialize_resources
+    @CONFIG_NAME=@resource[:configname]
+    @CONFIG_STATE=@resource[:configstate]
+    @MEMBER_ZONE=@resource[:member_zone]
+  end
+
   def create
+    initialize_resources
     process_config_creation
   end
 
   def destroy
-    Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_DESTORY_DEBUG%[@resource[:configname]])
+    initialize_resources
+    Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_DESTORY_DEBUG%[@CONFIG_NAME])
     destroy_config
   end
 
   def exists?
+    initialize_resources
     self.device_transport
-    response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@resource[:configname]], :noop => false)
+    response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@CONFIG_NAME], :noop => false)
     if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST )
-      false
+    false
     else
-      true
+    true
     end
   end
-  
+
   def configstate
+    initialize_resources
     response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_ACTV_SHOW_COMMAND, :noop => false)
-    if ( response.include? @resource[:configname])
+    if ( response.include? @CONFIG_NAME)
       :enable
     else
       :disable
     end
   end
-  
+
   def configstate=(value)
+    initialize_resources
     process_config_state(value)
   end
 end
