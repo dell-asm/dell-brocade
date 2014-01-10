@@ -5,11 +5,19 @@ Puppet::Type.newtype(:brocade_alias_membership) do
 
   apply_to_device
 
+  newparam(:name, :namevar => true) do
+    desc "This parameter is tuple of alias name and member perameter"
+
+    munge do |value|
+      @resource[:alias_name], @resource[:member] = value.split(':',2)
+      value
+    end
+  end
+  
   ensurable
 
   newparam(:alias_name) do
     desc "This parameter describes the Brocade alias name for the MemberWWPN."
-    isnamevar
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ALIAS_NAME_BLANK_ERROR)
       Puppet::Type::Brocade_messages.special_char_check(value, Puppet::Type::Brocade_messages::ALIAS_NAME_SPECIAL_CHAR_ERROR)
