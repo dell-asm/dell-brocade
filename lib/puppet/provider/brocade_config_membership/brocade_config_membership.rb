@@ -56,7 +56,7 @@ Puppet::Type.type(:brocade_config_membership).provide(:brocade_config_membership
     else
       @resource[:member_zone].split(";").each do |member|
         if(response.include? member)
-          Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_REMOVED_INFO%[member, @resource[:configname]])
+          Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_REMOVE_INFO%[member, @resource[:configname]])
         return true
         end
       end

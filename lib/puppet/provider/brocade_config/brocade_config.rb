@@ -3,7 +3,7 @@ require 'puppet/provider/brocade_responses'
 require 'puppet/provider/brocade_messages'
 
 def create_config
-  response = @transport.command(get_brocade_config_show_command, :noop => false)
+  response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@resource[:configname]], :noop => false)
   if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST )
     process_config_creation
   else
@@ -22,7 +22,7 @@ end
 
 def process_config_creation
   Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_CREATE_DEBUG%[@resource[:configname],resource[:member_zone]])
-  response =  @transport.command(get_brocade_config_create_command, :noop => false)
+  response =  @transport.command(Puppet::Provider::Brocade_commands::CONFIG_CREATE_COMMAND%[@resource[:configname], @resource[:member_zone]], :noop => false)
   if !((response.downcase.include? (Puppet::Provider::Brocade_responses::RESPONSE_INVALID).downcase)||(response.include? Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG ))
     cfg_save
   else
@@ -32,19 +32,19 @@ end
 
 def config_enable
   Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_ENABLE_DEBUG%[@resource[:configname]])
-  @transport.command(get_brocade_config_enable_command, :prompt => Puppet::Provider::Brocade_messages::CONFIG_ENABLE_PROMPT)
-  response = @transport.command("yes", :noop => false)
+  @transport.command(Puppet::Provider::Brocade_commands::CONFIG_ENABLE_COMMAND%[@resource[:configname]], :prompt => Puppet::Provider::Brocade_messages::CONFIG_ENABLE_PROMPT)
+  response = @transport.command(Puppet::Provider::Brocade_commands::YES_COMMAND, :noop => false)
   if response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND
     raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_ENABLE_ERROR%[@resource[:configname],response]
   end
 end
 
 def config_disable
-  response = @transport.command("cfgActvShow", :noop => false)
+  response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_ACTV_SHOW_COMMAND, :noop => false)
   if ( !response.include? Puppet::Provider::Brocade_responses::RESPONSE_NO_EFFECTIVE_CONFIG )
     Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_DISABLE_DEBUG)
-    @transport.command("cfgDisable", :prompt => Puppet::Provider::Brocade_messages::CONFIG_DISABLE_PROMPT)
-    @transport.command("yes", :noop => false)
+    @transport.command(Puppet::Provider::Brocade_commands::CONFIG_DISABLE_COMMAND, :prompt => Puppet::Provider::Brocade_messages::CONFIG_DISABLE_PROMPT)
+    @transport.command(Puppet::Provider::Brocade_commands::YES_COMMAND, :noop => false)
   else
     Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_NO_EFFECTIVE_CONFIG)
   end
@@ -52,7 +52,7 @@ end
 
 def destroy_config
   Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_DESTORY_DEBUG%[@resource[:configname]])
-  response = @transport.command(get_brocade_config_delete_command, :noop => false)
+  response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_DELETE_COMMAND%[@resource[:configname]], :noop => false)
   if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
     Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_ALREADY_REMOVED_INFO%[@resource[:configname]])
   elsif (response.include? Puppet::Provider::Brocade_responses::RESPONSE_SHOULD_NOT_BE_DELETED || (response.include? Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG ))
@@ -60,24 +60,6 @@ def destroy_config
   else
     cfg_save
   end
-end
-
-public
-
-def get_brocade_config_show_command
-  return "cfgshow #{@resource[:configname]}"
-end
-
-def get_brocade_config_create_command
-  return "cfgcreate  #{@resource[:configname]},  \"#{@resource[:member_zone]}\""
-end
-
-def get_brocade_config_enable_command
-  return  "cfgenable #{@resource[:configname]}"
-end
-
-def get_brocade_config_delete_command
-  return  "cfgdelete  #{@resource[:configname]}"
 end
 
 Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::Provider::Brocade_fos) do
@@ -95,9 +77,9 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
   def exists?
     self.device_transport
     if "#{@resource[:ensure]}" == "present"
-    false
+      false
     else
-    true
+      true
     end
   end
 end
