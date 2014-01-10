@@ -42,26 +42,32 @@ Puppet::Type.type(:brocade_alias_membership).provide(:brocade_alias_membership, 
     initialize_resources
     self.device_transport
     response = @transport.command(Puppet::Provider::Brocade_commands::ALIAS_SHOW_COMMAND%[@ALIAS_NAME], :noop => false)
-    if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
-      Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_DOES_NOT_EXIST_INFO%[@ALIAS_NAME])
-    elsif("#{@resource[:ensure]}"== "present")
+    if("#{@resource[:ensure]}"== "present")
+      if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
+        Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_DOES_NOT_EXIST_INFO%[@resource[:alias_name]])
+      return true
+      elsif
       @resource[:member].split(";").each do |wwpn|
-        if !(response.include? wwpn)
-        return false
-        end
+      if !(response.include? wwpn)
+      return false
       end
-      Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_EXIST_INFO%[@MEMBER_NAME,@ALIAS_NAME])
-    return true
+      end
+        Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_EXIST_INFO%[@resource[:member],@resource[:alias_name]])
+      return true
+      end
     else
+      if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
+        Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_DOES_NOT_EXIST_INFO%[@resource[:alias_name]])
+      return false
+      elsif
       @resource[:member].split(";").each do |wwpn|
-        if (response.include? wwpn)
-        return true
-        end
+      if (response.include? wwpn)
+      return true
       end
-      Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_REMOVED_INFO%[@MEMBER_NAME,@ALIAS_NAME])
-    return false
+      end
+        Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_REMOVED_INFO%[@resource[:member],@resource[:alias_name]])
+      return false
+      end
     end
   end
-
 end
-
