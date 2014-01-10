@@ -38,14 +38,15 @@ describe "Integration Testing for Brocade config" do
     )
   end
 
+#Before every test config will be created
   before :each do
     Facter.stubs(:value).with(:url).returns(device_conf['url'])
-    create_config.provider.device_transport.connect
     create_config.provider.device_transport.connect
     create_config.provider.create
     create_config.provider.device_transport.close
   end
 
+#After every test config will be destroyed
   after :each do
     destroy_config.provider.device_transport.connect
     destroy_config.provider.destroy
