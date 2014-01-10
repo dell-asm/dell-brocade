@@ -29,22 +29,31 @@ describe "Integration test for brocade zone membership" do
     :member      => '50:00:d3:10:00:5e:c4:3b',
     )
   end
+  
+    let :create_zone do
+    Puppet::Type.type(:brocade_zone).new(
+    :zonename     => 'testZone',
+    :ensure   => 'present',
+    :member => '50:00:d3:10:00:5e:c4:3a',
+    )
+  end
 
   context "should add and remove member to a zone" do
     it "should should add a member to a zone" do
-      zone_add_member.provider.device_transport.connect
-      zone_show_res = zone_add_member.provider.device_transport.command(get_zone_show_cmd(zone_add_member[:zonename]),:noop=>false)
-      if presense?(zone_show_res,zone_add_member[:member]) == true
-        ##member already present in the zone, remove the member and continue the test
-        zone_mem_rem_res = zone_add_member.provider.device_transport.command("zoneremove \"#{zone_add_member[:member]}\"",:noop=>false)
-        cfg_save_res = zone_add_member.provider.device_transport.command("cfgsave",:prompt => /Do/)
-        if cfg_save_res.match(/fail|err|not found|not an alias/)
-          puts "Unable to save the Config because of the following issue: #{cfg_save_res}"
-        else
-          puts "Successfully saved the Config"
-        end
+      create_zone.provider.device_transport.connect
+      zone_remove_res = create_zone.provider.device_transport.command("zonedelete #{create_zone[:zonename]}", :noop=>false)
+      cfg_save_res = create_zone.provider.device_transport.command("cfgsave",:prompt => /Do/)
+      if cfg_save_res.match(/fail|err|not found|not an alias/)
+        puts "Unable to save the Config because of the following issue: #{cfg_save_res}"
+      else
+        puts "Successfully saved the Config"
       end
-      zone_add_member.provider.device_transport.close
+      create_zone.provider.device_transport.close
+     
+      create_zone.provider.device_transport.connect
+      zone_create_res = create_zone.provider.create
+      
+      ##Executing test below
       zone_add_member.provider.device_transport.connect
       zone_add_member.provider.create
       zone_show_res = zone_add_member.provider.device_transport.command(get_zone_show_cmd(zone_add_member[:zonename]),:noop=>false)
