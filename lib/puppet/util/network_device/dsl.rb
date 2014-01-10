@@ -96,9 +96,7 @@ module Puppet::Util::NetworkDevice::Dsl
   end
 
   def retrieve
-	puts "in retrieve----"
     register_new_module(:base)
-	puts "evaluate_new_params ----------------------------in dsl.rb"
     evaluate_new_params
     params_to_hash
   end

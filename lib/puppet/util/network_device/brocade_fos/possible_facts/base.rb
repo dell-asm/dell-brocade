@@ -1,3 +1,4 @@
+require 'puppet/brocademodel'
 module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
   SWITCHSHOW_HASH = {
     'Switch Name' => 'switchName',
@@ -16,12 +17,18 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
      'Factory Serial Number' => 'Factory Serial Num'    
    }
    
-  HADUMP_HASH = {
+  IPADDRESSSHOW_HASH = {
        'Ethernet IP Address' => 'Ethernet IP Address',
        'Ethernet Subnetmask' => 'Ethernet Subnetmask',
        'Gateway IP Address' => 'Gateway IP Address'   
      }
-
+     
+  MODEL_HASH = {
+     '120.x' => 'Brocade DCX8510-8',
+     '109.x' => 'Brocade 6510'
+         
+   }
+ 
   def self.register_brocade_param(base, command_val, hash_name)
   param_hash = hash_name
     param_hash.keys.each do |key|
@@ -43,8 +50,30 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
     Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base.register_brocade_param(base,'chassisshow',CHASISSSHOW_HASH)
 
     #Register facts for hadump command	  
-    Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base.register_brocade_param(base,'hadump',HADUMP_HASH)
+    Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base.register_brocade_param(base,'ipaddrshow',IPADDRESSSHOW_HASH)
+    
+    base.register_param ['Manufacturer'] do
+      match do
+        "Brocade"
+      end
+      cmd "switchshow"
+    end
 
+    base.register_param ['Model'] do      
+      match do |txt|
+        switchtype=txt.scan(/switchType:\s+(.*)?/).flatten.first            
+        modelvalue=Puppet::Brocademodel::MODEL_HASH.values_at(switchtype).first
+        
+        if modelvalue.nil? || modelvalue.empty? then
+          switchtype = switchtype.partition('.').first        
+        end  
+        switchtype = switchtype+'.x'        
+        modelvalue=Puppet::Brocademodel::MODEL_HASH.values_at(switchtype).first     
+         
+      end  
+      cmd "switchshow"   
+    end
+         
     base.register_param ['FC Ports'] do
       match /FC ports =\s+(.*)?/
       cmd "switchshow -portcount"   
@@ -55,12 +84,49 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
       cmd "switchstatusshow"
     end
   
-   
-
-   base.register_param ['Fabric Os'] do
+    base.register_param ['Fabric Os'] do
       match /OS:\s+(.*)?/
       cmd "version"
-   end
+    end
+
+    base.register_param ['Protocols Enabled'] do
+      match do
+        "FC"
+      end
+      cmd "switchshow"   
+    end
+    
+    base.register_param ['Boot Image'] do
+      match do
+        "Not Available"
+      end
+      cmd "switchshow"   
+    end
+    
+    base.register_param ['Memory(bytes)'] do
+      match /Mem:\s+(\d*)/
+      cmd "memshow"   
+    end
+    
+    base.register_param ['Processor'] do
+      match do
+        "Not Available"
+      end
+      cmd "switchshow"   
+    end
+    base.register_param ['Port Channels'] do
+      match do
+        "None"
+      end
+      cmd "switchshow"   
+    end
+    
+    base.register_param ['Port Channel Status'] do
+      match do
+        "None"
+      end
+      cmd "switchshow"   
+    end
 
    base.register_param 'Zone_Config' do
       match do |txt|

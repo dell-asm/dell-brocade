@@ -9,8 +9,7 @@ class Puppet::Util::NetworkDevice::Brocade_fos::Fact
     @name = name
     @idx = idx
     @evaluated = false
-    self.instance_eval(&block)
-    Puppet.debug("In facts initialize ------------------------------------name-#{name} idx-#{idx}")
+    self.instance_eval(&block) 
 
   end
 
