@@ -75,3 +75,5 @@ For example:
 This creates an Alias for the members, adds the Alias to a zone, and then adds the zone to the config (in Deactivation mode) as per defined input parameters.
 
 You can also use any of the above operations individually, or create new defined types, as required. 
+
+Sample manifests can be referred from tests folder.
