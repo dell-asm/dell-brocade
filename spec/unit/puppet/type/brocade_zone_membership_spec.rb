@@ -36,17 +36,17 @@ describe Puppet::Type.type(:brocade_zone_membership) do
         it "should be a tuple of two values" do
           described_class.new(:name => 'demozone:memberzone1;memberzone2', :ensure => 'present')[:name].should == 'demozone:memberzone1;memberzone2'
         end
-        
+
         it "should have zone name value before first splitter(:)" do
           described_class.new(:name => 'demozone:memberzone1;memberzone2', :ensure => 'present')[:zonename].should == 'demozone'
         end
-        
+
         it "should have member value(s) after first splitter(:)" do
           described_class.new(:name => 'demozone:memberzone1;memberzone2', :ensure => 'present')[:member].should == 'memberzone1;memberzone2'
         end
-        
+
       end
-      
+
       describe "validating zonename variable" do
 
         it "should support an alphanumerical name" do
