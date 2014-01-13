@@ -9,6 +9,8 @@ module Puppet::Provider::Brocade_commands
   ZONE_ADD_MEMBER_COMMAND = "zoneadd %s, \"%s\""
   ZONE_REMOVE_MEMBER_COMMAND = "zoneremove %s, \"%s\""
   ZONE_SHOW_COMMAND = "zoneremove %s"
+  ZONE_CREATE_COMMAND = "zonecreate %s, \"%s\""
+  ZONE_DELETE_COMMAND = "zonedelete %s"
   CONFIG_ADD_MEMBER_COMMAND = "cfgadd %s, \"%s\""
   CONFIG_REMOVE_MEMBER_COMMAND = "cfgremove %s, \"%s\""
   CONFIG_SHOW_COMMAND = "cfgshow %s"

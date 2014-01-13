@@ -16,7 +16,16 @@ class Brocade_config_membership_fixture
   end
 
   public
+
   def set_brocade_config_membership_ensure_absent
     @brocade_config_membership[:ensure] = 'absent'
+  end
+
+  def get_config_name
+    @brocade_config_membership[:configname]
+  end
+
+  def get_member_zone
+    @brocade_config_membership[:member_zone]
   end
 end

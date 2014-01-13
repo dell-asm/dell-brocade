@@ -15,20 +15,20 @@ class Brocade_alias_membership_fixture
     )
   end
 
-public
+  public
+
   def  get_alias_name
     @brocade_alias_membership[:alias_name]
   end
-  
+
   def  get_member_name
     @brocade_alias_membership[:member]
   end
 
-
   def  get_ensure_value
     @brocade_alias_membership[:ensure]
   end
-  
+
   def  set_ensure_value_absent
     @brocade_alias_membership[:ensure] = 'absent'
   end
