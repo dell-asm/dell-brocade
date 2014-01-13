@@ -98,7 +98,7 @@ describe "Brocade Zone Membership Provider" do
       @fixture.provider.destroy
     end
 
-    it "should warn if brocade alias name does not exist" do
+    it "should warn if brocade zone name does not exist" do
     #Then
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ZONE_REMOVE_MEMBER_COMMAND%[@fixture.brocade_zone_membership[:zonename],@fixture.brocade_zone_membership[:member]], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_IS_NOT_IN)
       Puppet.should_receive(:info).once.ordered.with(@destroyInfoMsg).and_return("")
@@ -130,23 +130,62 @@ describe "Brocade Zone Membership Provider" do
 
   context "when brocade Zone Membership existence is validated" do
 
-    it "should return true when the brocade Zone Membership exist" do
-
+    it "should warn if brocade zone name does not exist and when ensure property is given present" do
       @fixture.provider.should_receive(:device_transport).once.ordered
-
-      @fixture.provider.exists?.should == false
-
-    end
-
-    it "should return false when the brocade Zone Membership does not exist" do
-
-      @fixture = Brocade_zone_membership_fixture_with_absent.new
-
-      @fixture.provider.should_receive(:device_transport).once.ordered
-
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ZONE_SHOW_COMMAND%[@fixture.brocade_zone_membership[:zonename]], NOOP_HASH).ordered.and_return(Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
+      Puppet.should_receive(:info).once.with(Puppet::Provider::Brocade_messages::ZONE_DOES_NOT_EXIST_INFO%[@fixture.brocade_zone_membership[:zonename]])
       @fixture.provider.exists?.should == true
-
     end
+    
+    it "should warn if brocade zone name does not exist and when ensure property is given absent" do
+      @fixture.set_ensure_value_absent
+      @fixture.provider.should_receive(:device_transport).once.ordered
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ZONE_SHOW_COMMAND%[@fixture.brocade_zone_membership[:zonename]], NOOP_HASH).ordered.and_return(Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
+      Puppet.should_receive(:info).once.with(Puppet::Provider::Brocade_messages::ZONE_DOES_NOT_EXIST_INFO%[@fixture.brocade_zone_membership[:zonename]])
+      @fixture.provider.exists?.should == false
+    end
+    
+    it "should return false if brocade zone name exist and member is not associated to it when ensure property is given present" do
+      @fixture.provider.should_receive(:device_transport).once.ordered
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ZONE_SHOW_COMMAND%[@fixture.brocade_zone_membership[:zonename]], NOOP_HASH).ordered.and_return("")
+      @fixture.provider.exists?.should == false
+    end
+    
+    it "should return true if brocade zone name exist and member is associated to it when ensure property is given present" do
+      @fixture.provider.should_receive(:device_transport).once.ordered
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ZONE_SHOW_COMMAND%[@fixture.brocade_zone_membership[:zonename]], NOOP_HASH).ordered.and_return(@fixture.brocade_zone_membership[:member])
+      @fixture.provider.exists?.should == true
+    end
+    
+    it "should warn if brocade zone name exist and member is associated to it when ensure property is given present" do
+      @fixture.provider.should_receive(:device_transport).once.ordered
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ZONE_SHOW_COMMAND%[@fixture.brocade_zone_membership[:zonename]], NOOP_HASH).ordered.and_return(@fixture.brocade_zone_membership[:member])
+      Puppet.should_receive(:info).once.with(Puppet::Provider::Brocade_messages::ZONE_MEMBERSHIP_ALREADY_EXIST_INFO%[@fixture.brocade_zone_membership[:member],@fixture.brocade_zone_membership[:zonename]])
+      @fixture.provider.exists?.should == true
+    end
+
+    it "should return true if brocade zone name exist and member is associated to it when ensure property is given absent" do
+      @fixture.set_ensure_value_absent
+      @fixture.provider.should_receive(:device_transport).once.ordered
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ZONE_SHOW_COMMAND%[@fixture.brocade_zone_membership[:zonename]], NOOP_HASH).ordered.and_return(@fixture.brocade_zone_membership[:member])
+      @fixture.provider.exists?.should == true
+    end
+    
+    it "should return false if brocade zone name exist and member is not associated to it when ensure property is given absent" do
+      @fixture.set_ensure_value_absent
+      @fixture.provider.should_receive(:device_transport).once.ordered
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ZONE_SHOW_COMMAND%[@fixture.brocade_zone_membership[:zonename]], NOOP_HASH).ordered.and_return("")
+      @fixture.provider.exists?.should == false
+    end
+
+    it "should warn if brocade zone name exist and member is not associated to it when ensure property is given absent" do
+      @fixture.set_ensure_value_absent
+      @fixture.provider.should_receive(:device_transport).once.ordered
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ZONE_SHOW_COMMAND%[@fixture.brocade_zone_membership[:zonename]], NOOP_HASH).ordered.and_return("")
+      Puppet.should_receive(:info).once.with(Puppet::Provider::Brocade_messages::ZONE_MEMBERSHIP_ALREADY_REMOVED_INFO%[@fixture.brocade_zone_membership[:member],@fixture.brocade_zone_membership[:zonename]])
+      @fixture.provider.exists?.should == false
+    end
+
 
   end
 
