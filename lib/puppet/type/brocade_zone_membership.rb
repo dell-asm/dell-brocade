@@ -7,9 +7,17 @@ Puppet::Type.newtype(:brocade_zone_membership) do
 
   ensurable
 
+  newparam(:name, :namevar => true) do
+    desc "This parameter is tuple of alias name and member perameter"
+
+    munge do |value|
+      @resource[:zonename], @resource[:member] = value.split(':',2)
+      value
+    end
+  end
+
   newparam(:zonename) do
     desc "This parameter describes the zone name to be created on the Brocade switch."
-    isnamevar
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_BLANK_ERROR)
       Puppet::Type::Brocade_messages.special_char_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_SPECIAL_CHAR_ERROR)
