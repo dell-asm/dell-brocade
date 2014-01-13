@@ -15,9 +15,9 @@ Puppet::Type.type(:brocade_alias_membership).provide(:brocade_alias_membership, 
   def create
     initialize_resources
     Puppet.debug(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_CREATE_DEBUG%[@ALIAS_NAME,@MEMBER_NAME])
-    response = @transport.command(Puppet::Provider::Brocade_commands::ALIAS_MEMBER_ADD_COMMAND%[@resource[:alias_name],@resource[:member]], :noop => false)
+    response = @transport.command(Puppet::Provider::Brocade_commands::ALIAS_MEMBER_ADD_COMMAND%[@ALIAS_NAME,@MEMBER_NAME], :noop => false)
     if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND ) || ( response.downcase.include?(Puppet::Provider::Brocade_responses::RESPONSE_INVALID.downcase))
-      raise Puppet::Error, Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_CREATE_ERROR%[@ALIAS_NAME,@resource[:alias_name],response]
+      raise Puppet::Error, Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_CREATE_ERROR%[@ALIAS_NAME,@ALIAS_NAME,response]
     elsif response.include? Puppet::Provider::Brocade_responses::RESPONSE_ALREADY_CONTAINS
       Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_EXIST_INFO%[@MEMBER_NAME,@ALIAS_NAME])
     else
@@ -40,30 +40,30 @@ Puppet::Type.type(:brocade_alias_membership).provide(:brocade_alias_membership, 
 
   def get_exists_when_ensure_present(response)
     if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
-      Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_DOES_NOT_EXIST_INFO%[@resource[:alias_name]])
+      Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_DOES_NOT_EXIST_INFO%[@ALIAS_NAME])
     return true
     elsif
-    @resource[:member].split(";").each do |wwpn|
+    @MEMBER_NAME.split(";").each do |wwpn|
     if !(response.include? wwpn)
     return false
     end
     end
-      Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_EXIST_INFO%[@resource[:member],@resource[:alias_name]])
+      Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_EXIST_INFO%[@MEMBER_NAME,@ALIAS_NAME])
     return true
     end
   end
 
   def get_exists_when_ensure_absent(response)
     if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
-      Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_DOES_NOT_EXIST_INFO%[@resource[:alias_name]])
+      Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_DOES_NOT_EXIST_INFO%[@ALIAS_NAME])
     return false
     elsif
-    @resource[:member].split(";").each do |wwpn|
+    @MEMBER_NAME.split(";").each do |wwpn|
     if (response.include? wwpn)
     return true
     end
     end
-      Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_REMOVED_INFO%[@resource[:member],@resource[:alias_name]])
+      Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_REMOVED_INFO%[@MEMBER_NAME,@ALIAS_NAME])
     return false
     end
   end
