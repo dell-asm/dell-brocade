@@ -1,3 +1,7 @@
+module PuppetSpec
+  FIXTURE_DIR = File.join(dir = File.expand_path(File.dirname(__FILE__)), "fixtures") unless defined?(FIXTURE_DIR)
+end
+
 module PuppetSpec::Deviceconf
   def my_deviceurl(my_module, name)
     dir = File.expand_path(File.dirname(__FILE__))
