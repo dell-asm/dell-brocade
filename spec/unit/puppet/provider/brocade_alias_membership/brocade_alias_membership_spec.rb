@@ -74,7 +74,7 @@ describe "Brocade Alias Membership Provider" do
 
     it "should save the configuration, if brocade alias membership is created successfully" do
     #Then
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ALIAS_MEMBER_ADD_COMMAND%[@fixture.brocade_alias_membership[:alias_name],@fixture.brocade_alias_membership[:member]], NOOP_HASH).ordered.and_return ("")
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ALIAS_MEMBER_ADD_COMMAND%[@fixture.brocade_alias_membership[:alias_name],@fixture.brocade_alias_membership[:member]], NOOP_HASH).ordered.and_return("")
       @fixture.provider.should_receive(:cfg_save).once
 
       #When
@@ -91,7 +91,7 @@ describe "Brocade Alias Membership Provider" do
 
     it "should save the configuration, if brocade alias membership is deleted successfully" do
     #Then
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ALIAS_MEMBER_REMOVE_COMMAND%[@fixture.brocade_alias_membership[:alias_name],@fixture.brocade_alias_membership[:member]], NOOP_HASH).ordered.and_return ("")
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ALIAS_MEMBER_REMOVE_COMMAND%[@fixture.brocade_alias_membership[:alias_name],@fixture.brocade_alias_membership[:member]], NOOP_HASH).ordered.and_return("")
       @fixture.provider.should_receive(:cfg_save).once.ordered
 
       #When
@@ -100,7 +100,7 @@ describe "Brocade Alias Membership Provider" do
 
     it "should warn if brocade alias name does not exist" do
     #Then
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ALIAS_MEMBER_REMOVE_COMMAND%[@fixture.brocade_alias_membership[:alias_name],@fixture.brocade_alias_membership[:member]], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_IS_NOT_IN)
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ALIAS_MEMBER_REMOVE_COMMAND%[@fixture.brocade_alias_membership[:alias_name],@fixture.brocade_alias_membership[:member]], NOOP_HASH).ordered.and_return(Puppet::Provider::Brocade_responses::RESPONSE_IS_NOT_IN)
       Puppet.should_receive(:info).once.ordered.with(@destroyInfoMsg).and_return("")
       @fixture.provider.should_not_receive(:cfg_save)
 
@@ -110,7 +110,7 @@ describe "Brocade Alias Membership Provider" do
 
     it "should raise error if response contains 'does not exist' while deleting the brocade alias membership" do
     #Then
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ALIAS_MEMBER_REMOVE_COMMAND%[@fixture.brocade_alias_membership[:alias_name],@fixture.brocade_alias_membership[:member]], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ALIAS_MEMBER_REMOVE_COMMAND%[@fixture.brocade_alias_membership[:alias_name],@fixture.brocade_alias_membership[:member]], NOOP_HASH).ordered.and_return(Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
       @fixture.provider.should_not_receive(:cfg_save)
 
       #When
