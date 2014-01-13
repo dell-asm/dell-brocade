@@ -42,14 +42,15 @@ describe "Integration test for brocade zone membership" do
     )
   end
     
-  
+  ##Zone Creating, before each test case execution
   before :each do
     puts "Creating Zone before Test"
     create_zone.provider.device_transport.connect
     create_zone.provider.create
     create_zone.provider.device_transport.close
   end
-
+  
+  ##Zone Destroy, after each test case execution
   after :each do
     puts "Delete Zone after Test"
     destroy_zone.provider.device_transport.connect
@@ -63,7 +64,9 @@ describe "Integration test for brocade zone membership" do
       zone_add_member.provider.create
       zone_show_res = zone_add_member.provider.device_transport.command(get_zone_show_cmd(zone_add_member[:zonename]),:noop=>false)
       zone_add_member.provider.device_transport.close
-      presense?(zone_show_res,zone_add_member[:member]).should == true
+      member_name = get_member_name(zone_add_member[:name])
+      
+      presense?(zone_show_res,member_name).should == true
     end
 
     it "should delete a member from a zone" do
@@ -71,18 +74,25 @@ describe "Integration test for brocade zone membership" do
       zone_delete_member.provider.destroy
       zone_show_res = zone_delete_member.provider.device_transport.command(get_zone_show_cmd(zone_delete_member[:zonename]),:noop=>false)
       zone_delete_member.provider.device_transport.close
-      presense?(zone_show_res,zone_delete_member[:member]).should_not == true
+      member_name = get_member_name(zone_delete_member[:name])
+      
+      presense?(zone_show_res,member_name).should_not == true
     end
   end
 
   def presense?(response_string,key_to_check)
     retval = false
     if response_string.include?("#{key_to_check}")
-    retval = true
+      retval = true
     else
-    retval = false
+      retval = false
     end
     return retval
+  end
+
+  def get_member_name(inputString)
+    member = inputString.split(':',2)
+    return member[1]
   end
 
   def get_zone_show_cmd(zonename)
