@@ -20,7 +20,7 @@ describe Puppet::Type.type(:brocade_alias_membership) do
     it "should have name as its keyattribute" do
       described_class.key_attributes.should == [:name]
     end
-    
+
     describe "when validating attributes" do
       [:name,:alias_name, :member].each do |param|
         it "should hava a #{param} parameter" do
@@ -34,22 +34,22 @@ describe Puppet::Type.type(:brocade_alias_membership) do
         end
       end
     end
-    
+
     describe "when validating values" do
-      
+
       describe "validating name param" do
         it "should be a tuple of two values" do
           described_class.new(:name => 'alias_demo:0f:0a:0a:0a:0a:0a:0a:0a', :ensure => 'present')[:name].should == 'alias_demo:0f:0a:0a:0a:0a:0a:0a:0a'
         end
-        
+
         it "should have alias name value before first splitter(:)" do
           described_class.new(:name => 'alias_demo:0f:0a:0a:0a:0a:0a:0a:0a', :ensure => 'present')[:alias_name].should == 'alias_demo'
         end
-        
+
         it "should have member value(s) after first splitter(:)" do
           described_class.new(:name => 'alias_demo:0f:0a:0a:0a:0a:0a:0a:0a', :ensure => 'present')[:member].should == '0f:0a:0a:0a:0a:0a:0a:0a'
         end
-        
+
       end
       describe "validating alias_name param" do
         it "should allow a valid alias name" do
@@ -59,7 +59,7 @@ describe Puppet::Type.type(:brocade_alias_membership) do
         it "should not allow blank value in the alias name" do
           expect { described_class.new(:name => ':0f:0a:0a:0a:0a:0a:0a:0a', :ensure => 'present') }.to raise_error Puppet::Error
         end
-        
+
         it "should not allow special characters in the alias name" do
           expect { described_class.new(:name => '@$%#^:0f:0a:0a:0a:0a:0a:0a:0a', :ensure => 'present') }.to raise_error Puppet::Error
         end
