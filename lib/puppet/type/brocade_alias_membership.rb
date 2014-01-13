@@ -13,7 +13,7 @@ Puppet::Type.newtype(:brocade_alias_membership) do
       value
     end
   end
-  
+
   ensurable
 
   newparam(:alias_name) do
