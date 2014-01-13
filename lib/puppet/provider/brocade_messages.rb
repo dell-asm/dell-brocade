@@ -34,6 +34,7 @@ module Puppet::Provider::Brocade_messages
   ZONE_MEMBERSHIP_DESTROY_ERROR="Unable to remove the Member(s) %s from Zone %s Error: %s"
   ZONE_CREATE_ERROR="Unable to create the Zone %s .Error=%s"
   ZONE_ALREADY_EXIST_INFO="Zone %s already exist"
+  ZONE_DOES_NOT_EXIST_INFO="Zone %s does not exist"
   ZONE_ALREADY_REMOVED_INFO="Zone %s already removed"
   ALIAS_CREATE_DEBUG="Puppet::Provider::brocade_alias: A Brocade alias: %s, for member WWPN: %s is being created."
   ALIAS_DESTROY_DEBUG="Puppet::Provider::brocade_alias: A Brocade alias: %s is being deleted."
