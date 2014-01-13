@@ -23,6 +23,14 @@ class Brocade_config_fixture
     brocade_config[:configname]
   end
 
+  def get_member_zone
+    brocade_config[:member_zone]
+  end
+
+  def get_zone_config_state
+    brocade_config[:configstate]
+  end
+
   def set_configstate_enable
     brocade_config[:configstate] = 'enable'
   end

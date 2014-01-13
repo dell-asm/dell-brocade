@@ -12,7 +12,7 @@ def process_config_state(value)
 end
 
 def process_config_creation
-  Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_CREATE_DEBUG%[@CONFIG_NAME,resource[:member_zone]])
+  Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_CREATE_DEBUG%[@CONFIG_NAME,@MEMBER_ZONE])
   response =  @transport.command(Puppet::Provider::Brocade_commands::CONFIG_CREATE_COMMAND%[@CONFIG_NAME, @MEMBER_ZONE], :noop => false)
   if !((response.downcase.include? (Puppet::Provider::Brocade_responses::RESPONSE_INVALID).downcase)||(response.include? Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG ))
     cfg_save

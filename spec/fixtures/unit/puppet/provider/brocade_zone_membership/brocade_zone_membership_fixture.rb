@@ -6,22 +6,19 @@ class Brocade_zone_membership_fixture
     @provider = brocade_zone_membership.provider
   end
 
-  private
-
   def  get_brocade_zone_membership
     Puppet::Type.type(:brocade_zone_membership).new(
-    :name => 'DemoZone:DemoMember',
-    :ensure => 'present'
+    :zonename => 'DemoZone',
+    :ensure => 'present',
+    :member => 'DemoMember',
     )
   end
 
-  public
-
-  def  get_zone_name
+  def get_zone_name
     @brocade_zone_membership[:zonename]
   end
 
-  def  get_member_name
+  def get_member_name
     @brocade_zone_membership[:member]
   end
 
@@ -32,4 +29,5 @@ class Brocade_zone_membership_fixture
   def  set_ensure_value_absent
     @brocade_zone_membership[:ensure] = 'absent'
   end
+
 end

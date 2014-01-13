@@ -1,11 +1,5 @@
 require 'spec_helper'
-require 'yaml'
-require 'puppet/provider/brocade_fos'
-require 'puppet/util/network_device/brocade_fos/device'
-require 'puppet/util/network_device/base_fos'
-require 'rspec/mocks'
-require 'puppet/provider/brocade_responses'
-require 'puppet/provider/brocade_messages'
+require 'puppet/provider/brocade_commands'
 require 'fixtures/unit/puppet/provider/brocade_zone/brocade_zone_fixture'
 
 NOOP_HASH = { :noop => false}
@@ -40,7 +34,7 @@ describe "Brocade Zone behavior testing" do
   context "when brocade zone is created " do
     it "should warn if brocade zone name already exist " do
     #Then
-      @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_create_brocade_zone_command, NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_ALREADY_CONTAINS)
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ZONE_CREATE_COMMAND%[@fixture.get_zone_name,@fixture.get_member_name], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_ALREADY_CONTAINS)
       resp = Puppet::Provider::Brocade_messages::ZONE_ALREADY_EXIST_INFO%[@fixture.get_zone_name]
       Puppet.should_receive(:info).once.with(resp).ordered
       @fixture.provider.should_not_receive(:cfg_save)
@@ -52,7 +46,7 @@ describe "Brocade Zone behavior testing" do
 
   it "should create brocade zone if brocade zone name is not present" do
   #Then
-    @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_create_brocade_zone_command, NOOP_HASH).ordered.and_return ""
+    @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ZONE_CREATE_COMMAND%[@fixture.get_zone_name,@fixture.get_member_name], NOOP_HASH).ordered.and_return ""
     @fixture.provider.should_receive(:cfg_save).once.ordered
 
     #When
@@ -61,14 +55,14 @@ describe "Brocade Zone behavior testing" do
 
   it "should raise error if response contains 'invalid' while creating brocade zone" do
   #When - Then
-    @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_create_brocade_zone_command, NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_INVALID)
+    @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ZONE_CREATE_COMMAND%[@fixture.get_zone_name,@fixture.get_member_name], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_INVALID)
     expect {@fixture.provider.create}.to raise_error(Puppet::Error)
   end
 
   it "should raise error if response contains 'name too long' while creating brocade zone" do
   #When - Then
 
-    @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_create_brocade_zone_command, NOOP_HASH).ordered.and_return(Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG)
+    @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ZONE_CREATE_COMMAND%[@fixture.get_zone_name,@fixture.get_member_name], NOOP_HASH).ordered.and_return(Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG)
 
     expect {@fixture.provider.create}.to raise_error(Puppet::Error)
   end
@@ -76,7 +70,7 @@ describe "Brocade Zone behavior testing" do
   context "when brocade zone is deleted" do
     it "should delete the already existing brocade zone" do
     #Then
-      @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_delete_brocade_zone_command, NOOP_HASH).ordered.and_return ("")
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ZONE_DELETE_COMMAND%[@fixture.get_zone_name], NOOP_HASH).ordered.and_return ("")
       @fixture.provider.should_receive(:cfg_save).once.ordered
       #When
       @fixture.provider.destroy
@@ -84,7 +78,7 @@ describe "Brocade Zone behavior testing" do
 
     it "should warn if brocade zone name does not exist" do
     #Then
-      @fixture.provider.transport.should_receive(:command).once.with(@fixture.provider.get_delete_brocade_zone_command, NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ZONE_DELETE_COMMAND%[@fixture.get_zone_name], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
       resp = Puppet::Provider::Brocade_messages::ZONE_ALREADY_REMOVED_INFO%[@fixture.get_zone_name]
       Puppet.should_receive(:info).once.with(resp).ordered
       @fixture.provider.should_not_receive(:cfg_save)
