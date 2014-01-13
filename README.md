@@ -52,12 +52,12 @@ Sample configuration `/etc/puppet/device/brocade_fos1.example.com.conf`:
       url ssh://root:secret@brocade_fos1.example.com:22
 
 ### Brocade FOS operations
-This module can be used to create or delete an Alias, create or delete a zone, add or remove member from a Zone, create or delete config, Activate or Deactivate Config.
+This module can be used to create or delete an alias,add/remove member to/from alias, create or delete a zone, add/remove member to/from a zone, create or delete config, activate or de-activate config.
 For example: 
 
    brocade_member_alias { 'demoAlias':
-    ensure => 'present',
-    member => '"50:00:d3:10:00:5e:c4:ad ; 50:00:d3:10:00:5e:c4:ac"'
+    name   => 'demoAlias:50:00:d3:10:00:5e:c4:ad;50:00:d3:10:00:5e:c4:ac'
+    ensure => 'present'
   }
 
   brocade_zone { 'demozone':
@@ -72,7 +72,7 @@ For example:
   }
 
 
-This creates an Alias for the members, adds the Alias to a zone, and then adds the zone to the config (in Deactivation mode) as per defined input parameters.
+This creates an alias for the members, adds the alias to a zone, and then adds the zone to the config (in de-activation mode) as per defined input parameters.
 
 You can also use any of the above operations individually, or create new defined types, as required. 
 
