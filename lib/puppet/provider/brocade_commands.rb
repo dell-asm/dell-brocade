@@ -11,6 +11,7 @@ module Puppet::Provider::Brocade_commands
   CONFIG_ADD_MEMBER_COMMAND = "cfgadd %s, \"%s\""
   CONFIG_REMOVE_MEMBER_COMMAND = "cfgremove %s, \"%s\""
   CONFIG_SHOW_COMMAND = "cfgshow %s"
+  ZONE_SHOW_COMMAND="zoneshow %s"
   CONFIG_CREATE_COMMAND = "cfgcreate %s, \"%s\""
   CONFIG_DELETE_COMMAND = "cfgdelete %s"
   CONFIG_ENABLE_COMMAND = "cfgenable %s"
