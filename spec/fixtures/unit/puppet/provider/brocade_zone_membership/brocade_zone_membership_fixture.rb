@@ -14,21 +14,21 @@ class Brocade_zone_membership_fixture
     :ensure => 'present'
     )
   end
-  
+
   public
+
   def  get_zone_name
     @brocade_zone_membership[:zonename]
   end
-  
+
   def  get_member_name
     @brocade_zone_membership[:member]
   end
 
-
   def  get_ensure_value
     @brocade_zone_membership[:ensure]
   end
-  
+
   def  set_ensure_value_absent
     @brocade_zone_membership[:ensure] = 'absent'
   end
