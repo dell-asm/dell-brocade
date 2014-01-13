@@ -4,7 +4,6 @@ require 'puppet/provider/brocade_responses'
 require 'puppet/provider/brocade_messages'
 require 'fixtures/unit/puppet/provider/brocade_config/brocade_config_fixture'
 
-NOOP_HASH = { :noop => false}
 ENABLE_PROMPT_HASH = {:prompt => Puppet::Provider::Brocade_messages::CONFIG_ENABLE_PROMPT}
 DISABLE_PROMPT_HASH = {:prompt => Puppet::Provider::Brocade_messages::CONFIG_DISABLE_PROMPT}
 
@@ -14,8 +13,8 @@ describe "Brocade_config" do
     @fixture = Brocade_config_fixture.new
     mock_transport=double('transport')
     @fixture.provider.transport = mock_transport
-    @fixture.provider.stub(:cfg_save)
-    @fixture.provider.stub(:config_enable)
+    @fixture.provider.stub(:cfg_save) 
+    @fixture.provider.stub(:config_enable)      
     Puppet.stub(:info)
     Puppet.stub(:debug)
   end
@@ -40,25 +39,25 @@ describe "Brocade_config" do
 
   context "when brocade config is created" do
     it "should create brocade config" do
-    #Then
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_CREATE_COMMAND%[@fixture.get_config_name, @fixture.get_member_zone], NOOP_HASH).ordered.and_return("")
-      @fixture.provider.should_receive(:cfg_save).once.ordered
+      #Then
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_CREATE_COMMAND%[@fixture.brocade_config[:configname], @fixture.brocade_config[:member_zone]], NOOP_HASH).ordered.and_return("")
+      @fixture.provider.should_receive(:cfg_save).once.ordered      
 
       #When
       @fixture.provider.create
     end
 
     it "should raise error if response contains 'invalid' while creating brocade config" do
-    #When - Then
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_CREATE_COMMAND%[@fixture.get_config_name, @fixture.get_member_zone], NOOP_HASH).ordered.and_return(Puppet::Provider::Brocade_responses::RESPONSE_INVALID)
+      #When - Then
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_CREATE_COMMAND%[@fixture.brocade_config[:configname], @fixture.brocade_config[:member_zone]], NOOP_HASH).ordered.and_return(Puppet::Provider::Brocade_responses::RESPONSE_INVALID)
       @fixture.provider.should_not_receive(:cfg_save)
 
       expect {@fixture.provider.create}.to raise_error(Puppet::Error)
     end
 
     it "should raise error if response contains 'name too long' while creating brocade config" do
-    #When - Then
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_CREATE_COMMAND%[@fixture.get_config_name, @fixture.get_member_zone], NOOP_HASH).ordered.and_return(Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG)
+      #When - Then
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_CREATE_COMMAND%[@fixture.brocade_config[:configname], @fixture.brocade_config[:member_zone]], NOOP_HASH).ordered.and_return(Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG)
       @fixture.provider.should_not_receive(:cfg_save)
 
       expect {@fixture.provider.create}.to raise_error(Puppet::Error)
@@ -69,10 +68,10 @@ describe "Brocade_config" do
       @fixture.set_configstate_enable
 
       #Then
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_CREATE_COMMAND%[@fixture.get_config_name, @fixture.get_member_zone], NOOP_HASH).ordered.and_return("")
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_CREATE_COMMAND%[@fixture.brocade_config[:configname], @fixture.brocade_config[:member_zone]], NOOP_HASH).ordered.and_return("")
       @fixture.provider.should_not_receive(:cfg_save).once.ordered
       @fixture.provider.should_receive(:config_enable).once.ordered.and_call_original
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_ENABLE_COMMAND%[@fixture.get_config_name], ENABLE_PROMPT_HASH).ordered.and_return ("")
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_ENABLE_COMMAND%[@fixture.brocade_config[:configname]], ENABLE_PROMPT_HASH).ordered.and_return ("")
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::YES_COMMAND, NOOP_HASH).ordered.and_return ("")
 
       #When
@@ -80,14 +79,14 @@ describe "Brocade_config" do
     end
 
     it "should raise error if response contains 'not found' while enabling the brocade config state" do
-    #Given
+      #Given
       @fixture.set_configstate_enable
 
       #Then
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_CREATE_COMMAND%[@fixture.get_config_name, @fixture.get_member_zone], NOOP_HASH).ordered.and_return("")
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_CREATE_COMMAND%[@fixture.brocade_config[:configname], @fixture.brocade_config[:member_zone]], NOOP_HASH).ordered.and_return("")
       @fixture.provider.should_not_receive(:cfg_save).once.ordered
       @fixture.provider.should_receive(:config_enable).ordered.once.and_call_original
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_ENABLE_COMMAND%[@fixture.get_config_name], ENABLE_PROMPT_HASH).ordered.and_return ("")
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_ENABLE_COMMAND%[@fixture.brocade_config[:configname]], ENABLE_PROMPT_HASH).ordered.and_return ("")
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::YES_COMMAND, NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
       @fixture.provider.should_not_receive(:cfg_save)
 
@@ -100,7 +99,7 @@ describe "Brocade_config" do
   context "when brocade config is deleted" do
     it "should delete the already existing brocade config" do
     #Then
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_DELETE_COMMAND%[@fixture.get_config_name], NOOP_HASH).ordered.and_return ("")
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_DELETE_COMMAND%[@fixture.brocade_config[:configname]], NOOP_HASH).ordered.and_return ("")
       @fixture.provider.should_receive(:cfg_save).ordered.once
       #When
       @fixture.provider.destroy
@@ -108,7 +107,7 @@ describe "Brocade_config" do
 
     it "should warn if brocade config name does not exist" do
     #Then
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_DELETE_COMMAND%[@fixture.get_config_name], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_DELETE_COMMAND%[@fixture.brocade_config[:configname]], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
       Puppet.should_receive(:info).once.with(Puppet::Provider::Brocade_messages::CONFIG_ALREADY_REMOVED_INFO%[@fixture.get_config_name]).ordered
       @fixture.provider.should_not_receive(:cfg_save)
       #When
@@ -117,7 +116,7 @@ describe "Brocade_config" do
 
     it "should raise error if response contains 'should not be deleted'" do
     #Then
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_DELETE_COMMAND%[@fixture.get_config_name], NOOP_HASH).and_return (Puppet::Provider::Brocade_responses::RESPONSE_SHOULD_NOT_BE_DELETED)
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_DELETE_COMMAND%[@fixture.brocade_config[:configname]], NOOP_HASH).and_return (Puppet::Provider::Brocade_responses::RESPONSE_SHOULD_NOT_BE_DELETED)
       @fixture.provider.should_not_receive(:cfg_save)
 
       #When
@@ -130,7 +129,7 @@ describe "Brocade_config" do
     it "should return false when the brocade config does not exists" do
     #When - Then
       @fixture.provider.should_receive(:device_transport).once
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@fixture.get_config_name], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@fixture.brocade_config[:configname]], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
       @fixture.provider.exists?.should == false
     end
 
@@ -140,7 +139,7 @@ describe "Brocade_config" do
 
       #When - Then
       @fixture.provider.should_receive(:device_transport).once
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@fixture.get_config_name], NOOP_HASH).ordered.and_return (@fixture.get_config_name)
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@fixture.brocade_config[:configname]], NOOP_HASH).ordered.and_return (@fixture.brocade_config[:configname])
       @fixture.provider.exists?.should == true
     end
 
@@ -148,29 +147,29 @@ describe "Brocade_config" do
 
   context "when brocade config state is validated" do
     it "should return state enabled if the config is enabled on the brocade" do
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_ACTV_SHOW_COMMAND, NOOP_HASH).ordered.and_return (@fixture.get_config_name)
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_ACTV_SHOW_COMMAND, NOOP_HASH).ordered.and_return (@fixture.brocade_config[:configname])
       @fixture.provider.configstate.should == :enable
     end
-
+    
     it "should return state disabled if the config is not enabled on the brocade" do
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_ACTV_SHOW_COMMAND, NOOP_HASH).ordered.and_return ("")
       @fixture.provider.configstate.should == :disable
     end
   end
-
+  
   context "when processing the brocade config state" do
     it "should enable the brocade config state when brocade config state value is enabled" do
-    #Then
+      #Then
       @fixture.provider.should_receive(:config_enable).once.ordered.and_call_original
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_ENABLE_COMMAND%[@fixture.get_config_name], ENABLE_PROMPT_HASH).ordered.and_return ("")
+      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_ENABLE_COMMAND%[@fixture.brocade_config[:configname]], ENABLE_PROMPT_HASH).ordered.and_return ("")
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::YES_COMMAND, NOOP_HASH).ordered.and_return ("")
 
       #When
       @fixture.provider.configstate=(:enable)
     end
-
+    
     it "should disable the brocade config state when brocade config state value is disabled" do
-    #Then
+      #Then
       @fixture.provider.should_receive(:config_disable).once.ordered.and_call_original
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_DISABLE_COMMAND, DISABLE_PROMPT_HASH).ordered.and_return ("")
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::YES_COMMAND, NOOP_HASH).ordered.and_return ("")
@@ -179,5 +178,5 @@ describe "Brocade_config" do
       @fixture.provider.configstate=(:disable)
     end
   end
-
+  
 end

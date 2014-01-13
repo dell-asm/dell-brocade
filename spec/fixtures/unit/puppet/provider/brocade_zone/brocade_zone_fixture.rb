@@ -21,8 +21,4 @@ class Brocade_zone_fixture
     brocade_zone[:zonename]
   end
 
-  def get_member_name
-    brocade_zone[:member]
-  end
-
 end
