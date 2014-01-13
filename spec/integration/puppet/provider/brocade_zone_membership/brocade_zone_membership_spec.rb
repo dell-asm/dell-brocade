@@ -2,31 +2,29 @@
 
 require 'spec_helper'
 require 'yaml'
-require 'puppet/util/network_device/brocade_fos/device'
-require 'puppet/provider/brocade_fos'
-require 'puppet/util/network_device/transport_fos/ssh'
+require 'spec_lib/puppet_spec/deviceconf'
+include PuppetSpec::Deviceconf
 
 describe "Integration test for brocade zone membership" do
 
   device_conf =  YAML.load_file(my_deviceurl('brocade','device_conf.yml'))
 
   before :each do
-    Facter.stubs(:value).with(:url).returns(device_conf['url'])
+    Facter.stub(:value).with(:url).and_return(device_conf['url'])
   end
+
 
   let :zone_add_member do
     Puppet::Type.type(:brocade_zone_membership).new(
-    :zonename    => 'testZone',
+    :name    => 'testZone:50:00:d3:10:00:5e:c4:3b',
     :ensure      => 'present',
-    :member      => '50:00:d3:10:00:5e:c4:3b',
     )
   end
 
   let :zone_delete_member do
     Puppet::Type.type(:brocade_zone_membership).new(
-    :zonename    => 'testZone',
+    :name    => 'testZone:50:00:d3:10:00:5e:c4:3b',
     :ensure      => 'absent',
-    :member      => '50:00:d3:10:00:5e:c4:3b',
     )
   end
   
