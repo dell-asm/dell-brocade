@@ -54,224 +54,162 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
     #Register facts for hadump command
     Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base.register_brocade_param(base,'ipaddrshow',IPADDRESSSHOW_HASH)
 
-    register_manufacture
-
-    register_model
-
-    register_fc_ports
-
-    register_switch_health_status
-
-    register_fabric_os
-
-    register_protocol_enabled
-
-    register_boot_image
-
-    register_memory
-
-    register_processor
-
-    register_port_channels
-
-    register_port_channel_status
-
-    register_zone_config
-
-    register_configs
-
-    register_zones
-
-    register_alias
-
-  end
-end
-
-def register_manufacture
-  base.register_param ['Manufacturer'] do
-    match do
-      "Brocade"
-    end
-    cmd "switchshow"
-  end
-end
-
-def register_model
-  base.register_param ['Model'] do
-    match do |txt|
-      switchtype=txt.scan(/switchType:\s+(.*)?/).flatten.first
-      modelvalue=Puppet::Brocademodel::MODEL_HASH.values_at(switchtype).first
-
-      if modelvalue.nil? || modelvalue.empty? then
-        switchtype = switchtype.partition('.').first
+    base.register_param ['Manufacturer'] do
+      match do
+        "Brocade"
       end
-      switchtype = switchtype+'.x'
-      modelvalue=Puppet::Brocademodel::MODEL_HASH.values_at(switchtype).first
-
+      cmd "switchshow"
     end
-    cmd "switchshow"
-  end
-end
 
-def register_fc_ports
-  base.register_param ['FC Ports'] do
-    match /FC ports =\s+(.*)?/
-    cmd "switchshow -portcount"
-  end
-end
+    base.register_param ['Model'] do
+      match do |txt|
+        switchtype=txt.scan(/switchType:\s+(.*)?/).flatten.first
+        modelvalue=Puppet::Brocademodel::MODEL_HASH.values_at(switchtype).first
 
-def register_switch_health_status
-  base.register_param ['Switch Health Status'] do
-    match /SwitchState:\s+(.*)?/
-    cmd "switchstatusshow"
-  end
-end
-
-def register_fabric_os
-  base.register_param ['Fabric Os'] do
-    match /OS:\s+(.*)?/
-    cmd "version"
-  end
-end
-
-def register_protocol_enabled
-  base.register_param ['Protocols Enabled'] do
-    match do
-      "FC"
-    end
-    cmd "switchshow"
-  end
-end
-
-def register_boot_image
-  base.register_param ['Boot Image'] do
-    match do
-      "Not Available"
-    end
-    cmd "switchshow"
-  end
-end
-
-def register_memory
-  base.register_param ['Memory(bytes)'] do
-    match /Mem:\s+(\d*)/
-    cmd "memshow"
-  end
-end
-
-def register_processor
-  base.register_param ['Processor'] do
-    match do
-      "Not Available"
-    end
-    cmd "switchshow"
-  end
-end
-
-def register_port_channels
-  base.register_param ['Port Channels'] do
-    match do
-      "None"
-    end
-    cmd "switchshow"
-  end
-end
-
-def register_port_channel_status
-  base.register_param ['Port Channel Status'] do
-    match do
-      "None"
-    end
-    cmd "switchshow"
-  end
-end
-
-def register_zone_config
-  base.register_param 'Zone_Config' do
-    match do |txt|
-      res = Hash.new
-      i=0
-      txt.split("\n").map do |line|
-        item=line.scan(/cfg:\s+(.*)\b\s/)
-        item = item.flatten.first
-        if item.nil? || item.empty? || item =~ /^\s+$/ || res.has_value?(item) then
-        next
-        else
-          i=i+1
-          res["Zone_Config_#{i}"]=item
+        if modelvalue.nil? || modelvalue.empty? then
+          switchtype = switchtype.partition('.').first
         end
-      end
-      res
-    end
-    cmd "zoneshow"
-  end
-end
+        switchtype = switchtype+'.x'
+        modelvalue=Puppet::Brocademodel::MODEL_HASH.values_at(switchtype).first
 
-def register_configs
-  base.register_param ['Configs'] do
-    configList = ""
-    match do |txt|
-      txt.split("\n").each do |line|
-        item=line.scan(/cfg:\s+(.*)\b\s/)
-        item = item.flatten.first
-        if item.nil? || item.empty? || item =~ /^\s+$/ || ( configList.include? item ) then
-        next
-        else
-          if configList.nil? || configList.empty? then
-            configList = configList + "#{item}"
+      end
+      cmd "switchshow"
+    end
+
+    base.register_param ['FC Ports'] do
+      match /FC ports =\s+(.*)?/
+      cmd "switchshow -portcount"
+    end
+
+    base.register_param ['Switch Health Status'] do
+      match /SwitchState:\s+(.*)?/
+      cmd "switchstatusshow"
+    end
+
+    base.register_param ['Fabric Os'] do
+      match /OS:\s+(.*)?/
+      cmd "version"
+    end
+
+    base.register_param ['Protocols Enabled'] do
+      match do
+        "FC"
+      end
+      cmd "switchshow"
+    end
+
+    base.register_param ['Boot Image'] do
+      match do
+        "Not Available"
+      end
+      cmd "switchshow"
+    end
+
+    base.register_param ['Memory(bytes)'] do
+      match /Mem:\s+(\d*)/
+      cmd "memshow"
+    end
+
+    base.register_param ['Processor'] do
+      match do
+        "Not Available"
+      end
+      cmd "switchshow"
+    end
+    base.register_param ['Port Channels'] do
+      match do
+        "None"
+      end
+      cmd "switchshow"
+    end
+
+    base.register_param ['Port Channel Status'] do
+      match do
+        "None"
+      end
+      cmd "switchshow"
+    end
+
+    base.register_param 'Zone_Config' do
+      match do |txt|
+        res = Hash.new
+        i=0
+        txt.split("\n").map do |line|
+          item=line.scan(/cfg:\s+(.*)\b\s/)
+          item = item.flatten.first
+          if item.nil? || item.empty? || item =~ /^\s+$/ || res.has_value?(item) then
+          next
           else
-            configList = configList + ", #{item}"
+            i=i+1
+            res["Zone_Config_#{i}"]=item
           end
         end
+        res
       end
-      configList
+      cmd "zoneshow"
     end
-    cmd "zoneshow"
-  end
-end
 
-def register_zones
-  base.register_param ['Zones'] do
-    zonesList = ""
-    match do |txt|
-      txt.split("\n").each do |line|
-        item=line.scan(/zone:\s+(.*)\b\s/)
-        item = item.flatten.first
-        if item.nil? || item.empty? || item =~ /^\s+$/ then
-        next
-        else
-          if zonesList.nil? || zonesList.empty? then
-            zonesList = zonesList + "#{item}"
+    base.register_param ['Configs'] do
+      configList = ""
+      match do |txt|
+        txt.split("\n").each do |line|
+          item=line.scan(/cfg:\s+(.*)\b\s/)
+          item = item.flatten.first
+          if item.nil? || item.empty? || item =~ /^\s+$/ || ( configList.include? item ) then
+          next
           else
-            zonesList = zonesList + ",  #{item}"
+            if configList.nil? || configList.empty? then
+              configList = configList + "#{item}"
+            else
+              configList = configList + ", #{item}"
+            end
           end
         end
+        configList
       end
-      zonesList
+      cmd "zoneshow"
     end
-    cmd "zoneshow"
-  end
-end
 
-def register_alias
-  base.register_param ['Alias'] do
-    aliList = ""
-    match do |txt|
-      txt.split("\n").each do |line|
-        item=line.scan(/alias:\s+(.*)\b\s/)
-        item = item.flatten.first
-        if item.nil? || item.empty? || item =~ /^\s+$/ then
-        next
-        else
-          if aliList.nil? || aliList.empty? then
-            aliList = aliList + "#{item}"
+    base.register_param ['Zones'] do
+      zonesList = ""
+      match do |txt|
+        txt.split("\n").each do |line|
+          item=line.scan(/zone:\s+(.*)\b\s/)
+          item = item.flatten.first
+          if item.nil? || item.empty? || item =~ /^\s+$/ then
+          next
           else
-            aliList = aliList + ", #{item}"
+            if zonesList.nil? || zonesList.empty? then
+              zonesList = zonesList + "#{item}"
+            else
+              zonesList = zonesList + ",  #{item}"
+            end
           end
         end
+        zonesList
       end
-      aliList
+      cmd "zoneshow"
     end
-    cmd "zoneshow"
+
+    base.register_param ['Alias'] do
+      aliList = ""
+      match do |txt|
+        txt.split("\n").each do |line|
+          item=line.scan(/alias:\s+(.*)\b\s/)
+          item = item.flatten.first
+          if item.nil? || item.empty? || item =~ /^\s+$/ then
+          next
+          else
+            if aliList.nil? || aliList.empty? then
+              aliList = aliList + "#{item}"
+            else
+              aliList = aliList + ", #{item}"
+            end
+          end
+        end
+        aliList
+      end
+      cmd "zoneshow"
+    end
   end
 end
