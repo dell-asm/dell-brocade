@@ -4,22 +4,22 @@ require 'puppet/provider/brocade_messages'
 require 'puppet/provider/brocade_commands'
 
 def config_add_zone
-  response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_ADD_MEMBER_COMMAND%[@CONFIG_NAME,@MEMBER_ZONE], :noop => false)
+  response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_ADD_MEMBER_COMMAND%[@config_name,@member_zone], :noop => false)
   if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND ) || ( response.downcase.include? (Puppet::Provider::Brocade_responses::RESPONSE_INVALID).downcase )
-    raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_CREATE_ERROR%[@MEMBER_ZONE,@CONFIG_NAME,response]
+    raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_CREATE_ERROR%[@member_zone,@config_name,response]
   elsif response.include? Puppet::Provider::Brocade_responses::RESPONSE_ALREADY_CONTAINS
-    Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_EXIST_INFO%[@MEMBER_ZONE,@CONFIG_NAME])
+    Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_EXIST_INFO%[@member_zone,@config_name])
   else
     cfg_save
   end
 end
 
 def config_remove_zone
-  response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_REMOVE_MEMBER_COMMAND%[@CONFIG_NAME,@MEMBER_ZONE], :noop => false)
+  response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_REMOVE_MEMBER_COMMAND%[@config_name,@member_zone], :noop => false)
   if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND ) || ( response.downcase.include? (Puppet::Provider::Brocade_responses::RESPONSE_INVALID).downcase ) || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG )
-    raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_DESTROY_ERROR%[@MEMBER_ZONE,@CONFIG_NAME,response]
+    raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_DESTROY_ERROR%[@member_zone,@config_name,response]
   elsif (response.include? Puppet::Provider::Brocade_responses::RESPONSE_IS_NOT_IN )
-    Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_REMOVED_INFO%[@MEMBER_ZONE,@CONFIG_NAME])
+    Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_REMOVED_INFO%[@member_zone,@config_name])
   else
     cfg_save
   end
@@ -30,27 +30,27 @@ Puppet::Type.type(:brocade_config_membership).provide(:brocade_config_membership
 
   mk_resource_methods
   def initialize_resources
-    @CONFIG_NAME=@resource[:configname]
-    @MEMBER_ZONE=@resource[:member_zone]
+    @config_name=@resource[:configname]
+    @member_zone=@resource[:member_zone]
   end
 
   def create
     initialize_resources
-    Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_CREATE_DEBUG%[@MEMBER_ZONE,@CONFIG_NAME])
+    Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_CREATE_DEBUG%[@member_zone,@config_name])
     config_add_zone
   end
 
   def destroy
     initialize_resources
-    Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_DESTORY_DEBUG%[@MEMBER_ZONE,@CONFIG_NAME])
+    Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_DESTORY_DEBUG%[@member_zone,@config_name])
     config_remove_zone
   end
 
   def exists?
     initialize_resources
     self.device_transport
-    info_msg = Puppet::Provider::Brocade_messages::CONFIG_DOES_NOT_EXIST_INFO%[@CONFIG_NAME]
-    response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@CONFIG_NAME], :noop => false)
+    info_msg = Puppet::Provider::Brocade_messages::CONFIG_DOES_NOT_EXIST_INFO%[@config_name]
+    response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@config_name], :noop => false)
     if ("#{@resource[:ensure]}"== "present")
       if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
         Puppet.info(info_msg)
@@ -68,25 +68,25 @@ Puppet::Type.type(:brocade_config_membership).provide(:brocade_config_membership
 
   def check_member_present(response)
     initialize_resources
-    @MEMBER_ZONE.split(";").each do |member|
+    @member_zone.split(";").each do |member|
       if !(response.include? member)
-        Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ADD_INFO%[member, @CONFIG_NAME])
+        Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ADD_INFO%[member, @config_name])
       return false
       end
     end
-    Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_EXIST_INFO%[@MEMBER_ZONE,@CONFIG_NAME])
+    Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_EXIST_INFO%[@member_zone,@config_name])
     true
   end
 
   def check_member_absent(response)
     initialize_resources
-    @MEMBER_ZONE.split(";").each do |member|
+    @member_zone.split(";").each do |member|
       if(response.include? member)
-        Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_REMOVE_INFO%[member, @CONFIG_NAME])
+        Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_REMOVE_INFO%[member, @config_name])
       return true
       end
     end
-    Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_REMOVED_INFO%[@MEMBER_ZONE,@CONFIG_NAME])
+    Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_REMOVED_INFO%[@member_zone,@config_name])
     false
   end
 

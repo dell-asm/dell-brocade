@@ -11,8 +11,6 @@ require 'puppet/provider/brocade_commands'
 require 'spec_lib/puppet_spec/deviceconf'
 require 'rspec/expectations'
 
-
-
 module_path = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 $LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), '..','lib'))
 
