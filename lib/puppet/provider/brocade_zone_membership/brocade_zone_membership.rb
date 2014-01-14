@@ -31,6 +31,50 @@ def destroy_zone_membership
   end
 end
 
+def zone_membership_response_does_not_exists?(response)
+  if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
+    Puppet.info(Puppet::Provider::Brocade_messages::ZONE_DOES_NOT_EXIST_INFO%[@zone_name])
+  return true
+  else
+  return false
+  end
+end
+
+def zone_membership_response_includes_wwpn?(response)
+  return_value = true
+  @member_name.split(";").each do |wwpn|
+    if !(response.include? wwpn)
+    return_value = false
+    end
+  end
+  return return_value
+end
+
+def zone_membership_get_exists_when_ensure_present(response)
+  if (zone_membership_response_does_not_exists?(response))
+  return true
+  else
+
+    if !(zone_membership_response_includes_wwpn?(response))
+    return false
+    end
+    Puppet.info(Puppet::Provider::Brocade_messages::ZONE_MEMBERSHIP_ALREADY_EXIST_INFO%[@member_name,@zone_name])
+  return true
+  end
+end
+
+def zone_membership_get_exists_when_ensure_absent(response)
+  if (zone_membership_response_does_not_exists?(response))
+  return false
+  else
+    if (zone_membership_response_includes_wwpn?(response))
+    return true
+    end
+    Puppet.info(Puppet::Provider::Brocade_messages::ZONE_MEMBERSHIP_ALREADY_REMOVED_INFO%[@member_name,@zone_name])
+  return false
+  end
+end
+
 Puppet::Type.type(:brocade_zone_membership).provide(:brocade_zone_membership, :parent => Puppet::Provider::Brocade_fos) do
   @doc = "Manage brocade zone member addition and removal from/to zone."
 
@@ -52,46 +96,14 @@ Puppet::Type.type(:brocade_zone_membership).provide(:brocade_zone_membership, :p
     destroy_zone_membership
   end
 
-  def get_exists_when_ensure_present(response)
-    initialize_resources
-    if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
-      Puppet.info(Puppet::Provider::Brocade_messages::ZONE_DOES_NOT_EXIST_INFO%[@zone_name])
-    return true
-    elsif
-    @member_name.split(";").each do |wwpn|
-    if !(response.include? wwpn)
-    return false
-    end
-    end
-      Puppet.info(Puppet::Provider::Brocade_messages::ZONE_MEMBERSHIP_ALREADY_EXIST_INFO%[@member_name,@zone_name])
-    return true
-    end
-  end
-
-  def get_exists_when_ensure_absent(response)
-    initialize_resources
-    if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
-      Puppet.info(Puppet::Provider::Brocade_messages::ZONE_DOES_NOT_EXIST_INFO%[@zone_name])
-    return false
-    elsif
-    @member_name.split(";").each do |wwpn|
-    if (response.include? wwpn)
-    return true
-    end
-    end
-      Puppet.info(Puppet::Provider::Brocade_messages::ZONE_MEMBERSHIP_ALREADY_REMOVED_INFO%[@member_name,@zone_name])
-    return false
-    end
-  end
-
   def exists?
     initialize_resources
     self.device_transport
     response = @transport.command(Puppet::Provider::Brocade_commands::ZONE_SHOW_COMMAND%[@zone_name], :noop => false)
     if("#{@resource[:ensure]}"== "present")
-      return get_exists_when_ensure_present(response)
+      return zone_membership_get_exists_when_ensure_present(response)
     else
-      return get_exists_when_ensure_absent(response)
+      return zone_membership_get_exists_when_ensure_absent(response)
     end
   end
 end

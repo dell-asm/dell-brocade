@@ -3,7 +3,7 @@ require 'puppet/provider/brocade_responses'
 require 'puppet/provider/brocade_messages'
 require 'puppet/provider/brocade_commands'
 
-def is_response_does_not_exists? (response)
+def alias_membership_response_does_not_exists? (response)
   if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
     Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_DOES_NOT_EXIST_INFO%[@alias_name])
   return true
@@ -12,7 +12,7 @@ def is_response_does_not_exists? (response)
   end
 end
 
-def does_response_includes_wwpn? (response)
+def alias__membership_response_includes_wwpn? (response)
   return_value = true
   @member_name.split(";").each do |wwpn|
     if !(response.include? wwpn)
@@ -22,11 +22,11 @@ def does_response_includes_wwpn? (response)
   return return_value
 end
 
-def get_exists_when_ensure_present(response)
-  if (is_response_does_not_exists?(response))
+def alias_membership_get_exists_when_ensure_present(response)
+  if (alias_membership_response_does_not_exists?(response))
   return true
   else
-    if !(does_response_includes_wwpn? (response))
+    if !(alias__membership_response_includes_wwpn?(response))
     return false
     end
     Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_EXIST_INFO%[@member_name,@alias_name])
@@ -34,11 +34,11 @@ def get_exists_when_ensure_present(response)
   end
 end
 
-def get_exists_when_ensure_absent(response)
-  if (is_response_does_not_exists?(response))
+def alias_membership_get_exists_when_ensure_absent(response)
+  if (alias_membership_response_does_not_exists?(response))
   return false
   else
-    if (does_response_includes_wwpn? (response))
+    if (alias__membership_response_includes_wwpn?(response))
     return true
     end
     Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_REMOVED_INFO%[@member_name,@alias_name])
@@ -86,9 +86,9 @@ Puppet::Type.type(:brocade_alias_membership).provide(:brocade_alias_membership, 
     self.device_transport
     response = @transport.command(Puppet::Provider::Brocade_commands::ALIAS_SHOW_COMMAND%[@alias_name], :noop => false)
     if("#{@resource[:ensure]}"== "present")
-      return get_exists_when_ensure_present(response)
+      return alias_membership_get_exists_when_ensure_present(response)
     else
-      return get_exists_when_ensure_absent(response)
+      return alias_membership_get_exists_when_ensure_absent(response)
     end
   end
 end
