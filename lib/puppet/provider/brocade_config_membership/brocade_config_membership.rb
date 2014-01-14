@@ -49,6 +49,15 @@ def check_member_absent(response)
   false
 end
 
+def config_membership_response_exists?(response)
+  if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
+    Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_DOES_NOT_EXIST_INFO%[@config_name])
+  return true
+  else
+  return false
+  end
+end
+
 Puppet::Type.type(:brocade_config_membership).provide(:brocade_config_membership, :parent => Puppet::Provider::Brocade_fos) do
   @doc = "Manage addition and removal of zones to config."
 
@@ -73,17 +82,14 @@ Puppet::Type.type(:brocade_config_membership).provide(:brocade_config_membership
   def exists?
     initialize_resources
     self.device_transport
-    info_msg = Puppet::Provider::Brocade_messages::CONFIG_DOES_NOT_EXIST_INFO%[@config_name]
     response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@config_name], :noop => false)
     if ("#{@resource[:ensure]}"== "present")
-      if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
-        Puppet.info(info_msg)
+      if (config_membership_response_exists?(response))
       return true
       end
       check_member_present(response)
     else
-      if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
-        Puppet.info(info_msg)
+      if (config_membership_response_exists?(response))
       return false
       end
       check_member_absent(response)
