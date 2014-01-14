@@ -3,6 +3,49 @@ require 'puppet/provider/brocade_responses'
 require 'puppet/provider/brocade_messages'
 require 'puppet/provider/brocade_commands'
 
+def is_response_does_not_exists? (response)
+  if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
+    Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_DOES_NOT_EXIST_INFO%[@alias_name])
+  return true
+  else
+  return false
+  end
+end
+
+def does_response_includes_wwpn? (response)
+  return_value = true
+  @member_name.split(";").each do |wwpn|
+    if !(response.include? wwpn)
+    return_value = false
+    end
+  end
+  return return_value
+end
+
+def get_exists_when_ensure_present(response)
+  if (is_response_does_not_exists?(response))
+  return true
+  else
+    if !(does_response_includes_wwpn? (response))
+    return false
+    end
+    Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_EXIST_INFO%[@member_name,@alias_name])
+  return true
+  end
+end
+
+def get_exists_when_ensure_absent(response)
+  if (is_response_does_not_exists?(response))
+  return false
+  else
+    if (does_response_includes_wwpn? (response))
+    return true
+    end
+    Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_REMOVED_INFO%[@member_name,@alias_name])
+  return false
+  end
+end
+
 Puppet::Type.type(:brocade_alias_membership).provide(:brocade_alias_membership, :parent => Puppet::Provider::Brocade_fos) do
   @doc = "Manage brocade alias members addition and removal."
 
@@ -35,36 +78,6 @@ Puppet::Type.type(:brocade_alias_membership).provide(:brocade_alias_membership, 
       Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_REMOVED_INFO%[@member_name,@alias_name])
     else
       cfg_save
-    end
-  end
-
-  def get_exists_when_ensure_present(response)
-    if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
-      Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_DOES_NOT_EXIST_INFO%[@alias_name])
-    return true
-    elsif
-    @member_name.split(";").each do |wwpn|
-    if !(response.include? wwpn)
-    return false
-    end
-    end
-      Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_EXIST_INFO%[@member_name,@alias_name])
-    return true
-    end
-  end
-
-  def get_exists_when_ensure_absent(response)
-    if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
-      Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_DOES_NOT_EXIST_INFO%[@alias_name])
-    return false
-    elsif
-    @member_name.split(";").each do |wwpn|
-    if (response.include? wwpn)
-    return true
-    end
-    end
-      Puppet.info(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_REMOVED_INFO%[@member_name,@alias_name])
-    return false
     end
   end
 
