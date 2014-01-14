@@ -25,6 +25,30 @@ def config_remove_zone
   end
 end
 
+def check_member_present(response)
+  initialize_resources
+  @member_zone.split(";").each do |member|
+    if !(response.include? member)
+      Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ADD_INFO%[member, @config_name])
+    return false
+    end
+  end
+  Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_EXIST_INFO%[@member_zone,@config_name])
+  true
+end
+
+def check_member_absent(response)
+  initialize_resources
+  @member_zone.split(";").each do |member|
+    if(response.include? member)
+      Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_REMOVE_INFO%[member, @config_name])
+    return true
+    end
+  end
+  Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_REMOVED_INFO%[@member_zone,@config_name])
+  false
+end
+
 Puppet::Type.type(:brocade_config_membership).provide(:brocade_config_membership, :parent => Puppet::Provider::Brocade_fos) do
   @doc = "Manage addition and removal of zones to config."
 
@@ -64,30 +88,6 @@ Puppet::Type.type(:brocade_config_membership).provide(:brocade_config_membership
       end
       check_member_absent(response)
     end
-  end
-
-  def check_member_present(response)
-    initialize_resources
-    @member_zone.split(";").each do |member|
-      if !(response.include? member)
-        Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ADD_INFO%[member, @config_name])
-      return false
-      end
-    end
-    Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_EXIST_INFO%[@member_zone,@config_name])
-    true
-  end
-
-  def check_member_absent(response)
-    initialize_resources
-    @member_zone.split(";").each do |member|
-      if(response.include? member)
-        Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_REMOVE_INFO%[member, @config_name])
-      return true
-      end
-    end
-    Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_REMOVED_INFO%[@member_zone,@config_name])
-    false
   end
 
 end
