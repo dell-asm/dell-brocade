@@ -1,5 +1,5 @@
 require 'puppet/brocademodel'
-
+require 'json'
 # Base class for all possible facts
 module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
   SWITCHSHOW_HASH = {
@@ -43,6 +43,34 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
     end
   end
 
+  def self.register_remote_deviceinfo(base)
+    base.register_param ['FC Ports'] do
+      match do |txt|
+        fcports=txt.scan(/FC ports =\s+(.*)?/).flatten.first
+        fcports
+      end
+      cmd "switchshow -portcount"
+    end    
+    base.register_param ['RemoteDeviceInfo '] do
+      rdevice = Hash.new
+      ports=nil
+      match do |txt|
+        txt.split(/portIndex:\s+(.*)/).each do |text|
+          location=text.scan(/portName:\s+(.*)/).flatten.first
+          if !(location.nil? || location.empty?)
+            ports=Hash.new
+            macadd=text.scan(/portWwn of device\(s\) connected:\s(.*)Distance/m).flatten.first.strip
+            ports[:location] = location
+            ports[:mac_address] = macadd
+            rdevice[ports[:location]]  = ports
+          end
+        end
+        rdevice.to_json
+      end
+      cmd "portshow -i 0-47"
+    end
+  end
+
   def self.register(base)
 
     #Register facts for switchshow command
@@ -53,6 +81,8 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
 
     #Register facts for hadump command
     Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base.register_brocade_param(base,'ipaddrshow',IPADDRESSSHOW_HASH)
+
+    Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base.register_remote_deviceinfo(base)
 
     base.register_param ['Manufacturer'] do
       match do
@@ -74,11 +104,6 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
 
       end
       cmd "switchshow"
-    end
-
-    base.register_param ['FC Ports'] do
-      match /FC ports =\s+(.*)?/
-      cmd "switchshow -portcount"
     end
 
     base.register_param ['Switch Health Status'] do
