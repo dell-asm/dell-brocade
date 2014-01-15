@@ -8,7 +8,7 @@ module Puppet::Provider::Brocade_commands
   ALIAS_MEMBER_REMOVE_COMMAND = "aliremove %s, \"%s\""
   ZONE_ADD_MEMBER_COMMAND = "zoneadd %s, \"%s\""
   ZONE_REMOVE_MEMBER_COMMAND = "zoneremove %s, \"%s\""
-  ZONE_SHOW_COMMAND = "zoneremove %s"
+  ZONE_SHOW_COMMAND = "zoneshow %s"
   ZONE_CREATE_COMMAND = "zonecreate %s, \"%s\""
   ZONE_DELETE_COMMAND = "zonedelete %s"
   CONFIG_ADD_MEMBER_COMMAND = "cfgadd %s, \"%s\""
