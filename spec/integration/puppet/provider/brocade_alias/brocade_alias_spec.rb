@@ -61,15 +61,4 @@ describe "Integration test for brocade alias" do
   def get_alias_show_cmd(aliasname)
     command = "alishow #{aliasname}"
   end
-
-  def presense?(response_string,key_to_check)
-    retval = false
-    if response_string.include?("#{key_to_check}")
-      retval = true
-    else
-      retval = false
-    end
-    return retval
-  end
-
 end
