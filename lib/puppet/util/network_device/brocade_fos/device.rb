@@ -47,5 +47,14 @@ class Puppet::Util::NetworkDevice::Brocade_fos::Device < Puppet::Util::NetworkDe
     init
     @facts.facts_to_hash
   end
+  
+  def get_facts
+    return @facts
+  end
+  
+  def set_facts(in_facts)
+    @facts = in_facts
+  end
+
 end
 
