@@ -62,15 +62,4 @@ describe "Integration test for brocade zone create and destroy" do
     end
 
   end
-
-  def presense?(response_string,key_to_check)
-    retval = false
-    if response_string.include?("#{key_to_check}")
-    retval = true
-    else
-    retval = false
-    end
-    return retval
-  end
-
 end
