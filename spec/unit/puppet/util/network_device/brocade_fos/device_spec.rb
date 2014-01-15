@@ -2,6 +2,7 @@ require 'spec_helper'
 require 'puppet/util/network_device/brocade_fos/device'
 
 describe "Brocade Device" do
+
   before(:each) do
     @device_url = 'ssh://user:password@localhost:22'
     transport = double('transport')
@@ -10,7 +11,6 @@ describe "Brocade Device" do
     @fixture =Puppet::Util::NetworkDevice::Brocade_fos::Device.new(@device_url)
     @fixture.transport = transport
     @fixture.stub(:super).and_return("")
-
   end
 
   context 'when creating the device' do
@@ -101,6 +101,19 @@ describe "Brocade Device" do
         @fixture.should_receive(:connect_transport).once.ordered
         @fixture.should_receive(:init_facts).once.ordered
         @fixture.init
+
+      end
+
+    end
+
+    context "should initialize facts_to_hash method " do
+
+      it "should initiate the facts_to_hash method once" do
+        @mock_facts = Puppet::Util::NetworkDevice::Brocade_fos::Facts.new(@fixture.transport)
+        @fixture.set_facts(@mock_facts)
+        @fixture.should_receive(:init).once.ordered
+        @fixture.get_facts.should_receive(:facts_to_hash).once
+        @fixture.facts
       end
 
     end
