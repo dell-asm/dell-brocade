@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'fixtures/unit/puppet/provider/brocade_config_membership/Brocade_config_membership_fixture'
+require 'fixtures/unit/puppet/provider/brocade_config_membership/brocade_config_membership_fixture'
 
 NOOP_HASH = { :noop => false}
 

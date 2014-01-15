@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'fixtures/unit/puppet/provider/brocade_alias/Brocade_alias_fixture'
+require 'fixtures/unit/puppet/provider/brocade_alias/brocade_alias_fixture'
 
 NOOPS_HASH = {:noop => false}
 
