@@ -1,31 +1,30 @@
 #! /usr/bin/env ruby
-
 require 'spec_helper'
 require 'yaml'
-require 'puppet/util/network_device/brocade_fos/device'
-require 'puppet/provider/brocade_fos'
-require 'puppet/util/network_device/transport_fos/ssh'
+require 'spec_lib/puppet_spec/deviceconf'
+include PuppetSpec::Deviceconf
 
-describe "Integration Testing for Brocade config" do
+describe "Integratin test for create Config in enable and disable mode and destroy Config" do
 
   device_conf =  YAML.load_file(my_deviceurl('brocade','device_conf.yml'))
 
   before :each do
-    Facter.stubs(:value).with(:url).returns(device_conf['url'])
+    Facter.stub(:value).with(:url).and_return(device_conf['url'])
   end
 
   let :create_config_disable do
     Puppet::Type.type(:brocade_config).new(
-    :configname  => 'Top_Config',
+    :configname    => 'DemoConfig',
     :configstate   => 'disable',
-    :member_zone   => 'DemoZone31'
+    :member_zone   => 'DemoZone25'
     )
   end
+  
   let :create_config_enable do
     Puppet::Type.type(:brocade_config).new(
-    :configname  => 'Top_Config',
+    :configname    => 'DemoConfig',
     :configstate   => 'enable',
-    :member_zone   => 'DemoZone31'
+    :member_zone   => 'DemoZone25'
     )
   end
 
@@ -35,56 +34,119 @@ describe "Integration Testing for Brocade config" do
     )
   end
 
-  context "when create and delete config without any error" do
-    it "should be able to create a brocade config" do
-      create_config_disable.provider.device_transport.connect
-      create_config_disable.provider.create
-      response = create_config_disable.provider.device_transport.command(get_brocade_config_show_command(create_config_disable[:configname]),:noop=>false)
-      response.should_not include("does not exist")
-      create_config_disable.provider.device_transport.close
-    end
+  let :create_zone do
+    Puppet::Type.type(:brocade_zone).new(
+    :zonename     => 'DemoZone25',
+    :ensure   => 'present',
+    :member => '50:00:d3:10:00:5e:c4:35',
+    )
+  end
 
-    it "should create a brocade config and enable the config" do
-      create_config_enable.provider.device_transport.connect
-      create_config_enable.provider.create
-      response = create_config_enable.provider.device_transport.command(get_brocade_config_show_command(create_config_enable[:configname]),:noop=>false)
-      response.should_not include("does not exist")
-      verify_config_enabled
-      create_config_enable.provider.device_transport.close
-    end
+  let :destroy_zone do
+    Puppet::Type.type(:brocade_zone).new(
+    :zonename => 'DemoZone25',
+    :ensure   => 'absent',
+    )
+  end
 
-    it "should delete the brocade config" do
+  let :config_enable do
+    Puppet::Type.type(:brocade_config).new(
+    :ensure      => 'present',
+    :configname  => 'Top_Config',
+    :configstate => 'enable',
+    )
+  end
+
+  ##Zone Creating, before each test case execution
+  before :each do
+    puts "Creating Zone before Test"
+    create_zone.provider.device_transport.connect
+    create_zone.provider.create
+    create_zone.provider.device_transport.close
+  end
+  
+  ##Zone Destroy, after each test case execution
+  after :each do
+    puts "Delete Zone after Test"
+    destroy_zone.provider.device_transport.connect
+    destroy_zone.provider.destroy
+    destroy_zone.provider.device_transport.close
+  end
+
+
+  context "should create Config in enable and disable mode and destroy config" do
+    it "should create a brocade config in disabled mode" do  
+        
       destroy_config.provider.device_transport.connect
       destroy_config.provider.destroy
-      response = destroy_config.provider.device_transport.command(get_brocade_config_show_command(destroy_config[:configname]),:noop=>false)
+      destroy_config.provider.device_transport.close
+       
+      create_config_disable.provider.device_transport.connect
+      create_config_disable.provider.create
+      create_config_res = create_config_disable.provider.device_transport.command(get_brocade_cfgshow_command(create_config_disable[:configname]),:noop=>false)
+      create_config_disable.provider.device_transport.close
+      
+      destroy_config.provider.device_transport.connect
+      destroy_config.provider.destroy
+      destroy_config.provider.device_transport.close
+      puts "CreateConfigDisable--#{create_config_res}"
+      create_config_res.should_not include("does not exist")
+    end
+  
+    it "should create a brocade config in enabled mode" do
+
+      destroy_config.provider.device_transport.connect
+      destroy_config.provider.destroy
+      destroy_config.provider.device_transport.close
+
+      create_config_enable.provider.device_transport.connect
+      create_config_enable.provider.create
+      create_config_res = create_config_enable.provider.device_transport.command(get_brocade_cfgactvshow_command,:noop=>false)
+      create_config_enable.provider.device_transport.close
+      ##We have created a config in the enable mode, now we will enable the
+      ##config which was earlier enabled so that we can delete the currently created config
+
+      config_enable.provider.device_transport.connect
+      config_enable.provider.configstate=(:enable)
+      tempRes=  config_enable.provider.device_transport.command("cfgactvshow",:noop=>false)
+      config_enable.provider.device_transport.close
+
+      destroy_config.provider.device_transport.connect
+      destroy_config.provider.destroy
+      destroy_config.provider.device_transport.close
+      presense?(create_config_res,create_config_enable[:configname]).should == true
+    end
+
+
+    it "should delete the brocade config" do
+      create_config_disable.provider.device_transport.connect
+      create_config_disable.provider.create
+      create_config_disable.provider.device_transport.close
+      
+      destroy_config.provider.device_transport.connect
+      destroy_config.provider.destroy
+      response = destroy_config.provider.device_transport.command(get_brocade_cfgshow_command(destroy_config[:configname]),:noop=>false)
+      destroy_config.provider.device_transport.close
       response.should include("does not exist")
-      destroy_config_enable.provider.device_transport.close
     end
   end
 
-  def get_brocade_config_show_command(configname)
+  def get_brocade_cfgshow_command(configname)
     command = "cfgshow #{configname}"
   end
 
-  def get_brocade_zone_show_command
+  def get_brocade_cfgactvshow_command
     command = "cfgactvshow"
   end
 
-  def verify_config_enabled
-    response = String.new("")
-    #response =  @device.transport.command("zoneshow", :noop => false)
-    response = create_config_enable.provider.device_transport.command(get_brocade_zone_show_command,:noop=>false)
-    match1 = /cfg:\s*(\S+)?/.match(response)
-
-    if !$1.empty?
-      effectiveConfiguration = $1
-      config = create_config_enable[:configname]
-      "#{effectiveConfiguration}".should include("#{config}")
-      if config == effectiveConfiguration
-        #enableZoneConfig
-        puts("Verified config #{config} enabled successfully")
-      end
+  def presense?(response_string,key_to_check)
+    retval = false
+    if response_string.include?("#{key_to_check}")
+      retval = true
+    else
+      retval = false
     end
+    return retval
   end
+  
 end
-
