@@ -1,8 +1,6 @@
 require 'spec_helper'
 require 'fixtures/unit/puppet/provider/brocade_zone_membership/brocade_zone_membership_fixture'
 
-NOOP_HASH = { :noop => false}
-
 describe "Brocade Zone Membership Provider" do
 
 #Given

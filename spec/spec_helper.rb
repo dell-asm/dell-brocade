@@ -13,6 +13,7 @@ require 'rspec/expectations'
 
 module_path = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 $LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), '..','lib'))
+NOOP_HASH = { :noop => false}
 
 RSpec.configure do |c|
   c.module_path = module_path
