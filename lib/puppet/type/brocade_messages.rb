@@ -12,6 +12,7 @@ module Puppet::Type::Brocade_messages
   ZONE_NAME_BLANK_ERROR="Unable to perform the operation because the zone name is blank."
   ZONE_NAME_SPECIAL_CHAR_ERROR="Unable to perform the operation because the zone name contains special characters."
   ZONE_NAME_NUMERIC_CHAR_ERROR="Unable to perform the operation because the zone name contains numeric characters."
+  ZONE_NAME_LONG_ERROR="Unable to perform the operation because the zone name contains long name (more than 64 characters) characters."
   ZONE_MEMBER_BLANK_ERROR="Unable to perform the operation because the member is blank."
   MEMBER_NAME_NUMERIC_CHAR_ERROR="Unable to perform the operation because the member name contains numeric characters."
   def empty_value_check(value, error)
@@ -29,6 +30,12 @@ module Puppet::Type::Brocade_messages
   def numeric_char_check(value, error)
     if ( value =~ /^[\d]/ )
       raise  ArgumentError, error
+    end
+  end
+
+  def long_name_check(value, error)
+    if value.strip.length > 64
+      raise ArgumentError, error
     end
   end
 
@@ -60,6 +67,6 @@ module Puppet::Type::Brocade_messages
     end
   end
 
-  module_function :empty_value_check, :special_char_check, :numeric_char_check, :member_value_format_check, :member_wwpn_format_check, :tokenize_list, :list_special_char_check
+  module_function :empty_value_check, :special_char_check, :numeric_char_check, :long_name_check, :member_value_format_check, :member_wwpn_format_check, :tokenize_list, :list_special_char_check
 
 end

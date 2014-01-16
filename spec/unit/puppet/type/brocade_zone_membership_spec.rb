@@ -52,8 +52,12 @@ describe Puppet::Type.type(:brocade_zone_membership) do
         it "should support an alphanumerical name" do
           described_class.new(:name => 'zonename1:memberzone1;memberzone2', :ensure => 'present')[:zonename].should == 'zonename1'
         end
-        it "should not support first numerical character in name" do
+        it "should not start with a numerical character in name" do
           expect {described_class.new(:name => '1zonename:memberzone1;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
+        end
+        it "should not support long names (more than 64 characters) in name" do
+
+          expect {described_class.new(:name => 'zonenamefffffffffffffffffffffffffffffffffffffffffffffffffffffffff:memberzone1;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
         end
         it "should support underscores" do
           described_class.new(:name => 'zonename_1:memberzone1;memberzone2', :ensure => 'present')[:zonename].should == 'zonename_1'
@@ -73,8 +77,11 @@ describe Puppet::Type.type(:brocade_zone_membership) do
         it "should support semicolon separated list of zonename and member" do
           described_class.new(:name => 'demozone:memberzone1;memberzone2', :ensure => 'present')[:member].should == 'memberzone1;memberzone2'
         end
-        it "should not support first numerical character in name" do
+        it "should not start with a numerical character in name" do
           expect {described_class.new(:name => 'zonename:2memberzone1;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
+        end
+        it "should not support long names (more than 64 characters) in name" do
+          expect {described_class.new(:name => 'zonenamefffffffffffffffffffffffffffffffffffffffffffffffffffffffff:memberzofffffffffffffffffffffffffffffffffffffffffffffffffffffffffdd;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
         end
         it "should not support empty member list" do
           expect {described_class.new(:name => 'demozone:', :ensure => 'present')}.to raise_error Puppet::Error

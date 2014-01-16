@@ -45,6 +45,13 @@ describe Puppet::Type.type(:brocade_zone) do
         described_class.new(:member => 'member', :zonename => 'zonename1', :ensure => 'present')[:zonename].should == 'zonename1'
       end
 
+      it "should not start with a numerical character in name" do
+        expect {described_class.new(:name => 'zonename:2memberzone1;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
+      end
+      it "should not support long names (more than 64 characters) in name" do
+        expect {described_class.new(:name => 'zonenamefffffffffffffffffffffffffffffffffffffffffffffffffffffffff:memberzofffffffffffffffffffffffffffffffffffffffffffffffffffffffffdd;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
+      end
+
       it "should support underscores" do
         described_class.new(:member => 'member', :zonename => 'zonename_1', :ensure => 'present')[:zonename].should == 'zonename_1'
       end
@@ -62,6 +69,13 @@ describe Puppet::Type.type(:brocade_zone) do
 
       it "should support semicolon separated list of alias and wwpn" do
         described_class.new(:member => 'demoalias1;50:00:d3:10:00:5e:c4:ad', :zonename => 'zonename', :ensure => 'present')[:member].should == 'demoalias1;50:00:d3:10:00:5e:c4:ad'
+      end
+
+      it "should not start with a numerical character in name" do
+        expect {described_class.new(:name => 'zonename:2memberzone1;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
+      end
+      it "should not support long names (more than 64 characters) in name" do
+        expect {described_class.new(:name => 'zonenamefffffffffffffffffffffffffffffffffffffffffffffffffffffffff:memberzofffffffffffffffffffffffffffffffffffffffffffffffffffffffffdd;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
       end
 
       it "should not support empty member list" do

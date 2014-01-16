@@ -13,6 +13,8 @@ Puppet::Type.newtype(:brocade_zone) do
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_BLANK_ERROR)
       Puppet::Type::Brocade_messages.special_char_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_SPECIAL_CHAR_ERROR)
+      Puppet::Type::Brocade_messages.numeric_char_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_NUMERIC_CHAR_ERROR)
+      Puppet::Type::Brocade_messages.long_name_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_LONG_ERROR)
     end
   end
 
@@ -21,6 +23,8 @@ Puppet::Type.newtype(:brocade_zone) do
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ALIAS_NAME_BLANK_ERROR)
       Puppet::Type::Brocade_messages.member_value_format_check(value)
+      Puppet::Type::Brocade_messages.numeric_char_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_NUMERIC_CHAR_ERROR)
+      Puppet::Type::Brocade_messages.long_name_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_LONG_ERROR)
     end
   end
 
