@@ -21,7 +21,7 @@ describe Puppet::Type.type(:brocade_alias) do
     it "should have alias name as its keyattribute" do
       described_class.key_attributes.should == [:alias_name]
     end
-    describe "when validating attributes" do
+    describe "when validating attributes type" do
       [:alias_name, :member].each do |param|
         it "should hava a #{param} parameter" do
           described_class.attrtype(param).should == :param
