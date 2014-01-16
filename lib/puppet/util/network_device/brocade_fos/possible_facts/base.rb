@@ -26,9 +26,13 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
     'Gateway IP Address' => 'Gateway IP Address'
   }
 
-  MODEL_HASH = {
-    '120.x' => 'Brocade DCX8510-8',
-    '109.x' => 'Brocade 6510'
+  DEFAULTVALUE_HASH = {
+    'Manufacturer' => 'Brocade',
+    'Protocols Enabled' => 'FC',
+    'Boot Image' => 'Not Available',
+    'Processor' => 'Not Available',
+    'Port Channels' => 'Not Available',
+    'Port Channel Status' => 'Not Available'
 
   }
 
@@ -39,6 +43,18 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
         s = param_hash[key]+ ":" + "\\s+(.*)?"
         reg = Regexp.new(s)
         match reg
+        cmd command_val
+      end
+    end
+  end
+  def self.register_param_with_defaultvalues(base, command_val, hash_name)
+    param_hash = hash_name
+    param_hash.keys.each do |key|
+      base.register_param key do
+        val = param_hash[key]        
+        match do |txt|
+          val
+        end
         cmd command_val
       end
     end
@@ -55,14 +71,8 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
     #Register facts for hadump command
     Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base.register_brocade_param(base,'ipaddrshow',IPADDRESSSHOW_HASH)
 
-    # Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base.register_remote_deviceinfo(base)
-
-    base.register_param ['Manufacturer'] do
-      match do
-        "Brocade"
-      end
-      cmd "switchshow"
-    end
+    Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base.register_param_with_defaultvalues(base,'switchshow',DEFAULTVALUE_HASH)
+    
     base.register_param ['FC Ports'] do
       match /FC ports =\s+(.*)?/
       cmd "switchshow -portcount"
@@ -92,43 +102,9 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
       cmd "version"
     end
 
-    base.register_param ['Protocols Enabled'] do
-      match do
-        "FC"
-      end
-      cmd "switchshow"
-    end
-
-    base.register_param ['Boot Image'] do
-      match do
-        "Not Available"
-      end
-      cmd "switchshow"
-    end
-
     base.register_param ['Memory(bytes)'] do
       match /Mem:\s+(\d*)/
       cmd "memshow"
-    end
-
-    base.register_param ['Processor'] do
-      match do
-        "Not Available"
-      end
-      cmd "switchshow"
-    end
-    base.register_param ['Port Channels'] do
-      match do
-        "None"
-      end
-      cmd "switchshow"
-    end
-
-    base.register_param ['Port Channel Status'] do
-      match do
-        "None"
-      end
-      cmd "switchshow"
     end
 
     base.register_param 'Zone_Config' do
