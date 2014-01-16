@@ -36,33 +36,35 @@ describe Puppet::Type.type(:brocade_zone_membership) do
         it "should be a tuple of two values" do
           described_class.new(:name => 'demozone:memberzone1;memberzone2', :ensure => 'present')[:name].should == 'demozone:memberzone1;memberzone2'
         end
-        
+
         it "should have zone name value before first splitter(:)" do
           described_class.new(:name => 'demozone:memberzone1;memberzone2', :ensure => 'present')[:zonename].should == 'demozone'
         end
-        
+
         it "should have member value(s) after first splitter(:)" do
           described_class.new(:name => 'demozone:memberzone1;memberzone2', :ensure => 'present')[:member].should == 'memberzone1;memberzone2'
         end
-        
+
       end
-      
+
       describe "validating zonename variable" do
 
         it "should support an alphanumerical name" do
           described_class.new(:name => 'zonename1:memberzone1;memberzone2', :ensure => 'present')[:zonename].should == 'zonename1'
         end
-
+        it "should not support first numerical character in name" do
+          expect {described_class.new(:name => '1zonename:memberzone1;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
+        end
         it "should support underscores" do
           described_class.new(:name => 'zonename_1:memberzone1;memberzone2', :ensure => 'present')[:zonename].should == 'zonename_1'
         end
 
         it "should not support blank value" do
-          expect {described_class.new(:name => ':memberzone1;memberzone2', :ensure => 'present')}.to raise_error(Puppet::Error, /Unable to perform the operation because the zone name is blank/)
+          expect {described_class.new(:name => ':memberzone1;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
         end
 
         it "should not support special characters" do
-          expect { described_class.new(:name => 'demo@#$%zone:memberzone1;memberzone2', :ensure => 'present')}.to raise_error(Puppet::Error, /Unable to perform the operation because the zone name contains special characters./)
+          expect { described_class.new(:name => 'demo@#$%zone:memberzone1;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
         end
       end
 
@@ -71,17 +73,19 @@ describe Puppet::Type.type(:brocade_zone_membership) do
         it "should support semicolon separated list of zonename and member" do
           described_class.new(:name => 'demozone:memberzone1;memberzone2', :ensure => 'present')[:member].should == 'memberzone1;memberzone2'
         end
-
+        it "should not support first numerical character in name" do
+          expect {described_class.new(:name => 'zonename:2memberzone1;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
+        end
         it "should not support empty member list" do
-          expect {described_class.new(:name => 'demozone:', :ensure => 'present')}.to raise_error(Puppet::Error, /Unable to perform the operation because the member is blank./)
+          expect {described_class.new(:name => 'demozone:', :ensure => 'present')}.to raise_error Puppet::Error
         end
 
         it "should not support special characters for member list" do
-          expect { described_class.new(:name => 'demozone:member@#$%^zone1;memberzone2', :ensure => 'present')}.to raise_error(Puppet::Error, /Unable to perform the operation because the alias name contains special characters./)
+          expect { described_class.new(:name => 'demozone:member@#$%^zone1;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
         end
 
         it "should not support invalid wwpn format" do
-          expect { described_class.new(:name => 'demozone:0a:0a:0a:0a:0a:0a:0a;memberzone2', :ensure => 'present')}.to raise_error(Puppet::Error, /A valid MemberWWPN value must be in XX:XX:XX:XX:XX:XX:XX:XX format./)
+          expect { described_class.new(:name => 'demozone:0a:0a:0a:0a:0a:0a:0a;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
         end
       end
       describe "validating ensure property" do
@@ -92,7 +96,7 @@ describe Puppet::Type.type(:brocade_zone_membership) do
           described_class.new(:name => 'demozone:memberzone1;memberzone2', :ensure => 'absent')[:ensure].should == :absent
         end
         it "should not support other values" do
-          expect { described_class.new(:name => 'demozone:memberzone1;memberzone2', :ensure => 'unsupportedvalue')}.to raise_error(Puppet::Error, /Invalid value "unsupportedvalue"/)
+          expect { described_class.new(:name => 'demozone:memberzone1;memberzone2', :ensure => 'unsupportedvalue')}.to raise_error Puppet::Error
         end
       end
     end
