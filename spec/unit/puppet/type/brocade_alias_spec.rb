@@ -46,7 +46,16 @@ describe Puppet::Type.type(:brocade_alias) do
         it "should not allow special characters in the alias name" do
           expect { described_class.new(:alias_name => '$%^&!', :ensure => 'present',:member => '0f:0a:0a:0a:0a:0a:0a:0a') }.to raise_error Puppet::Error
         end
+        
+        it "should not allow numeric characters in start of the alias name" do
+          expect { described_class.new(:alias_name => '1alias_demo', :ensure => 'present',:member => '0f:0a:0a:0a:0a:0a:0a:0a') }.to raise_error Puppet::Error
+        end
+        
+        it "should not allow more than 64 characters in the alias name" do
+          expect { described_class.new(:alias_name => 'alias_demoqqqwwwwwwwwwwwwwwwwwwwwwwwwwwweeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq', :ensure => 'present',:member => '0f:0a:0a:0a:0a:0a:0a:0a') }.to raise_error Puppet::Error
+        end
       end
+      
       describe "validating ensure property" do
         it "should support present value" do
           described_class.new(:alias_name => 'DemoAlias', :member => '0f:0a:0a:0a:0a:0a:0a:0a', :ensure => 'present')[:ensure].should == :present
