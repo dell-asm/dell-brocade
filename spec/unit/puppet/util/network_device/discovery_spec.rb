@@ -2,8 +2,6 @@
 
 require 'spec_helper'
 require 'yaml'
-include PuppetSpec::Fixtures
-#require 'puppet\util\network_device\facts'
 require 'fixtures/unit/puppet/util/network_device/facts_fixture'
 
 describe Puppet::Util::NetworkDevice::Brocade_fos::Facts do
