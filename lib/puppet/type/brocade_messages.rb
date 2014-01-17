@@ -57,6 +57,8 @@ module Puppet::Type::Brocade_messages
         member_wwpn_format_check(line.strip, MEMBER_WWPN_INVALID_FORMAT_ERROR)
       else
         special_char_check(line.strip, ALIAS_NAME_SPECIAL_CHAR_ERROR)
+        numeric_char_check(line.strip, ALIAS_NAME_NUMERIC_CHAR_ERROR)
+        long_name_check(value, ALIAS_NAME_LONG_ERROR)
       end
     end
   end

@@ -8,7 +8,8 @@ Puppet::Type.newtype(:brocade_alias) do
   ensurable
 
   newparam(:alias_name) do
-    desc "This parameter describes the Brocade alias name for the MemberWWPN."
+    desc "This parameter describes the Brocade alias name for the MemberWWPN.
+          The valid alias name does not allow blank value, special character except _ ,numeric char at the start, and length above 64 chars"
     isnamevar
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ALIAS_NAME_BLANK_ERROR)
@@ -19,7 +20,8 @@ Puppet::Type.newtype(:brocade_alias) do
   end
 
   newparam(:member) do
-    desc "This parameter describes the MemberWWPN value whose alias is to be added."
+    desc "This parameter describes the MemberWWPN value whose alias is to be added. 
+          The valid member value has a valid format of xx:xx:xx:xx:xx:xx:xx:xx and does not allow blank value"
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::MEMBER_WWPN_BLANK_ERROR)
       Puppet::Type::Brocade_messages.tokenize_list(value).each do |line|

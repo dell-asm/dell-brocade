@@ -8,7 +8,8 @@ Puppet::Type.newtype(:brocade_config) do
   ensurable
 
   newparam(:configname) do
-    desc "This parameter describes the config name on Brocade"
+    desc "This parameter describes the config name on Brocade
+          The valid config name does not allow blank value,special character except _ ,numeric char at the start, and length above 64 chars"
     isnamevar
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::CONFIG_NAME_BLANK_ERROR)
@@ -19,7 +20,8 @@ Puppet::Type.newtype(:brocade_config) do
   end
 
   newparam(:member_zone) do
-    desc "This parameter describes the zone in the config"
+    desc "This parameter describes the zone in the config
+          The valid zone name does not allow blank value,special character except _ ,numeric char at the start, and length above 64 chars"
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_BLANK_ERROR)
       Puppet::Type::Brocade_messages.list_special_char_check(value, Puppet::Type::Brocade_messages::ZONE_NAME_SPECIAL_CHAR_ERROR)
