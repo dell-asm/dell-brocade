@@ -3,20 +3,24 @@ module Puppet::Type::Brocade_messages
 
   ALIAS_NAME_BLANK_ERROR="Unable to perform the operation because the alias name is blank."
   ALIAS_NAME_SPECIAL_CHAR_ERROR="Unable to perform the operation because the alias name contains special characters."
-  ALIAS_NAME_NUMERIC_CHAR_ERROR="Unable to perform the operation because the alias name starts with numeric characters."
+  ALIAS_NAME_NUMERIC_CHAR_ERROR="Unable to perform the operation because the alias name starts with numeric character."
   ALIAS_NAME_LONG_ERROR="Unable to perform the operation because the alias name exceeds max limit of 64 characters."
+  
   MEMBER_WWPN_INVALID_FORMAT_ERROR="Enter a correct MemberWWPN value. A valid MemberWWPN value must be in XX:XX:XX:XX:XX:XX:XX:XX format."
   MEMBER_WWPN_BLANK_ERROR="MemberWWPN value cannot be blank. A valid MemberWWPN value must be in XX:XX:XX:XX:XX:XX:XX:XX format."
+  MEMBER_NAME_NUMERIC_CHAR_ERROR="Unable to perform the operation because the member name starts with a numeric character."
 
   CONFIG_NAME_BLANK_ERROR="Unable to perform the operation because the zone config name is blank."
   CONFIG_NAME_SPECIAL_CHAR_ERROR="Unable to perform the operation because the zone config name contains special characters."
+  CONFIG_NAME_LONG_ERROR ="Unable to perform the operation because the config name exceeds maximum limit of 64 characters."
+  CONFIG_NAME_NUMERIC_CHAR_ERROR="Unable to perform the operation because the config name starts with a numeric character."
 
   ZONE_NAME_BLANK_ERROR="Unable to perform the operation because the zone name is blank."
   ZONE_NAME_SPECIAL_CHAR_ERROR="Unable to perform the operation because the zone name contains special characters."
-  ZONE_NAME_NUMERIC_CHAR_ERROR="Unable to perform the operation because the zone name contains numeric characters."
-  ZONE_NAME_LONG_ERROR="Unable to perform the operation because the zone name contains long name (more than 64 characters) characters."
+  ZONE_NAME_NUMERIC_CHAR_ERROR="Unable to perform the operation because the zone name starts with a numeric character."
+  ZONE_NAME_LONG_ERROR="Unable to perform the operation because the zone name exceeds maximum limit of 64 characters."
   ZONE_MEMBER_BLANK_ERROR="Unable to perform the operation because the member is blank."
-  MEMBER_NAME_NUMERIC_CHAR_ERROR="Unable to perform the operation because the member name contains numeric characters."
+  
   def empty_value_check(value, error)
     if value.strip.length == 0
       raise ArgumentError, error
