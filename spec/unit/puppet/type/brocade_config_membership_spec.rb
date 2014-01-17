@@ -67,6 +67,15 @@ describe Puppet::Type.type(:brocade_config_membership) do
         it "should not support special characters" do
           expect { described_class.new(:name => 'demo@#$%config:memberzone1;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
         end
+        
+        it "should not support numeric character at the beginning of the string" do
+          expect { described_class.new(:name => '1democonfig:memberzone1;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
+        end
+
+        it "should not support long name (64 characters maximum limit)" do
+          expect { described_class.new(:name => 'abcdefghijknlmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz123456789012:memberzone1;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
+        end
+
       end
 
       describe "validating zone member variable" do
@@ -82,6 +91,15 @@ describe Puppet::Type.type(:brocade_config_membership) do
         it "should not support special characters for zone member list" do
           expect { described_class.new(:name => 'DemoConfig:member@#$%^zone1;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
         end
+        
+        it "should not support numeric character at the beginning of the string" do
+          expect { described_class.new(:name => 'democonfig:12memberzone1;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
+        end
+
+        it "should not support long name (64 characters maximum limit)" do
+          expect { described_class.new(:name => 'DemoConfig:abcdefghijknlmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz123456789012;memberzone2', :ensure => 'present')}.to raise_error Puppet::Error
+        end
+
 
       end
 
