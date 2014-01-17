@@ -1,78 +1,85 @@
 #! /usr/bin/env ruby
 
 require 'spec_helper'
+
 require 'yaml'
 require 'fixtures/unit/puppet/util/network_device/facts_fixture'
+require 'fixtures/unit/puppet/util/network_device/commandresponse_hash'
+
+include  CommandResponse_Hash
 
 describe Puppet::Util::NetworkDevice::Brocade_fos::Facts do
 
-before(:each) do
-  @fixture = Facts_fixture.new
-  @transport = double('transport')
-  @transport.stub(:command).with('switchshow',{:cache=>true,:noop => false}).and_return ''
-  @transport.stub(:command).with('chasisshow',{:cache=>true,:noop => false}).and_return ''
-  @transport.stub(:command).with('ipaddrshow',{:cache=>true,:noop => false}).and_return ''
-  @transport.stub(:command).with('switchstatusshow',{:cache=>true,:noop => false}).and_return ''
-  @transport.stub(:command).with('memshow',{:cache=>true,:noop => false}).and_return ''
-  @transport.stub(:command).with('zoneshow',{:cache=>true,:noop => false}).and_return ''
-  @transport.stub(:command).with('version',{:cache=>true,:noop => false}).and_return ''
-end
-
-  # let :version do
-    # YAML.load_file(my_fixture('version1.yml'))
-  # end
-
+  before(:each) do
+    @fixture = Facts_fixture.new
+    @transport = double('transport')
+    @transport.stub(:command).with('chassisshow',{:cache=>true,:noop => false}).and_return ''
+    @transport.stub(:command).with('switchshow -portcount',{:cache=>true,:noop => false}).and_return ''
+    @transport.stub(:command).with('switchshow',{:cache=>true,:noop => false}).and_return @fixture.switchshow_resp
+    @transport.stub(:command).with('ipaddrshow',{:cache=>true,:noop => false}).and_return ''
+    @transport.stub(:command).with('switchstatusshow',{:cache=>true,:noop => false}).and_return ''
+    @transport.stub(:command).with('memshow',{:cache=>true,:noop => false}).and_return ''
+    @transport.stub(:command).with('zoneshow',{:cache=>true,:noop => false}).and_return ''
+    @transport.stub(:command).with('version',{:cache=>true,:noop => false}).and_return ''
+  end
 
   describe "Device Discovery Behaviour" do
 
     context "when the defferent brocade commands are fired for the Discovery" do
 
-      it "should have correct facts registered with right value for 'switchshow' command"
+      it "should have correct facts registered with right value for 'switchshow' command" do
+        @transport.stub(:command).with('switchshow',{:cache=>true,:noop => false}).and_return @fixture.switchshow_resp
+        @facts = Puppet::Util::NetworkDevice::Brocade_fos::Facts.new(@transport)
+        puts "switch_config: #{@facts.retrieve} "
+        Validate_Facts(SWITCHSHOW_HASH,@facts)
 
-      it "should have correct facts registered with right value for 'chasisshow' command"
+      end
 
-      it "should have correct facts registered with right value for 'ipaddrshow' command"
+      it "should have correct facts registered with right value for 'chassisshow' command" do
+        @transport.stub(:command).with('chassisshow',{:cache=>true,:noop => false}).and_return @fixture.chassisshow_resp
+        @facts = Puppet::Util::NetworkDevice::Brocade_fos::Facts.new(@transport)
+        puts "chassis_config: #{@facts.retrieve} "
+        Validate_Facts(CHASSISSHOW_HASH,@facts)
 
-      it "should have correct facts registered with right value for 'switchstatusshow' command"
+      end
 
-      it "should have correct facts registered with right value for 'memshow' command"
+      it "should have correct facts registered with right value for 'ipaddrshow' command" do
+        @transport.stub(:command).with('ipaddrshow',{:cache=>true,:noop => false}).and_return @fixture.ipaddrshow_resp
+        @facts = Puppet::Util::NetworkDevice::Brocade_fos::Facts.new(@transport)
+        puts "ipaddr_config: #{@facts.retrieve} "
+        Validate_Facts(IPADDRESSSHOW_HASH,@facts)
+      end
 
-      it "should have correct facts registered with right value for 'zoneshow' command"
+      it "should have correct facts registered with right value for 'switchstatusshow' command" do
+        @transport.stub(:command).with('switchstatusshow',{:cache=>true,:noop => false}).and_return @fixture.switchstatusshow_resp
+        @facts = Puppet::Util::NetworkDevice::Brocade_fos::Facts.new(@transport)
+        Validate_Facts(SWITCHSTATUSSHOW_HASH,@facts)
+        puts "hash for switchshow : #{@facts.retrieve}"
 
+      end
 
+      it "should have correct facts registered with right value for 'memshow' command" do
+        @transport.stub(:command).with('memshow',{:cache=>true,:noop => false}).and_return @fixture.memshow_resp
+        @facts = Puppet::Util::NetworkDevice::Brocade_fos::Facts.new(@transport)
+        Validate_Facts(MEMSHOW_HASH,@facts)
+        puts "hash for memshow  : #{@facts.retrieve}"
+      end
 
       it "should have correct facts registered with right value for 'version' command" do
-       # @transport ='transport'
-       # @transport.stub(:command).with('version',{:cache=>true,:noop => false}).and_return @fixture.version_resp
-        #resp = YAML.load_file(my_fixture('version1.yml'))
-        #@transport.stub(:command).with('version',{:cache=>true,:noop => false}).and_return resp['version']
-        #@transport.stub(:command).with('zoneshow',{:cache=>true,:noop => false}).and_return ''
-        #@transport.stub(:command).with('version',{:cache=>true,:noop => false}).and_return version
-        #@facts = Puppet::Util::NetworkDevice::Brocade_fos::Facts.new(@transport)
-       # puts "version: #{@facts.retrieve} "
-        #@facts.retrieve["Fabric Os"].should == "v7.2.0a"
-      #@facts.retrieve.should == {"Fabric Os"=>"v7.2.0a"}
 
-       #@transport.stub(:command).with('version',{:cache=>true,:noop => false}).and_return ''
-       #@facts = Puppet::Util::NetworkDevice::Brocade_fos::Facts.new(@transport)
-       #@facts.retrieve["Fabric Os"].should == "v7.2.0a"
+        @transport.stub(:command).with('version',{:cache=>true,:noop => false}).and_return @fixture.version_resp
+        @facts = Puppet::Util::NetworkDevice::Brocade_fos::Facts.new(@transport)
+        Validate_Facts(VERSIONSHOW_HASH,@facts)
+        puts "hash: #{@facts.retrieve}"
 
       end
 
       it "should have correct facts registered for 'zoneshow' command" do
-       # @transport ='transport'
-
-        #@transport.stub(:command).with('version',{:cache=>true,:noop => false}).and_return ''
-        #@transport.stub(:command).with('zoneshow',{:cache=>true,:noop => false}).and_return @fixture.zoneshow_resp
-        #@facts = Puppet::Util::NetworkDevice::Brocade_fos::Facts.new(@transport)
-        #puts "zone_config: #{@facts.retrieve} "
-        #@facts.retrieve["Zone_Config_3"].should include("yahoo")
+        @transport.stub(:command).with('zoneshow',{:cache=>true,:noop => false}).and_return @fixture.zoneshow_resp
+        @facts = Puppet::Util::NetworkDevice::Brocade_fos::Facts.new(@transport)
+        puts "zone_config: #{@facts.retrieve} "
+        Validate_Facts(ZONESHOW_HASH,@facts)
       end
-
-
-
     end
-
- end
-
+  end
 end

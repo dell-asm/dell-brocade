@@ -10,6 +10,151 @@ BootProm:   1.0.11
 TOP_6510:wv>"
   end
 
+def memshow_resp
+	return "
+             total       used       free     shared    buffers     cached
+Mem:    1048674304  373342208  675332096          0   38154240  131166208
+Swap:            0          0          0
+"
+end
+
+def switchstatusshow_resp
+	return "
+Switch Health Report                        Report time: 01/17/2014 11:41:17 AM
+Switch Name:    TOP_6510
+IP address:     172.17.10.15
+SwitchState:    HEALTHY
+Duration:       595:41
+
+Power supplies monitor  HEALTHY
+Temperatures monitor    HEALTHY
+Fans monitor            HEALTHY
+Flash monitor           HEALTHY
+Marginal ports monitor  HEALTHY
+Faulty ports monitor    HEALTHY
+Missing SFPs monitor    HEALTHY
+Error ports monitor     HEALTHY
+Fabric Watch is not licensed
+Detailed port information is not included
+
+	"
+end
+
+def ipaddrshow_resp
+	return "
+SWITCH
+Ethernet IP Address: 172.17.10.15
+Ethernet Subnetmask: 255.255.0.0
+Gateway IP Address: 172.17.0.1
+DHCP: Off
+TOP_6510:wv
+"
+end
+
+ def chassisshow_resp
+return	 "
+TOP_6510:wv> chassisshow
+
+FAN  Unit: 1
+Fan Direction:          Forward
+Time Awake:             24 days
+
+FAN  Unit: 2
+Fan Direction:          Forward
+Time Awake:             24 days
+
+POWER SUPPLY  Unit: 1
+Power Source:           AC
+Time Awake:             24 days
+
+POWER SUPPLY  Unit: 2
+Power Source:           AC
+Time Awake:             24 days
+
+CHASSIS/WWN  Unit: 1
+Header Version:         2
+Power Usage (Watts):    -56
+Factory Part Num:       40-1000569-12
+Factory Serial Num:     BRW2508J00H
+Manufacture:            Day: 26  Month:  1  Year: 2013
+Update:                 Day: 16  Month:  1  Year: 2014
+Time Alive:             273 days
+Time Awake:             24 days
+ID:                     BRD0000CA
+Part Num:               BROCAD0000651
+Serial Num:             589Y7P1
+"
+end
+
+
+ def switchshow_resp
+	 return "
+switchName:     TOP_6510
+switchType:     109.1
+switchState:    Online
+switchMode:     Native
+switchRole:     Principal
+switchDomain:   1
+switchId:       fffc01
+switchWwn:      10:00:00:27:f8:61:7d:ba
+zoning:         ON (Top_Config)
+switchBeacon:   OFF
+FC Router:      OFF
+FC Router BB Fabric ID: 1
+Address Mode:   0
+
+Index Port Address Media Speed       State   Proto
+==================================================
+   0   0   010000   id    N8       Online      FC  F-Port  1 N Port + 2 NPIV pub                                                                                                                      lic
+   1   1   010100   id    N8       Online      FC  F-Port  1 N Port + 1 NPIV pub                                                                                                                      lic
+   2   2   010200   id    N8       Online      FC  F-Port  1 N Port + 2 NPIV pub                                                                                                                      lic
+   3   3   010300   id    N8       Online      FC  F-Port  1 N Port + 3 NPIV pub                                                                                                                      lic
+   4   4   010400   id    N8       No_Light    FC
+   5   5   010500   id    N8       No_Light    FC
+   6   6   010600   id    N8       No_Light    FC
+   7   7   010700   id    N8       No_Light    FC
+   8   8   010800   id    N8       No_Light    FC
+   9   9   010900   id    N8       No_Light    FC
+  10  10   010a00   id    N8       No_Light    FC
+  11  11   010b00   id    N8       Online      FC  F-Port  21:00:00:24:ff:52:e6:                                                                                                                      46
+  12  12   010c00   id    N8       No_Light    FC
+  13  13   010d00   id    N8       No_Light    FC
+  14  14   010e00   id    N8       No_Light    FC
+  15  15   010f00   id    N8       No_Light    FC
+  16  16   011000   id    N8       Online      FC  F-Port  50:00:d3:10:00:5e:c4:                                                                                                                      1d
+  17  17   011100   id    N8       Online      FC  F-Port  50:00:d3:10:00:5e:c4:                                                                                                                      21
+  18  18   011200   id    N8       Online      FC  F-Port  1 N Port + 2 NPIV pub                                                                                                                      lic
+  19  19   011300   id    N8       Online      FC  F-Port  1 N Port + 2 NPIV pub                                                                                                                      lic
+  20  20   011400   id    N8       No_Light    FC
+  21  21   011500   id    N8       No_Light    FC
+  22  22   011600   id    N8       No_Light    FC
+  23  23   011700   id    N8       No_Light    FC
+  24  24   011800   --    N16      No_Module   FC  (No POD License) Disabled
+  25  25   011900   --    N16      No_Module   FC  (No POD License) Disabled
+  26  26   011a00   --    N16      No_Module   FC  (No POD License) Disabled
+  27  27   011b00   --    N16      No_Module   FC  (No POD License) Disabled
+  28  28   011c00   --    N16      No_Module   FC  (No POD License) Disabled
+  29  29   011d00   --    N16      No_Module   FC  (No POD License) Disabled
+  30  30   011e00   --    N16      No_Module   FC  (No POD License) Disabled
+  31  31   011f00   --    N16      No_Module   FC  (No POD License) Disabled
+  32  32   012000   --    N16      No_Module   FC  (No POD License) Disabled
+  33  33   012100   --    N16      No_Module   FC  (No POD License) Disabled
+  34  34   012200   --    N16      No_Module   FC  (No POD License) Disabled
+  35  35   012300   --    N16      No_Module   FC  (No POD License) Disabled
+  36  36   012400   --    N16      No_Module   FC  (No POD License) Disabled
+  37  37   012500   --    N16      No_Module   FC  (No POD License) Disabled
+  38  38   012600   --    N16      No_Module   FC  (No POD License) Disabled
+  39  39   012700   --    N16      No_Module   FC  (No POD License) Disabled
+  40  40   012800   --    N16      No_Module   FC  (No POD License) Disabled
+  41  41   012900   --    N16      No_Module   FC  (No POD License) Disabled
+  42  42   012a00   --    N16      No_Module   FC  (No POD License) Disabled
+  43  43   012b00   --    N16      No_Module   FC  (No POD License) Disabled
+  44  44   012c00   --    N16      No_Module   FC  (No POD License) Disabled
+  45  45   012d00   --    N16      No_Module   FC  (No POD License) Disabled
+  46  46   012e00   --    N16      No_Module   FC  (No POD License) Disabled
+"	
+ end
+
  def zoneshow_resp
 return "Defined configuration:
  cfg:   DemoConfig123
