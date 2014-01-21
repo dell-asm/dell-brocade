@@ -38,7 +38,7 @@ describe Puppet::Util::NetworkDevice::Brocade_fos::Facts do
       it "should have correct facts registered with right value for 'chassisshow' command" do
         @transport.stub(:command).with('chassisshow',{:cache=>true,:noop => false}).and_return @fixture.chassisshow_resp
         @facts = Puppet::Util::NetworkDevice::Brocade_fos::Facts.new(@transport)
-        puts "chassis_config: #{@facts.retrieve} "
+        #puts "chassis_config: #{@facts.retrieve} "
         Validate_Facts(CHASSISSHOW_HASH,@facts)
 
       end
