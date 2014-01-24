@@ -2,6 +2,7 @@
 require 'spec_helper'
 require 'yaml'
 require 'spec_lib/puppet_spec/deviceconf'
+
 include PuppetSpec::Deviceconf
 
 describe "Integratin test for create Config in enable and disable mode and destroy Config" do
@@ -19,7 +20,7 @@ describe "Integratin test for create Config in enable and disable mode and destr
     :member_zone   => 'DemoZone25'
     )
   end
-  
+
   let :create_config_enable do
     Puppet::Type.type(:brocade_config).new(
     :configname    => 'DemoConfig',
@@ -64,7 +65,7 @@ describe "Integratin test for create Config in enable and disable mode and destr
     create_zone.provider.create
     create_zone.provider.device_transport.close
   end
-  
+
   ##Zone Destroy, after each test case execution
   after :each do
     puts "Delete Zone after Test"
@@ -73,56 +74,57 @@ describe "Integratin test for create Config in enable and disable mode and destr
     destroy_zone.provider.device_transport.close
   end
 
-
   context "should create Config in enable and disable mode and destroy config" do
-    it "should create a brocade config in disabled mode" do  
-        
+    it "should create a brocade config in disabled mode" do
+
       destroy_config.provider.device_transport.connect
       destroy_config.provider.destroy
       destroy_config.provider.device_transport.close
-       
+
       create_config_disable.provider.device_transport.connect
       create_config_disable.provider.create
       create_config_res = create_config_disable.provider.device_transport.command(get_brocade_cfgshow_command(create_config_disable[:configname]),:noop=>false)
       create_config_disable.provider.device_transport.close
-      
+
       destroy_config.provider.device_transport.connect
       destroy_config.provider.destroy
       destroy_config.provider.device_transport.close
       puts "CreateConfigDisable--#{create_config_res}"
       create_config_res.should_not include("does not exist")
     end
-  
+
     it "should create a brocade config in enabled mode" do
 
-      destroy_config.provider.device_transport.connect
-      destroy_config.provider.destroy
-      destroy_config.provider.device_transport.close
-
       create_config_enable.provider.device_transport.connect
-      create_config_enable.provider.create
-      create_config_res = create_config_enable.provider.device_transport.command(get_brocade_cfgactvshow_command,:noop=>false)
+      result = create_config_enable.provider.device_transport.command(get_brocade_cfgactvshow_command,:noop=>false)
       create_config_enable.provider.device_transport.close
-      ##We have created a config in the enable mode, now we will enable the
-      ##config which was earlier enabled so that we can delete the currently created config
 
-      config_enable.provider.device_transport.connect
-      config_enable.provider.configstate=(:enable)
-      tempRes=  config_enable.provider.device_transport.command("cfgactvshow",:noop=>false)
-      config_enable.provider.device_transport.close
+      if(result.include? "no configuration in effect")
+	  
+		destroy_config.provider.device_transport.connect
+		destroy_config.provider.destroy
+		destroy_config.provider.device_transport.close
 
-      destroy_config.provider.device_transport.connect
-      destroy_config.provider.destroy
-      destroy_config.provider.device_transport.close
-      presense?(create_config_res,create_config_enable[:configname]).should == true
+        create_config_enable.provider.device_transport.connect
+        create_config_enable.provider.create
+        create_config_res = create_config_enable.provider.device_transport.command(get_brocade_cfgactvshow_command,:noop=>false)
+        create_config_enable.provider.device_transport.close
+
+        destroy_config.provider.device_transport.connect
+        destroy_config.provider.destroy
+        destroy_config.provider.device_transport.close
+        presense?(create_config_res,create_config_enable[:configname]).should == true
+	  else
+		puts "**Skipping the test as already a config in enable state present on the switch****"
+      end
+	 
     end
-
 
     it "should delete the brocade config" do
       create_config_disable.provider.device_transport.connect
       create_config_disable.provider.create
       create_config_disable.provider.device_transport.close
-      
+
       destroy_config.provider.device_transport.connect
       destroy_config.provider.destroy
       response = destroy_config.provider.device_transport.command(get_brocade_cfgshow_command(destroy_config[:configname]),:noop=>false)
@@ -142,11 +144,11 @@ describe "Integratin test for create Config in enable and disable mode and destr
   def presense?(response_string,key_to_check)
     retval = false
     if response_string.include?("#{key_to_check}")
-      retval = true
+    retval = true
     else
-      retval = false
+    retval = false
     end
     return retval
   end
-  
+
 end
