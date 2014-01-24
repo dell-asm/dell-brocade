@@ -3,7 +3,7 @@ class Facts_fixture
  def version_resp
     return "TOP_6510:wv> version
 Kernel:     2.6.14.2
-Fabric OS:  v7.2.0a
+Fabric OS:  v7.2.0atest
 Made on:    Mon Sep 9 17:08:27 2013
 Flash:      Fri Dec 13 16:05:16 2013
 BootProm:   1.0.11
@@ -342,3 +342,4 @@ Effective configuration:
 "	 
 end
 end
+
