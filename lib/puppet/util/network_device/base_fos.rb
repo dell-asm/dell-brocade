@@ -3,6 +3,8 @@ require 'openssl'
 require 'cgi'
 require 'puppet/util/network_device/transport_fos'
 require 'puppet/util/network_device/transport_fos/base_fos'
+require '/etc/puppetlabs/puppet/modules/asm_lib/lib/security/encode'
+
 
 # "Base class for Network Device"
 class Puppet::Util::NetworkDevice::Base_fos
@@ -51,7 +53,7 @@ class Puppet::Util::NetworkDevice::Base_fos
 
   def update_transport_for_uncrypted_url
     @transport.user = URI.decode(@url.user)
-    @transport.password = URI.decode(@url.password)
+    @transport.password = URI.decode(asm_decrypt(@url.password))
   end
 
   private
