@@ -35,7 +35,8 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
     'Port Channel Status' => 'Not Available'
 
   }
-
+  
+  
   def self.register_brocade_param(base, command_val, hash_name)
     param_hash = hash_name
     param_hash.keys.each do |key|
@@ -167,6 +168,45 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
       end
       cmd "zoneshow"
     end
+    
+    base.register_param ['Nameserver'] do
+      nameserver_info=Hash.new()
+      match do |txt|
+        match_array=txt.scan(/N\s+(\w+);(.*)\s+\w+:.*\s+(.*)\s+.*\s+.*\s+Permanent Port Name:\s+(\S+)\s+Device type:\s+(.*)\s+.*\s+.*\s+.*\s+.*\s+.*\s+.*\s+Aliases:\s+(\S+)/)
+        Puppet.debug"match_array: #{match_array.inspect}"
+        if !match_array.empty?
+          match_array.each do |nameserverinfo|
+            Puppet.debug"Nameserver: #{nameserverinfo}"
+            nsinfo=Hash.new
+            nsinfo[:nsid] = nameserverinfo[0]
+            wwpninfo=nameserverinfo[1]
+            temp_match=wwpninfo.scan(/\d+;(\S+);(\S+);\s+na/)
+            nsinfo[:remote_wwpn] = temp_match[0][0]
+            nsinfo[:local_wwpn] = temp_match[0][1]
+            nsinfo[:port_info] = nameserverinfo[2]
+            nsinfo[:permanent_port] = nameserverinfo[3]
+            nsinfo[:device_type] = nameserverinfo[4]
+            nsinfo[:device_alias] = nameserverinfo[5]
+            nameserver_info[nsinfo[:nsid]] = nsinfo
+          end
+        end
+        nameserver_info.to_json
+      end
+      cmd "nsaliasshow -t"
+    end
+    
+    base.register_param ['Effective Cfg'] do
+      effective_cfg = ""
+      match do |txt|
+        match_array=txt.scan(/Effective configuration:\s+cfg:\s*(\S+)/)
+        if !match_array.empty?
+          effective_cfg=match_array[0][0]
+        end
+        effective_cfg
+      end
+      cmd "cfgshow"
+    end
+          
 
     base.register_param ['Alias'] do
       aliList = ""
