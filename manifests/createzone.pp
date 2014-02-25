@@ -40,6 +40,12 @@ define brocade::createzone (
                         ensure => "present",
         }
 
+
+        brocade_config_membership {
+                "$zoneset:$name":
+                        ensure => "present",
+        }
+
         brocade_config {
                 "$zoneset":
                         member_zone => "$name",
@@ -47,15 +53,12 @@ define brocade::createzone (
                         ensure => "present",
         }
 
-        brocade_config_membership {
-                "$zoneset:$name":
-                        ensure => "present",
-        }
 
                 Brocade_zone["$name"]
                 -> Brocade_zone_membership["$name:$server_wwn"]
-                -> Brocade_config["$zoneset"]
                 -> Brocade_config_membership["$zoneset:$name"]
+                -> Brocade_config["$zoneset"]
 }
+
 
 
