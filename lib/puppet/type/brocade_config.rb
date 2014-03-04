@@ -34,5 +34,11 @@ Puppet::Type.newtype(:brocade_config) do
     desc "This parameter describes the config state"
     newvalues(:enable, :disable)
   end
+  
+  newparam(:force_update) do
+    desc "Force to perform the enable or disable operation"
+    newvalues(:true, :false)
+    defaultto(:true)
+  end
 
 end
