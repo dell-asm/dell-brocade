@@ -60,6 +60,7 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
     @config_name=@resource[:configname]
     @config_state=@resource[:configstate]
     @member_zone=@resource[:member_zone]
+    @force_flag=@resource[:force_update]
   end
 
   def create
@@ -88,9 +89,19 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
     initialize_resources
     response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_ACTV_SHOW_COMMAND, :noop => false)
     if ( response.include? @config_name)
-      :enable
+      # If force flag is true then the state will change even in case of same state
+      Puppet.debug "Value of Force flag: #{@force_flag}"
+      if @force_flag
+        :disable
+      else
+        :enable
+      end
     else
-      :disable
+      if @force_flag
+        :enable
+      else
+        :disable
+      end
     end
   end
 
@@ -99,3 +110,4 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
     process_config_state(value)
   end
 end
+
