@@ -34,6 +34,10 @@ define brocade::createzone (
         ensure => "present",
         member => "$storage_alias",
     }
+    brocade_zone_membership {
+      "$name:$storage_alias":
+        ensure => "present",
+    }
 
     brocade_zone_membership {
       "$name:$server_wwn":
