@@ -168,11 +168,64 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
       end
       cmd "zoneshow"
     end
+
+    base.register_param ['Alias'] do
+      aliList = ""
+      match do |txt|
+        txt.split("\n").each do |line|
+          item=line.scan(/alias:\s+(.*)\b\s/)
+          item = item.flatten.first
+          if item.nil? || item.empty? || item =~ /^\s+$/ then
+            next
+          else
+            if aliList.nil? || aliList.empty? then
+              aliList = aliList + "#{item}"
+            else
+              aliList = aliList + ", #{item}"
+            end
+          end
+        end
+        aliList
+      end
+      cmd "zoneshow"
+    end
+
+    base.register_param ['Aliases_Members'] do
+
+      match do |txt|
+        #require 'pry'
+        #binding.pry
+        alias_members = {}
+        aliases = base.facts['Alias'].value
+        switch_name = base.facts['Switch Name'].value
+        Puppet.debug("Alias values identified: #{aliases}")
+        aliases.split(',').each do |alias_val|
+          alias_val.strip!
+          alias_members[alias_val] = []
+          output = base.transport.command("alishow #{alias_val}")
+          output.split("\n").each do |line|
+            next if line.match(/alishow|alias:|#{switch_name}:/)
+            item=line.scan(/\S+/).flatten
+            if item.nil? || item.empty? || item =~ /^\s+$/ then
+              next
+            else
+              item.collect {|i| alias_members[alias_val].push(i.gsub(/;/,'')) }
+            end
+          end
+        end
+        Puppet.debug("Alias Members: #{alias_members}")
+        alias_members
+      end
+
+      cmd "zoneshow"
+    end
     
     base.register_param ['Nameserver'] do
       nameserver_info=Hash.new()
       match do |txt|
-        match_array=txt.scan(/N\s+(\w+);(.*)\s+\w+:.*\s+(.*)\s+.*\s+.*\s+Permanent Port Name:\s+(\S+)\s+Device type:\s+(.*)\s+.*\s+.*\s+.*\s+.*\s+.*\s+.*\s+Aliases:\s+(\S+)/)
+        alias_members = base.facts['Aliases_Members'].value
+        Puppet.debug("Alias Members: #{alias_members}")
+        match_array=txt.scan(/N\s+(\w+);(.*)\s+\w+:.*\s+(.*)\s+.*\s+.*\s+Permanent Port Name:\s+(\S+)\s+Device type:\s+(.*)\s+.*\s+.*\s+.*\s+.*\s+.*\s+.*\s+Aliases:\s+(.*)?/)
         Puppet.debug"match_array: #{match_array.inspect}"
         if !match_array.empty?
           match_array.each do |nameserverinfo|
@@ -186,10 +239,26 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
             nsinfo[:port_info] = nameserverinfo[2]
             nsinfo[:permanent_port] = nameserverinfo[3]
             nsinfo[:device_type] = nameserverinfo[4]
-            nsinfo[:device_alias] = nameserverinfo[5]
+            # Check if there are more than one alias name
+            device_aliases = (nameserverinfo[5] || '').strip.scan(/\S+/).flatten
+            if device_aliases.size > 1
+              device_aliases.each do |device_alias|
+                if alias_members[device_alias].nil?
+                  nsinfo[:device_alias] = nameserverinfo[5]
+                  break
+                elsif alias_members[device_alias].size > 1
+                  nsinfo[:device_alias] = device_alias
+                end
+              end
+            else
+              nsinfo[:device_alias] = nameserverinfo[5]
+            end
+            #nameinfo[:device_alias] = '' if nameserverinfo[5].nil? or nameserverinfo[5].empty?
+            #nsinfo[:device_alias] = nameserverinfo[5]
             nameserver_info[nsinfo[:nsid]] = nsinfo
           end
         end
+        Puppet.debug("Name server info: #{nameserver_info.to_json}")
         nameserver_info.to_json
       end
       cmd "nsaliasshow -t"
@@ -208,26 +277,7 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
     end
           
 
-    base.register_param ['Alias'] do
-      aliList = ""
-      match do |txt|
-        txt.split("\n").each do |line|
-          item=line.scan(/alias:\s+(.*)\b\s/)
-          item = item.flatten.first
-          if item.nil? || item.empty? || item =~ /^\s+$/ then
-          next
-          else
-            if aliList.nil? || aliList.empty? then
-              aliList = aliList + "#{item}"
-            else
-              aliList = aliList + ", #{item}"
-            end
-          end
-        end
-        aliList
-      end
-      cmd "zoneshow"
-    end
+
     base.register_module_after 'FC Ports', 'custom' do
       base.facts['FC Ports'].value != nil
     end
