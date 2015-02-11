@@ -225,7 +225,7 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
       match do |txt|
         alias_members = base.facts['Aliases_Members'].value
         Puppet.debug("Alias Members: #{alias_members}")
-        match_array=txt.scan(/N\s+(\w+);(.*)\s+\w+:.*\s+(.*)\s+.*\s+.*\s+Permanent Port Name:\s+(\S+)\s+Device type:\s+(.*)\s+.*\s+.*\s+.*\s+.*\s+.*\s+.*\s+Aliases:\s+(.*)?/)
+        match_array=txt.scan(/N\s+(\w+);(.*)\s+\w+:.*\s+(.*)\s+.*\s+.*\s+Permanent Port Name:\s+(\S+)\s+Device type:\s+(.*)\s+.*\s+.*\s+.*\s+.*\s+.*\s+.*\s+Aliases:(.*)/)
         Puppet.debug"match_array: #{match_array.inspect}"
         if !match_array.empty?
           match_array.each do |nameserverinfo|
@@ -247,7 +247,7 @@ module Puppet::Util::NetworkDevice::Brocade_fos::PossibleFacts::Base
                   nsinfo[:device_alias] = nameserverinfo[5]
                   break
                 elsif alias_members[device_alias].size > 1
-                  nsinfo[:device_alias] = device_alias
+                  nsinfo[:device_alias] = device_alias.strip
                 end
               end
             else
