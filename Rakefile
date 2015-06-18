@@ -2,8 +2,16 @@ require 'rake'
 require 'rspec/core/rake_task'
 
 desc "Run all RSpec code examples"
+def spec_opts
+  begin
+    File.read("spec/spec.opts").chomp || ""
+  rescue
+    ""
+  end
+end
+
 RSpec::Core::RakeTask.new(:rspec) do |t|
-  t.rspec_opts = File.read("spec/spec.opts").chomp || ""
+  t.rspec_opts = spec_opts
 end
 
 SPEC_SUITES = (Dir.entries('spec') - ['.', '..','fixtures']).select {|e| File.directory? "spec/#{e}" }
@@ -12,22 +20,8 @@ namespace :rspec do
     desc "Run #{suite} RSpec code examples"
     RSpec::Core::RakeTask.new(suite) do |t|
       t.pattern = "spec/#{suite}/**/*_spec.rb"
-      t.rspec_opts = File.read("spec/spec.opts").chomp || ""
+      t.rspec_opts = spec_opts
     end
   end
 end
-
-task :default => :test
-task :rspec => :test
-task :lint => :test
-
-RSpec::Core::RakeTask.new(:test)
-
-begin
-  if Gem::Specification::find_by_name('puppet-lint')
-    require 'puppet-lint/tasks/puppet-lint'
-    PuppetLint.configuration.ignore_paths = ["spec/**/*.pp", "vendor/**/*.pp"]
-    task :default => [:rspec, :lint]
-  end
-rescue Gem::LoadError
-end
+task :default => :rspec

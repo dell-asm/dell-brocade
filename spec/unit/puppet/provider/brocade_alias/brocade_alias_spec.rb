@@ -8,7 +8,7 @@ describe Puppet::Type.type(:brocade_alias).provider(:brocade_alias) do
   before(:each) do
     @fixture = Brocade_alias_fixture.new
     mock_transport=double('transport')
-    @fixture.provider.transport = mock_transport
+    @fixture.provider.stub(:transport).and_return(mock_transport)
     @fixture.provider.stub(:cfg_save)
     Puppet.stub(:debug)
 
@@ -95,16 +95,12 @@ describe Puppet::Type.type(:brocade_alias).provider(:brocade_alias) do
 
   context "when brocade alias existence is validated" do
     it "should return true when the brocade alias exist" do
-
-      @fixture.provider.should_receive(:device_transport).once
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ALIAS_SHOW_COMMAND%[@fixture.get_alias_name],NOOPS_HASH).and_return("abc")
       @fixture.provider.exists?.should == true
 
     end
 
     it "should return false when the brocade alias does not exist"do
-
-      @fixture.provider.should_receive(:device_transport).once
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ALIAS_SHOW_COMMAND%[@fixture.get_alias_name],NOOPS_HASH).and_return(Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
       @fixture.provider.exists?.should == false
     end

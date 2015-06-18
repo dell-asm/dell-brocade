@@ -12,7 +12,7 @@ describe "Brocade_config" do
   before(:each) do
     @fixture = Brocade_config_fixture.new
     mock_transport=double('transport')
-    @fixture.provider.transport = mock_transport
+    @fixture.provider.stub(:transport).and_return(mock_transport)
     @fixture.provider.stub(:cfg_save) 
     @fixture.provider.stub(:config_enable)      
     Puppet.stub(:info)
@@ -128,7 +128,6 @@ describe "Brocade_config" do
   context "when brocade config existence is validated" do
     it "should return false when the brocade config does not exists" do
     #When - Then
-      @fixture.provider.should_receive(:device_transport).once
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@fixture.get_config_name], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
       @fixture.provider.exists?.should == false
     end
@@ -137,26 +136,12 @@ describe "Brocade_config" do
     #Given
       @fixture.set_config_ensure_absent
 
-      #When - Then
-      @fixture.provider.should_receive(:device_transport).once
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@fixture.get_config_name], NOOP_HASH).ordered.and_return (@fixture.get_config_name)
       @fixture.provider.exists?.should == true
     end
 
   end
 
-  context "when brocade config state is validated" do
-    it "should return state enabled if the config is enabled on the brocade" do
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_ACTV_SHOW_COMMAND, NOOP_HASH).ordered.and_return (@fixture.get_config_name)
-      @fixture.provider.configstate.should == :enable
-    end
-    
-    it "should return state disabled if the config is not enabled on the brocade" do
-      @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_ACTV_SHOW_COMMAND, NOOP_HASH).ordered.and_return ("")
-      @fixture.provider.configstate.should == :disable
-    end
-  end
-  
   context "when processing the brocade config state" do
     it "should enable the brocade config state when brocade config state value is enabled" do
       #Then

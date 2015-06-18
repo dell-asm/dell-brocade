@@ -4,7 +4,7 @@ require 'puppet/provider/brocade_messages'
 require 'puppet/provider/brocade_commands'
 
 def config_add_zone
-  response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_ADD_MEMBER_COMMAND%[@config_name,@member_zone], :noop => false)
+  response = transport.command(Puppet::Provider::Brocade_commands::CONFIG_ADD_MEMBER_COMMAND%[@config_name,@member_zone], :noop => false)
   if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND ) || ( response.downcase.include? (Puppet::Provider::Brocade_responses::RESPONSE_INVALID).downcase )
     raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_CREATE_ERROR%[@member_zone,@config_name,response]
   elsif response.include? Puppet::Provider::Brocade_responses::RESPONSE_ALREADY_CONTAINS
@@ -15,7 +15,7 @@ def config_add_zone
 end
 
 def config_remove_zone
-  response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_REMOVE_MEMBER_COMMAND%[@config_name,@member_zone], :noop => false)
+  response = transport.command(Puppet::Provider::Brocade_commands::CONFIG_REMOVE_MEMBER_COMMAND%[@config_name,@member_zone], :noop => false)
   if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND ) || ( response.downcase.include? (Puppet::Provider::Brocade_responses::RESPONSE_INVALID).downcase ) || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG )
     raise Puppet::Error, Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_DESTROY_ERROR%[@member_zone,@config_name,response]
   elsif (response.include? Puppet::Provider::Brocade_responses::RESPONSE_IS_NOT_IN )
@@ -81,8 +81,7 @@ Puppet::Type.type(:brocade_config_membership).provide(:brocade_config_membership
 
   def exists?
     initialize_resources
-    self.device_transport
-    response = @transport.command(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@config_name], :noop => false)
+    response = transport.command(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@config_name], :noop => false)
     if ("#{@resource[:ensure]}"== "present")
       if (config_membership_response_exists?(response))
       return true

@@ -3,8 +3,6 @@ require 'puppet/type/brocade_messages'
 Puppet::Type.newtype(:brocade_zone_membership) do
   @doc = "This represents a Addition and removal of Member to/from existing zone on brocade switch."
 
-  apply_to_device
-
   ensurable
 
   newparam(:name, :namevar => true) do

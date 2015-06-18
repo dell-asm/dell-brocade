@@ -7,7 +7,7 @@ describe "Brocade Alias Membership Provider" do
   before(:each) do
     @fixture = Brocade_alias_membership_fixture.new
     mock_transport=double('transport')
-    @fixture.provider.transport = mock_transport
+    @fixture.provider.stub(:transport).and_return(mock_transport)
     Puppet.stub(:info)
     Puppet.stub(:debug)
   end
@@ -130,7 +130,6 @@ describe "Brocade Alias Membership Provider" do
   context "when brocade alias membership existence is validated" do
 
     it "should warn if brocade alias name does not exist and when ensure property is given present" do
-      @fixture.provider.should_receive(:device_transport).once.ordered
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ALIAS_SHOW_COMMAND%[@fixture.get_alias_name], NOOP_HASH).ordered.and_return(Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
       Puppet.should_receive(:info).once.with(Puppet::Provider::Brocade_messages::ALIAS_DOES_NOT_EXIST_INFO%[@fixture.get_alias_name])
       @fixture.provider.exists?.should == true
@@ -138,26 +137,22 @@ describe "Brocade Alias Membership Provider" do
 
     it "should warn if brocade alias name does not exist and when ensure property is given absent" do
       @fixture.set_ensure_value_absent
-      @fixture.provider.should_receive(:device_transport).once.ordered
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ALIAS_SHOW_COMMAND%[@fixture.get_alias_name], NOOP_HASH).ordered.and_return(Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
       Puppet.should_receive(:info).once.with(Puppet::Provider::Brocade_messages::ALIAS_DOES_NOT_EXIST_INFO%[@fixture.get_alias_name])
       @fixture.provider.exists?.should == false
     end
 
     it "should return false if brocade alias name exist and wwpn is not associated to it when ensure property is given present" do
-      @fixture.provider.should_receive(:device_transport).once.ordered
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ALIAS_SHOW_COMMAND%[@fixture.get_alias_name], NOOP_HASH).ordered.and_return("")
       @fixture.provider.exists?.should == false
     end
 
     it "should return true if brocade alias name exist and wwpn is associated to it when ensure property is given present" do
-      @fixture.provider.should_receive(:device_transport).once.ordered
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ALIAS_SHOW_COMMAND%[@fixture.get_alias_name], NOOP_HASH).ordered.and_return(@fixture.get_member_name)
       @fixture.provider.exists?.should == true
     end
 
     it "should warn if brocade alias name exist and wwpn is associated to it when ensure property is given present" do
-      @fixture.provider.should_receive(:device_transport).once.ordered
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ALIAS_SHOW_COMMAND%[@fixture.get_alias_name], NOOP_HASH).ordered.and_return(@fixture.get_member_name)
       Puppet.should_receive(:info).once.with(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_EXIST_INFO%[@fixture.get_member_name,@fixture.get_alias_name])
       @fixture.provider.exists?.should == true
@@ -165,21 +160,18 @@ describe "Brocade Alias Membership Provider" do
 
     it "should return true if brocade alias name exist and wwpn is associated to it when ensure property is given absent" do
       @fixture.set_ensure_value_absent
-      @fixture.provider.should_receive(:device_transport).once.ordered
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ALIAS_SHOW_COMMAND%[@fixture.get_alias_name], NOOP_HASH).ordered.and_return(@fixture.get_member_name)
       @fixture.provider.exists?.should == true
     end
 
     it "should return false if brocade alias name exist and wwpn is not associated to it when ensure property is given absent" do
       @fixture.set_ensure_value_absent
-      @fixture.provider.should_receive(:device_transport).once.ordered
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ALIAS_SHOW_COMMAND%[@fixture.get_alias_name], NOOP_HASH).ordered.and_return("")
       @fixture.provider.exists?.should == false
     end
 
     it "should warn if brocade alias name exist and wwpn is not associated to it when ensure property is given absent" do
       @fixture.set_ensure_value_absent
-      @fixture.provider.should_receive(:device_transport).once.ordered
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::ALIAS_SHOW_COMMAND%[@fixture.get_alias_name], NOOP_HASH).ordered.and_return("")
       Puppet.should_receive(:info).once.with(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_ALREADY_REMOVED_INFO%[@fixture.get_member_name,@fixture.get_alias_name])
       @fixture.provider.exists?.should == false

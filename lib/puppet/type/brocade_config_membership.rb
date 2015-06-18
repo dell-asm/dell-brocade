@@ -3,8 +3,6 @@ require 'puppet/type/brocade_messages'
 Puppet::Type.newtype(:brocade_config_membership) do
   @doc = "This represents a zone config membership on a brocade switch."
 
-  apply_to_device
-
   ensurable
   newparam(:name, :namevar => true) do
     desc "Brocade configname:member_zone name."

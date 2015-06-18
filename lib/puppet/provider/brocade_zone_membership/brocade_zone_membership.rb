@@ -8,8 +8,9 @@ def check_error_cond(response)
 end
 
 def create_zone_membership
+
   response = String.new("")
-  response = @transport.command(Puppet::Provider::Brocade_commands::ZONE_ADD_MEMBER_COMMAND%[@zone_name,@member_name], :noop => false)
+  response = transport.command(Puppet::Provider::Brocade_commands::ZONE_ADD_MEMBER_COMMAND%[@zone_name,@member_name], :noop => false)
   if check_error_cond(response)
     raise Puppet::Error, Puppet::Provider::Brocade_messages::ZONE_MEMBERSHIP_CREATE_ERROR%[@member_name,@zone_name,response]
   elsif response.include? Puppet::Provider::Brocade_responses::RESPONSE_ALREADY_CONTAINS
@@ -21,7 +22,7 @@ end
 
 def destroy_zone_membership
   response = String.new("")
-  response =  @transport.command(Puppet::Provider::Brocade_commands::ZONE_REMOVE_MEMBER_COMMAND%[@zone_name,@member_name], :noop => false)
+  response =  transport.command(Puppet::Provider::Brocade_commands::ZONE_REMOVE_MEMBER_COMMAND%[@zone_name,@member_name], :noop => false)
   if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST) || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND ) || ( response.downcase.include?Puppet::Provider::Brocade_responses::RESPONSE_INVALID.downcase ) || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NAME_TOO_LONG )
     raise Puppet::Error, Puppet::Provider::Brocade_messages::ZONE_MEMBERSHIP_DESTROY_ERROR%[@member_name,@zone_name,response]
   elsif (response.include? Puppet::Provider::Brocade_responses::RESPONSE_IS_NOT_IN )
@@ -97,8 +98,7 @@ Puppet::Type.type(:brocade_zone_membership).provide(:brocade_zone_membership, :p
 
   def exists?
     initialize_resources
-    self.device_transport
-    response = @transport.command(Puppet::Provider::Brocade_commands::ZONE_SHOW_COMMAND%[@zone_name], :noop => false)
+    response = transport.command(Puppet::Provider::Brocade_commands::ZONE_SHOW_COMMAND%[@zone_name], :noop => false)
     if("#{@resource[:ensure]}"== "present")
       return zone_membership_exists_when_ensure_present(response)
     else

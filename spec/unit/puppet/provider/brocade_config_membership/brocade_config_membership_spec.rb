@@ -7,7 +7,7 @@ describe "Brocade Config Membership Provider" do
   before(:each) do
     @fixture = Brocade_config_membership_fixture.new
     mock_transport=double('transport')
-    @fixture.provider.transport = mock_transport
+    @fixture.provider.stub(:transport).and_return(mock_transport)
     Puppet.stub(:info)
     Puppet.stub(:debug)
   end
@@ -146,9 +146,6 @@ describe "Brocade Config Membership Provider" do
     it "should warn and return true when the given brocade config does not exist when its existence is required" do
     #Given
       @infoMsg = Puppet::Provider::Brocade_messages::CONFIG_DOES_NOT_EXIST_INFO%[@fixture.get_config_name]
-
-      #When - Then
-      @fixture.provider.should_receive(:device_transport).once.ordered
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@fixture.get_config_name], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
       Puppet.should_receive(:info).once.with(@infoMsg).ordered.and_return("")
 
@@ -159,9 +156,6 @@ describe "Brocade Config Membership Provider" do
       #Given
       @infoMsg = Puppet::Provider::Brocade_messages::CONFIG_DOES_NOT_EXIST_INFO%[@fixture.get_config_name]
       @fixture.set_brocade_config_membership_ensure_absent
-      
-      #When - Then
-      @fixture.provider.should_receive(:device_transport).once.ordered
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@fixture.get_config_name], NOOP_HASH).ordered.and_return (Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
       Puppet.should_receive(:info).once.with(@infoMsg).ordered.and_return("")
 
@@ -171,9 +165,6 @@ describe "Brocade Config Membership Provider" do
     it "should return true when the brocade config have all the expected members" do
     #Given
       @infoMsg = Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_EXIST_INFO%[@fixture.get_member_zone, @fixture.get_config_name]
-
-      #Then
-      @fixture.provider.should_receive(:device_transport).once.ordered
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@fixture.get_config_name], NOOP_HASH).ordered.and_return (@fixture.get_member_zone)
       @fixture.provider.should_receive(:check_member_present).once.ordered.and_call_original
       Puppet.should_receive(:info).once.with(@infoMsg).ordered.and_return("")
@@ -188,8 +179,6 @@ describe "Brocade Config Membership Provider" do
       @member_zone1, @member_zone2 = @fixture.get_member_zone.split(';',2)
       @infoMsg = Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ADD_INFO%[@member_zone2, @fixture.get_config_name]
 
-      #Then
-      @fixture.provider.should_receive(:device_transport).once.ordered
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@fixture.get_config_name], NOOP_HASH).ordered.and_return (@member_zone1)
       @fixture.provider.should_receive(:check_member_present).once.ordered.and_call_original
       Puppet.should_receive(:info).once.with(@infoMsg).ordered.and_return("")
@@ -203,9 +192,6 @@ describe "Brocade Config Membership Provider" do
       @member_zone1, @member_zone2 = @fixture.get_member_zone.split(';',2)
       @fixture.set_brocade_config_membership_ensure_absent
       @infoMsg = Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_REMOVE_INFO%[@member_zone1, @fixture.get_config_name]
-      
-      #Then
-      @fixture.provider.should_receive(:device_transport).once.ordered
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@fixture.get_config_name], NOOP_HASH).ordered.and_return (@member_zone1)
       @fixture.provider.should_receive(:check_member_absent).once.ordered.and_call_original
       Puppet.should_receive(:info).once.with(@infoMsg).ordered.and_return("")
@@ -218,9 +204,6 @@ describe "Brocade Config Membership Provider" do
       #Given
       @fixture.set_brocade_config_membership_ensure_absent
       @infoMsg = Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_REMOVED_INFO%[@fixture.get_member_zone, @fixture.get_config_name]
-      
-      #Then
-      @fixture.provider.should_receive(:device_transport).once.ordered
       @fixture.provider.transport.should_receive(:command).once.with(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@fixture.get_config_name], NOOP_HASH).ordered.and_return ("")
       @fixture.provider.should_receive(:check_member_absent).once.ordered.and_call_original
       Puppet.should_receive(:info).once.with(@infoMsg).ordered.and_return("")

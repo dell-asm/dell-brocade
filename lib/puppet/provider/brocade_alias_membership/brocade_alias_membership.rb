@@ -58,7 +58,7 @@ Puppet::Type.type(:brocade_alias_membership).provide(:brocade_alias_membership, 
   def create
     initialize_resources
     Puppet.debug(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_CREATE_DEBUG%[@alias_name,@member_name])
-    response = @transport.command(Puppet::Provider::Brocade_commands::ALIAS_MEMBER_ADD_COMMAND%[@alias_name,@member_name], :noop => false)
+    response = transport.command(Puppet::Provider::Brocade_commands::ALIAS_MEMBER_ADD_COMMAND%[@alias_name,@member_name], :noop => false)
     if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND ) || ( response.downcase.include?(Puppet::Provider::Brocade_responses::RESPONSE_INVALID.downcase))
       raise Puppet::Error, Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_CREATE_ERROR%[@alias_name,@alias_name,response]
     elsif response.include? Puppet::Provider::Brocade_responses::RESPONSE_ALREADY_CONTAINS
@@ -71,7 +71,7 @@ Puppet::Type.type(:brocade_alias_membership).provide(:brocade_alias_membership, 
   def destroy
     initialize_resources
     Puppet.debug(Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_DESTROY_DEBUG%[@alias_name,@member_name])
-    response =  @transport.command(Puppet::Provider::Brocade_commands::ALIAS_MEMBER_REMOVE_COMMAND%[@alias_name,@member_name], :noop => false)
+    response =  transport.command(Puppet::Provider::Brocade_commands::ALIAS_MEMBER_REMOVE_COMMAND%[@alias_name,@member_name], :noop => false)
     if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST) || ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_NOT_FOUND)
       raise Puppet::Error, Puppet::Provider::Brocade_messages::ALIAS_MEMBERSHIP_DESTROY_ERROR%[@member_name,@alias_name,response]
     elsif (response.include? Puppet::Provider::Brocade_responses::RESPONSE_IS_NOT_IN )
@@ -83,8 +83,7 @@ Puppet::Type.type(:brocade_alias_membership).provide(:brocade_alias_membership, 
 
   def exists?
     initialize_resources
-    self.device_transport
-    response = @transport.command(Puppet::Provider::Brocade_commands::ALIAS_SHOW_COMMAND%[@alias_name], :noop => false)
+    response = transport.command(Puppet::Provider::Brocade_commands::ALIAS_SHOW_COMMAND%[@alias_name], :noop => false)
     if("#{@resource[:ensure]}"== "present")
       return alias_membership_exists_when_ensure_present(response)
     else
