@@ -3,8 +3,6 @@ require 'puppet/type/brocade_messages'
 Puppet::Type.newtype(:brocade_zone) do
   @doc = "This represents a zone on a brocade switch."
 
-  apply_to_device
-
   ensurable
 
   newparam(:zonename) do

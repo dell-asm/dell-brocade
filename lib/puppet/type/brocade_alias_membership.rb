@@ -3,8 +3,6 @@ require 'puppet/type/brocade_messages'
 Puppet::Type.newtype(:brocade_alias_membership) do
   @doc = "This represents an alias name for a member on a brocade switch."
 
-  apply_to_device
-
   newparam(:name, :namevar => true) do
     desc "This parameter is tuple of alias name and member perameter"
 

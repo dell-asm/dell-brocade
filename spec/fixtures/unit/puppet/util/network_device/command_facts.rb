@@ -1,54 +1,54 @@
 module CommandFacts
 
-SWITCHSHOW_HASH = {
-    'Switch Name' => 'TOP_6510',
-    'Switch State' => 'Online',
-    'Switch Domain' => '1',
-    'Switch Wwn' => '10:00:00:27:f8:61:7d:ba',
-    'Zone Config' => 'ON (Top_Config)',
-    'Switch Beacon' => 'OFF',
-    'Switch Role' => 'Principal',
-    'Switch Mode' => 'Native',
-    'FC Router' => 'OFF',
-    'FC Router BB Fabric ID' => '1'
+  SWITCHSHOW_HASH = {
+      'Switch Name' => 'TOP_6510',
+      'Switch State' => 'Online',
+      'Switch Domain' => '1',
+      'Switch Wwn' => '10:00:00:27:f8:61:7d:ba',
+      'Zone Config' => 'ON (Top_Config)',
+      'Switch Beacon' => 'OFF',
+      'Switch Role' => 'Principal',
+      'Switch Mode' => 'Native',
+      'FC Router' => 'OFF',
+      'FC Router BB Fabric ID' => '1'
+    }
+
+    CHASSISSHOW_HASH = {
+      'Serial Number' => 'BRW2508J00H',
+      'Factory Serial Number' => 'BRW2508J00H'
+    }
+
+    IPADDRESSSHOW_HASH = {
+      'Ethernet IP Address' => '172.17.10.15',
+      'Ethernet Subnetmask' => '255.255.0.0',
+      'Gateway IP Address' => '172.17.0.1'
+    }
+
+   DEFAULTVALUE_HASH = {
+      'Manufacturer' => 'Brocade',
+      'Protocols Enabled' => 'FC',
+      'Boot Image' => 'Not Available',
+      'Processor' => 'Not Available',
+      'Port Channels' => 'Not Available',
+      'Port Channel Status' => 'Not Available'
+    }
+
+  SWITCHSTATUSSHOW_HASH = {
+  'Switch Health Status' => 'HEALTHY'
   }
 
-  CHASSISSHOW_HASH = {
-    'Serial Number' => 'BRW2508J00H',
-    'Factory Serial Number' => 'BRW2508J00H'
+
+  MEMSHOW_HASH = {
+  'Memory(bytes)' => '1048674304'
   }
 
-  IPADDRESSSHOW_HASH = {
-    'Ethernet IP Address' => '172.17.10.15',
-    'Ethernet Subnetmask' => '255.255.0.0',
-    'Gateway IP Address' => '172.17.0.1'
+  VERSIONSHOW_HASH = {
+  "Fabric Os" => "v7.2.0a"
   }
 
- DEFAULTVALUE_HASH = {
-    'Manufacturer' => 'Brocade',
-    'Protocols Enabled' => 'FC',
-    'Boot Image' => 'Not Available',
-    'Processor' => 'Not Available',
-    'Port Channels' => 'Not Available',
-    'Port Channel Status' => 'Not Available'
+  ZONESHOW_HASH = {
+  "Zone_Config_3" => "yahoo",
   }
-  
-SWITCHSTATUSSHOW_HASH = {
-'Switch Health Status' => 'HEALTHY'
-}
-
-
-MEMSHOW_HASH = {
-'Memory(bytes)' => '1048674304'
-}
-
-VERSIONSHOW_HASH = {
-"Fabric Os" => "v7.2.0a"
-}
-
-ZONESHOW_HASH = {
-"Zone_Config_3" => "yahoo",
-}
 
 
   MODEL_HASH = {
@@ -87,18 +87,16 @@ ZONESHOW_HASH = {
          
    }
 
-def validate_facts(hash_name,factObj)
-	hash_name.keys.each do |key|
-        factObj.retrieve[key].should include(hash_name[key])
-        end
-end
+  def validate_facts(hash_name,factObj)
+    hash_name.keys.each do |key|
+      factObj.retrieve[key].should include(hash_name[key])
+    end
+  end
 
-def facts_exists_validate(hash_name,fact_hash)
-        hash_name.keys.each do |key|
-        fact_hash[key].should_not be_empty
-	end
-
-        end
-
+  def facts_exists_validate(hash_name,fact_hash)
+    hash_name.keys.each do |key|
+      fact_hash[key].should_not be_empty
+    end
+  end
 end
 
