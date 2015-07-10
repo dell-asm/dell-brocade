@@ -33,6 +33,7 @@ def check_member_present(response)
     return false
     end
   end
+  transport.close
   Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_EXIST_INFO%[@member_zone,@config_name])
   true
 end
@@ -45,6 +46,7 @@ def check_member_absent(response)
     return true
     end
   end
+  transport.close
   Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_REMOVED_INFO%[@member_zone,@config_name])
   false
 end
@@ -71,12 +73,14 @@ Puppet::Type.type(:brocade_config_membership).provide(:brocade_config_membership
     initialize_resources
     Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_CREATE_DEBUG%[@member_zone,@config_name])
     config_add_zone
+    transport.close
   end
 
   def destroy
     initialize_resources
     Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_DESTORY_DEBUG%[@member_zone,@config_name])
     config_remove_zone
+    transport.close
   end
 
   def exists?

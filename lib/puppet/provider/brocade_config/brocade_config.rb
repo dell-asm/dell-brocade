@@ -66,12 +66,14 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
   def create
     initialize_resources
     process_config_creation
+    transport.close
   end
 
   def destroy
     initialize_resources
     Puppet.debug(Puppet::Provider::Brocade_messages::CONFIG_DESTORY_DEBUG%[@config_name])
     destroy_config
+    transport.close
   end
 
   def exists?

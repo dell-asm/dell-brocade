@@ -15,7 +15,7 @@ module PuppetX
         unless @session
           #Puppet already has ssh code that we can reuse, even though this isn't being used as a network device.
           require "puppet/util/network_device/transport/ssh"
-          @session = Puppet::Util::NetworkDevice::Transport::Ssh.new
+          @session = Puppet::Util::NetworkDevice::Transport::Ssh.new(true)
           @session.host = device_conf[:host]
           @session.port = device_conf[:port] || 22
 
