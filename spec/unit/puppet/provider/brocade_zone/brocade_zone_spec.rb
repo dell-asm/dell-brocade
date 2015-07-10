@@ -6,6 +6,7 @@ describe "Brocade Zone behavior testing" do
   before(:each) do
     @fixture = Brocade_zone_fixture.new
     mock_transport=double('transport')
+    mock_transport.stub(:close)
     @fixture.provider.stub(:transport).and_return(mock_transport)
     @fixture.provider.stub(:cfg_save)
   end
