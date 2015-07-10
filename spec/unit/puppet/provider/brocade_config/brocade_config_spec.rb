@@ -12,6 +12,7 @@ describe "Brocade_config" do
   before(:each) do
     @fixture = Brocade_config_fixture.new
     mock_transport=double('transport')
+    mock_transport.stub(:close)
     @fixture.provider.stub(:transport).and_return(mock_transport)
     @fixture.provider.stub(:cfg_save) 
     @fixture.provider.stub(:config_enable)      

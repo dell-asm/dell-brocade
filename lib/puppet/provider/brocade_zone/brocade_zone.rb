@@ -23,6 +23,7 @@ Puppet::Type.type(:brocade_zone).provide(:brocade_zone, :parent => Puppet::Provi
     else
       cfg_save
     end
+    transport.close
   end
 
   def destroy
@@ -34,6 +35,7 @@ Puppet::Type.type(:brocade_zone).provide(:brocade_zone, :parent => Puppet::Provi
     else
       cfg_save
     end
+    transport.close
   end
 
   def exists?

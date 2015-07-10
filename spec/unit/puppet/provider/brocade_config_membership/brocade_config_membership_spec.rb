@@ -7,6 +7,7 @@ describe "Brocade Config Membership Provider" do
   before(:each) do
     @fixture = Brocade_config_membership_fixture.new
     mock_transport=double('transport')
+    mock_transport.stub(:close)
     @fixture.provider.stub(:transport).and_return(mock_transport)
     Puppet.stub(:info)
     Puppet.stub(:debug)
