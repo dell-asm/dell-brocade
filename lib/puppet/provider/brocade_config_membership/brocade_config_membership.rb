@@ -33,7 +33,6 @@ def check_member_present(response)
     return false
     end
   end
-  transport.close
   Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_EXIST_INFO%[@member_zone,@config_name])
   true
 end
@@ -46,7 +45,6 @@ def check_member_absent(response)
     return true
     end
   end
-  transport.close
   Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_REMOVED_INFO%[@member_zone,@config_name])
   false
 end

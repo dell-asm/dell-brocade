@@ -18,6 +18,7 @@ def create_zone_membership
   else
     cfg_save
   end
+  transport.close
 end
 
 def destroy_zone_membership
@@ -30,6 +31,7 @@ def destroy_zone_membership
   else
     cfg_save
   end
+  transport.close
 end
 
 def zone_membership_response_exists?(response)
