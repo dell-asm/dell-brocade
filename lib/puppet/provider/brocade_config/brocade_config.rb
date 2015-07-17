@@ -80,9 +80,9 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
     initialize_resources
     response = transport.command(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@config_name], :noop => false)
     if ( response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST )
-    false
+      false
     else
-    true
+      true
     end
   end
 
@@ -109,6 +109,7 @@ Puppet::Type.type(:brocade_config).provide(:brocade_config, :parent => Puppet::P
   def configstate=(value)
     initialize_resources
     process_config_state(value)
+    transport.close
   end
 end
 

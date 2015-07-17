@@ -39,9 +39,14 @@ Puppet::Type.type(:brocade_zone).provide(:brocade_zone, :parent => Puppet::Provi
   end
 
   def exists?
+    Puppet.debug("Inside create zone exists block")
     initialize_resources
     Puppet.debug(Puppet::Provider::Brocade_messages::ZONE_EXISTS_DEBUG%[@zone_name])
     response =  transport.command("zoneshow #{@zone_name}", :noop => false)
+    unless response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST
+      Puppet.debug("Closing connection, as zone already exists")
+      transport.close
+    end
     !response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST
   end
 

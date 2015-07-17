@@ -37,9 +37,9 @@ end
 def zone_membership_response_exists?(response)
   if (response.include? Puppet::Provider::Brocade_responses::RESPONSE_DOES_NOT_EXIST)
     Puppet.info(Puppet::Provider::Brocade_messages::ZONE_DOES_NOT_EXIST_INFO%[@zone_name])
-  return true
+    return true
   else
-  return false
+    return false
   end
 end
 
@@ -47,7 +47,7 @@ def zone_membership_response_includes_wwpn?(response)
   return_value = true
   @member_name.split(";").each do |wwpn|
     if !(response.include? wwpn)
-    return_value = false
+      return_value = false
     end
   end
   return return_value
@@ -55,12 +55,14 @@ end
 
 def zone_membership_exists_when_ensure_present(response)
   if (zone_membership_response_exists?(response))
-  return true
+    return true
   end
   if !(zone_membership_response_includes_wwpn?(response))
-  return false
+    return false
   end
   Puppet.info(Puppet::Provider::Brocade_messages::ZONE_MEMBERSHIP_ALREADY_EXIST_INFO%[@member_name,@zone_name])
+  Puppet.debug("Closing connection, member already exists")
+  transport.close
   return true
 
 end
@@ -100,6 +102,7 @@ Puppet::Type.type(:brocade_zone_membership).provide(:brocade_zone_membership, :p
 
   def exists?
     initialize_resources
+    Puppet.debug("Inside zone membership exists block")
     response = transport.command(Puppet::Provider::Brocade_commands::ZONE_SHOW_COMMAND%[@zone_name], :noop => false)
     if("#{@resource[:ensure]}"== "present")
       return zone_membership_exists_when_ensure_present(response)
