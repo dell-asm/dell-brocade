@@ -30,10 +30,11 @@ def check_member_present(response)
   @member_zone.split(";").each do |member|
     if !(response.include? member)
       Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ADD_INFO%[member, @config_name])
-    return false
+      return false
     end
   end
   Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_EXIST_INFO%[@member_zone,@config_name])
+  transport.close
   true
 end
 
@@ -86,12 +87,13 @@ Puppet::Type.type(:brocade_config_membership).provide(:brocade_config_membership
     response = transport.command(Puppet::Provider::Brocade_commands::CONFIG_SHOW_COMMAND%[@config_name], :noop => false)
     if ("#{@resource[:ensure]}"== "present")
       if (config_membership_response_exists?(response))
-      return true
+        transport.close
+        return true
       end
       check_member_present(response)
     else
       if (config_membership_response_exists?(response))
-      return false
+        return false
       end
       check_member_absent(response)
     end
