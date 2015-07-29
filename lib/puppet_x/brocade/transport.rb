@@ -11,7 +11,7 @@ module PuppetX
           device_conf = ASM::DeviceManagement.parse_device_config(certname)
         end
 
-
+        device_conf[:arguments] ||= {}
         unless @session
           #Puppet already has ssh code that we can reuse, even though this isn't being used as a network device.
           require "puppet/util/network_device/transport/ssh"
@@ -25,7 +25,6 @@ module PuppetX
             @session.user = cred.username
             @session.password = cred.password
           else
-            #TODO:  Should there be any decryption code here?
             @session.user = device_conf[:user]
             @session.password = device_conf[:password]
           end
@@ -54,40 +53,6 @@ module PuppetX
         @facts ||= PuppetX::Brocade::Facts.new(session)
         @facts.retrieve
         @facts.facts_to_hash
-      end
-
-      # These methods aren't used currently, but still being left in for posterity's sake in case it can be reused
-      private
-
-      def update_transport_usr_password
-        if query_present_and_crypted?
-          self.crypt = true
-          # FIXME: https://github.com/puppetlabs/puppet/blob/master/lib/puppet/application/device.rb#L181
-          master = File.read(File.join('/etc/puppet', 'networkdevice-secret'))
-          master = master.strip
-          @session.user = self.decrypt(master, [@url.user].pack('h*'))
-          @session.password = self.decrypt(master, [@url.password].pack('h*'))
-        else
-          @session.user = URI.decode(@url.user)
-          @session.password = URI.decode(asm_decrypt(@url.password))
-        end
-      end
-
-      def query_present_and_crypted?
-        if @query
-          @query['crypt'] == ['true']
-        else
-          false
-        end
-      end
-
-      def self.decrypt(master, str)
-        cipher = OpenSSL::Cipher::Cipher.new("aes-256-cbc")
-        cipher.decrypt
-        cipher.key = key = OpenSSL::Digest::SHA512.new(master).digest
-        out = cipher.update(str)
-        out << cipher.final
-        return out
       end
     end
   end
