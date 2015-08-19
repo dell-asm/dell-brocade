@@ -14,9 +14,14 @@ opts = Trollop::options do
   opt :server, 'switch address', :type => :string, :required => true
   opt :port, 'switch port', :default => 22
   opt :username, 'switch username', :type => :string
-  opt :password, 'switch password', :type => :string
+  opt :password, 'switch password', :type => :string, :default => ENV['PASSWORD']
   opt :timeout, 'command timeout', :default => 240
   opt :community_string, 'dummy value for ASM, not used'
+end
+
+if !opts[:password]
+  puts 'No password defined'
+  exit 1
 end
 
 begin
