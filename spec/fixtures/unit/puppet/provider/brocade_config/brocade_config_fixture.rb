@@ -10,10 +10,11 @@ class Brocade_config_fixture
 
   def  get_brocade_config
     Puppet::Type.type(:brocade_config).new(
-    :configname => 'DemoConfig',
-    :ensure => 'present',
-    :member_zone => 'DemoZone',
-    :configstate => 'disable',
+        :name => 'zonename:DemoConfig',
+        :configname => 'DemoConfig',
+        :ensure => 'present',
+        :member_zone => 'DemoZone',
+        :configstate => 'disable',
     )
   end
 
@@ -39,3 +40,4 @@ class Brocade_config_fixture
     brocade_config[:ensure] = 'absent'
   end
 end
+
