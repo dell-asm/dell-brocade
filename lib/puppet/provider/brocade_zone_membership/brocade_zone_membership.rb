@@ -55,6 +55,7 @@ end
 
 def zone_membership_exists_when_ensure_present(response)
   if (zone_membership_response_exists?(response))
+    transport.close
     return true
   end
   if !(zone_membership_response_includes_wwpn?(response))

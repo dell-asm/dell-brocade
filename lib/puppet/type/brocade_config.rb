@@ -5,10 +5,19 @@ Puppet::Type.newtype(:brocade_config) do
 
   ensurable
 
+  newparam(:name, :namevar => true) do
+    desc "This parameter is tuple of alias name and member perameter"
+
+    munge do |value|
+      @resource[:zone_name], @resource[:configname] = value.split(':',2)
+      value
+    end
+  end
+
   newparam(:configname) do
     desc "This parameter describes the config name on Brocade
           The valid config name does not allow blank value,special character except _ ,numeric char at the start, and length above 64 chars"
-    isnamevar
+
     validate do |value|
       Puppet::Type::Brocade_messages.empty_value_check(value, Puppet::Type::Brocade_messages::CONFIG_NAME_BLANK_ERROR)
       Puppet::Type::Brocade_messages.special_char_check(value, Puppet::Type::Brocade_messages::CONFIG_NAME_SPECIAL_CHAR_ERROR)
@@ -16,6 +25,10 @@ Puppet::Type.newtype(:brocade_config) do
       Puppet::Type::Brocade_messages.long_name_check(value, Puppet::Type::Brocade_messages::CONFIG_NAME_LONG_ERROR)
     end
   end
+
+  newparam(:zone_name) do
+  end
+
 
   newparam(:member_zone) do
     desc "This parameter describes the zone in the config
