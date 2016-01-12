@@ -11,7 +11,7 @@ module PuppetX::Brocade::PossibleFacts::Custom
     end
     portcount=Integer(fcport)-1
 
-    base.register_param ['RemoteDeviceInfo '] do
+    base.register_param ['RemoteDeviceInfo'] do
       rdevice = Hash.new
       ports=nil
       match do |txt|
@@ -30,8 +30,5 @@ module PuppetX::Brocade::PossibleFacts::Custom
       cmd "portshow -i 0-#{portcount}"
       # after 'FC Ports'
     end
-    
-    
-    
   end
 end
