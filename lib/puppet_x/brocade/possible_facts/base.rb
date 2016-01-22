@@ -193,8 +193,6 @@ module PuppetX::Brocade::PossibleFacts
       base.register_param ['Aliases_Members'] do
 
         match do |txt|
-          #require 'pry'
-          #binding.pry
           alias_members = {}
           aliases = base.facts['Alias'].value
           switch_name = base.facts['Switch Name'].value
@@ -213,8 +211,43 @@ module PuppetX::Brocade::PossibleFacts
               end
             end
           end
-          Puppet.debug("Alias Members: #{alias_members}")
-          alias_members
+          alias_members.to_json
+        end
+
+        cmd "zoneshow"
+      end
+
+      base.register_param ['Zone_Members'] do
+        match do |txt|
+          zone_members = {}
+          zones = base.facts['Zones'].value
+          alias_members = base.facts['Aliases_Members'].value || {}
+          unless alias_members.empty?
+            alias_members = JSON.parse(alias_members)
+          end
+          switch_name = base.facts['Switch Name'].value
+          zones.split(',').each do |zone_val|
+            zone_val.strip!
+            zone_members[zone_val] = []
+            output = base.transport.command("zoneshow \"#{zone_val}\"")
+            output.split("\n").each do |line|
+              next if line.match(/zoneshow|zone:|#{switch_name}:/)
+              item=(line.scan(/\S+/).flatten || []).first
+              if item.nil? || item.empty? || item =~ /^\s+$/ then
+                next
+              else
+                item.split(';').each do  |i|
+                  i.strip!
+                  if alias_members[i].nil?
+                    zone_members[zone_val].push(i)
+                  else
+                    zone_members[zone_val].push(*alias_members[i])
+                  end
+                end
+              end
+            end
+          end
+          zone_members.to_json
         end
 
         cmd "zoneshow"
@@ -223,7 +256,7 @@ module PuppetX::Brocade::PossibleFacts
       base.register_param ['Nameserver'] do
         nameserver_info=Hash.new()
         match do |txt|
-          alias_members = base.facts['Aliases_Members'].value
+          alias_members = JSON.parse(base.facts['Aliases_Members'].value)
           Puppet.debug("Alias Members: #{alias_members}")
           match_array=txt.scan(/N\s+(\w+);(.*)\s+\w+:.*\s+(.*)\s+.*\s+.*\s+Permanent Port Name:\s+(\S+)\s+Device type:\s+(.*)\s+.*\s+.*\s+.*\s+.*\s+.*\s+.*\s+Aliases:(.*)/)
           Puppet.debug"match_array: #{match_array.inspect}"
