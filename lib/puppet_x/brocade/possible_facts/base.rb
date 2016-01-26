@@ -228,8 +228,10 @@ module PuppetX::Brocade::PossibleFacts
           switch_name = base.facts['Switch Name'].value
           zones.split(',').each do |zone_val|
             zone_val.strip!
+            pattern = "zone:\s+#{zone_val}(.*?)(zone:|alias:|Effective configuration:)"
+            zone_detail = txt.scan(/#{pattern}/m)
+            output = zone_detail[0].flatten.first.strip
             zone_members[zone_val] = []
-            output = base.transport.command("zoneshow \"#{zone_val}\"")
             output.split("\n").each do |line|
               next if line.match(/zoneshow|zone:|#{switch_name}:/)
               item=(line.scan(/\S+/).flatten || []).first
