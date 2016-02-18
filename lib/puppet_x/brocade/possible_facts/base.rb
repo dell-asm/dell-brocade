@@ -235,11 +235,10 @@ module PuppetX::Brocade::PossibleFacts
             zone_members[zone_val] = []
             output.split("\n").each do |line|
               next if line.match(/zoneshow|zone:|#{switch_name}:/)
-              item=(line.scan(/\S+/).flatten || []).first
-              if item.nil? || item.empty? || item =~ /^\s+$/ then
+              if line.nil? || line.empty? || line =~ /^\s+$/ then
                 next
               else
-                item.split(';').each do  |i|
+                line.split(';').each do  |i|
                   i.strip!
                   if alias_members[i].nil?
                     zone_members[zone_val].push(i)
