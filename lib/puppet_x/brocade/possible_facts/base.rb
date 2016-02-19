@@ -240,6 +240,8 @@ module PuppetX::Brocade::PossibleFacts
               else
                 line.split(';').each do  |i|
                   i.strip!
+                  next if i.empty?
+
                   if alias_members[i].nil?
                     zone_members[zone_val].push(i)
                   else
