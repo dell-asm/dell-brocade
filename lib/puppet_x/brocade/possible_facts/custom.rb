@@ -16,7 +16,7 @@ module PuppetX::Brocade::PossibleFacts::Custom
       ports=nil
       match do |txt|
         txt.split(/portIndex:\s+(.*)/).each do |text|
-          location=text.scan(/portName: port(.\w)/).flatten.first
+          location=text.scan(/portName: port\s*(\d+)/)).flatten.first
           if !(location.nil? || location.empty?)
             ports=Hash.new
             macadd=text.scan(/portWwn of device\(s\) connected:\s(.*)Distance/m).flatten.first.strip
