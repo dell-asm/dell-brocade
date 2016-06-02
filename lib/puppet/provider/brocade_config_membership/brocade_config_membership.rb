@@ -47,6 +47,7 @@ def check_member_absent(response)
     end
   end
   Puppet.info(Puppet::Provider::Brocade_messages::CONFIG_MEMBERSHIP_ALREADY_REMOVED_INFO%[@member_zone,@config_name])
+  transport.close
   false
 end
 
