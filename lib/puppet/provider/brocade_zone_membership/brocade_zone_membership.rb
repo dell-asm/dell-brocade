@@ -70,12 +70,14 @@ end
 
 def zone_membership_exists_when_ensure_absent(response)
   if (zone_membership_response_exists?(response))
+    transport.close
   return false
   end
   if (zone_membership_response_includes_wwpn?(response))
   return true
   end
   Puppet.info(Puppet::Provider::Brocade_messages::ZONE_MEMBERSHIP_ALREADY_REMOVED_INFO%[@member_name,@zone_name])
+  transport.close
   return false
 
 end
