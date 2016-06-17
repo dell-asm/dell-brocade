@@ -32,7 +32,7 @@ define brocade::createzone (
   $storage_alias,
   $server_wwn,
   $zoneset,
-  $ensure,
+  $ensure = "present",
 ) {
   brocade_zone {
     "$name":
