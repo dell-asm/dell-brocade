@@ -201,14 +201,10 @@ module PuppetX::Brocade::PossibleFacts
             alias_val.strip!
             alias_members[alias_val] = []
             output = base.transport.command("alishow #{alias_val}")
-            output.split("\n").each do |line|
-              next if line.match(/alishow|alias:|#{switch_name}:/)
-              item=line.scan(/\S+/).flatten
-              if item.nil? || item.empty? || item =~ /^\s+$/ then
-                next
-              else
-                item.collect {|i| alias_members[alias_val].push(i.gsub(/;/,'')) }
-              end
+            alias_data = (output.scan(/alias:\s*#{alias_val}(.*)$/m) || []).first.first
+            if alias_data
+              alias_mems = alias_data.scan(/(([0-9a-f]{1,2}[\.:-]){7}([0-9a-f]{1,2}))/mi)
+              alias_members[alias_val] = alias_mems.collect {|x| x[0]}
             end
           end
           alias_members.to_json
