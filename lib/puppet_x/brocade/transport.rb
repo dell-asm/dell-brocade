@@ -34,7 +34,24 @@ module PuppetX
       end
 
       def connect_session
-        session.connect
+        retry_count=0
+
+        begin
+          session.connect do |status|
+            retry_count += 1
+            # Brocade limits number of remote connections,if connections exceed raise exception after multiple retires
+            raise("Maximum Remote connections Reached") if status.match(/Max remote sessions for login/)
+          end
+        rescue Exception => e
+          sleep(30)
+          if retry_count < 4
+            Puppet.warning("Detected maximum active remote connections,retrying again to connect")
+            retry
+          else
+            raise ("Maximum Remote connections and retry limits exceded")
+          end
+        end
+
         login
       end
 
