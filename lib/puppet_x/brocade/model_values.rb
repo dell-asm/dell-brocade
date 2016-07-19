@@ -31,6 +31,7 @@ module PuppetX::Brocade::ModelValues
     '83.x' => 'Brocade 7800',
     '121.x' => 'Brocade DCX8510-4',
     '120.x' => 'Brocade DCX8510-8',
-    '109.x' => 'Brocade 6510'
+    '109.x' => 'Brocade 6510',
+    '118.x' => 'Brocade 6505'
    }
 end
