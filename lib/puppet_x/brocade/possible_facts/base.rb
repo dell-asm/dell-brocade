@@ -258,7 +258,7 @@ module PuppetX::Brocade::PossibleFacts
         match do |txt|
           alias_members = JSON.parse(base.facts['Aliases_Members'].value)
           Puppet.debug("Alias Members: #{alias_members}")
-          match_array=txt.scan(/N\s+(\w+);(.*)\s+\w+:.*\s+(.*)\s+.*\s+.*\s+Permanent Port Name:\s+(\S+)\s+Device type:\s+(.*)\s+.*\s+.*\s+.*\s+.*\s+.*\s+.*\s+Aliases:(.*)/)
+          match_array=txt.scan(/N\s+(\w+);(.*)\s+\w+:.*\s+(.*)\s+.*\s+.*\s+Permanent Port Name:\s+(\S+)\s+Device type:\s+(.*)\s+.*\s+.*\s+.*\s+.*\s+.*\s+.*\s+.*\s+Aliases:(.*)/)
           Puppet.debug"match_array: #{match_array.inspect}"
           if !match_array.empty?
             match_array.each do |nameserverinfo|
