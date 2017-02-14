@@ -53,7 +53,7 @@ module PuppetX::Brocade::Dsl
   def register_new_module(mod, path_addition = "")
     @included_modules ||= []
     unless @included_modules.include?(mod)
-      Puppet::Util::Autoload.new(self, File.join(mod_path_base, path_addition), :wrap => false).load(mod)
+      Puppet::Util::Autoload.new(self, File.join(mod_path_base, path_addition)).load(mod)
       if path_addition.empty?
         mod_const_base.const_get(mod.to_s.capitalize).register(self)
       @included_modules << mod
