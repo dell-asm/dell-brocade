@@ -31,7 +31,7 @@ This module supports the following functionalities:
  
 
 ## Requirements
-Because the Puppet agent cannot be directly installed on the Brocade Fabric OS, the agent can be managed either from the Puppet Master server,
+Since the Puppet agent cannot be directly installed on the Brocade Fabric OS, the agent can be managed either from the Puppet Master server,
 or through an intermediate proxy system running a puppet agent. The proxy system requirements are not yet defined.
 
 ## Usage
@@ -52,7 +52,7 @@ Sample configuration `/etc/puppet/device/brocade_fos1.example.com.conf`:
       url ssh://root:secret@brocade_fos1.example.com:22
 
 ### Brocade FOS operations
-This module can be used to create or delete an alias,add/remove member to/from alias, create or delete a zone, add/remove member to/from a zone, create or delete config, activate or de-activate config.
+This module can be used to create or delete an alias, add/remove member to/from alias, create or delete a zone, add/remove member to/from a zone, create or delete config, activate or de-activate config.
 For example: 
 
    brocade_member_alias { 'demoAlias':
